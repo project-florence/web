@@ -3,22 +3,24 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Trash2 } from 'lucide-react'
+import { Trash2, Star } from 'lucide-react'
 import { toast } from 'sonner'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import api from '@/lib/api'
-import type { BistCompany } from '@/types/api'
+import type { FavoritesResponse } from '@/types/api'
 
 export default function WatchlistPage() {
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const queryClient = useQueryClient()
 
   const { data: favorites, isLoading } = useQuery({
     queryKey: ['favorites'],
     queryFn: async () => {
       const res = await api.get('/api/v1/favorites')
-      return res.data as BistCompany[]
+      return (res.data as FavoritesResponse).favorites
     },
+    staleTime: 60_000,
   })
 
   const removeMutation = useMutation({
@@ -36,7 +38,7 @@ export default function WatchlistPage() {
       <div className="space-y-4">
         <Skeleton className="h-8 w-48" />
         {Array.from({ length: 3 }).map((_, i) => (
-          <Skeleton key={i} className="h-20 w-full" />
+          <Skeleton key={i} className="h-16 w-full" />
         ))}
       </div>
     )
@@ -58,28 +60,25 @@ export default function WatchlistPage() {
   return (
     <div className="space-y-6">
       <h2 className="text-3xl font-bold tracking-tight">{t('watchlist.title')}</h2>
-      <div className="grid gap-4">
-        {favorites.map((item) => (
-          <Card key={item.symbol}>
+      <div className="grid gap-3">
+        {favorites.map((ticker) => (
+          <Card
+            key={ticker}
+            className="hover:bg-muted/50 transition-colors cursor-pointer"
+            onClick={() => navigate(`/stocks/${ticker}`)}
+          >
             <CardContent className="p-4 flex items-center justify-between">
-              <Link to={`/stocks/${item.symbol}`} className="flex-1">
-                <div className="flex items-center gap-4">
-                  <span className="font-mono font-bold text-primary">{item.symbol}</span>
-                  <span className="text-sm truncate">{item.name}</span>
-                  {item.price !== undefined && (
-                    <span className="text-lg font-bold">₺{item.price.toFixed(2)}</span>
-                  )}
-                  {item.change !== undefined && (
-                    <span className={`text-sm ${item.change >= 0 ? 'text-success' : 'text-destructive'}`}>
-                      {item.change >= 0 ? '+' : ''}{item.change.toFixed(2)}%
-                    </span>
-                  )}
-                </div>
-              </Link>
+              <div className="flex items-center gap-3">
+                <Star className="h-4 w-4 fill-accent text-accent" />
+                <span className="font-mono font-bold text-primary">{ticker}</span>
+              </div>
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => removeMutation.mutate(item.symbol)}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  removeMutation.mutate(ticker)
+                }}
               >
                 <Trash2 className="h-4 w-4 text-destructive" />
               </Button>
