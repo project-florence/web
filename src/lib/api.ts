@@ -2,7 +2,7 @@ import axios from 'axios'
 import { apiConfig } from '@/config/api'
 
 const api = axios.create({
-  baseURL: apiConfig.baseURL,
+  baseURL: import.meta.env.DEV ? '' : apiConfig.baseURL,
   timeout: apiConfig.timeout,
   headers: {
     'Content-Type': 'application/json',

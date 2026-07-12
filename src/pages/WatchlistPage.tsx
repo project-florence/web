@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
-import { Link } from 'react-router'
+import { Link } from 'react-router-dom'
 import api from '@/lib/api'
 import type { BistCompany } from '@/types/api'
 

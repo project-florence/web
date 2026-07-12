@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate, Link } from 'react-router'
+import { useNavigate, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -37,6 +37,7 @@ export default function LoginPage() {
     setLoading(true)
     try {
       const formData = new URLSearchParams()
+      formData.append('grant_type', 'password')
       formData.append('username', data.username)
       formData.append('password', data.password)
 
