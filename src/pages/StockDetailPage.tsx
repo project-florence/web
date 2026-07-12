@@ -21,14 +21,21 @@ const PERIODS = [
   { label: '5y', value: '5y', interval: '1mo' },
 ] as const
 
-function fmt(n: number): string {
+function safeFixed(n: number | null | undefined, digits: number, fallback = '—'): string {
+  if (n === null || n === undefined) return fallback
+  return n.toFixed(digits)
+}
+
+function fmt(n: number | null | undefined): string {
+  if (n === null || n === undefined) return '—'
   if (Math.abs(n) >= 1_000_000_000) return `${(n / 1_000_000_000).toFixed(2)}B`
   if (Math.abs(n) >= 1_000_000) return `${(n / 1_000_000).toFixed(2)}M`
   if (Math.abs(n) >= 1_000) return `${(n / 1_000).toFixed(2)}B`
   return n.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
 
-function fmtCurrency(n: number): string {
+function fmtCurrency(n: number | null | undefined): string {
+  if (n === null || n === undefined) return '—'
   return `₺${n.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
 }
 
@@ -172,14 +179,14 @@ export default function StockDetailPage() {
 
       {v && (
         <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
-          <StatCard label="F/K (Trailing)" value={v.trailingPE.toFixed(2)} />
-          <StatCard label="F/K (Forward)" value={v.forwardPE.toFixed(2)} />
-          <StatCard label="PD/DD" value={v.priceToBook.toFixed(2)} />
-          <StatCard label="Temettü Verimi" value={`%${v.dividendYield.toFixed(2)}`} />
+          <StatCard label="F/K (Trailing)" value={safeFixed(v.trailingPE, 2)} />
+          <StatCard label="F/K (Forward)" value={safeFixed(v.forwardPE, 2)} />
+          <StatCard label="PD/DD" value={safeFixed(v.priceToBook, 2)} />
+          <StatCard label="Temettü Verimi" value={v.dividendYield ? `%${safeFixed(v.dividendYield, 2)}` : '—'} />
           <StatCard label="Hedef Fiyat (Ort)" value={fmtCurrency(v.targetMeanPrice)} />
           <StatCard label="Hedef Fiyat (Yüksek)" value={fmtCurrency(v.targetHighPrice)} />
           <StatCard label="Hedef Fiyat (Düşük)" value={fmtCurrency(v.targetLowPrice)} />
-          <StatCard label="Hedefe Uzaklık" value={m ? `%${((v.targetMeanPrice / m.currentPrice - 1) * 100).toFixed(1)}` : '—'} />
+          <StatCard label="Hedefe Uzaklık" value={v.targetMeanPrice && m ? `%${((v.targetMeanPrice / m.currentPrice - 1) * 100).toFixed(1)}` : '—'} />
         </div>
       )}
 
@@ -273,7 +280,7 @@ export default function StockDetailPage() {
               <StatCard label="Gelir" value={fmt(f.totalRevenue)} />
               <StatCard label="Net Kar" value={fmt(f.netIncomeToCommon)} />
               <StatCard label="Kar Marjı" value={`%${(f.profitMargins * 100).toFixed(2)}`} />
-              <StatCard label="F/K Büyüme" value={f.revenueGrowth > 0 ? `%${(f.revenueGrowth * 100).toFixed(1)}` : '—'} />
+              <StatCard label="Ciro Büyüme" value={f.revenueGrowth ? `%${(f.revenueGrowth * 100).toFixed(1)}` : '—'} />
               <StatCard label="Öz Sermaye Kârlılığı" value={`%${(f.returnOnEquity * 100).toFixed(2)}`} />
               <StatCard label="Nakit" value={fmt(info.balanceSheet.totalCash)} />
               <StatCard label="Borç" value={fmt(info.balanceSheet.totalDebt)} />

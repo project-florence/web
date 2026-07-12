@@ -42,13 +42,13 @@ export interface CompanyInfo {
   }
   valuation: {
     trailingPE: number
-    forwardPE: number
+    forwardPE: number | null
     priceToBook: number
-    dividendYield: number
-    payoutRatio: number
-    targetMeanPrice: number
-    targetHighPrice: number
-    targetLowPrice: number
+    dividendYield: number | null
+    payoutRatio: number | null
+    targetMeanPrice: number | null
+    targetHighPrice: number | null
+    targetLowPrice: number | null
   }
   financials: {
     totalRevenue: number
