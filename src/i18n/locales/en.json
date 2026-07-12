@@ -1,0 +1,129 @@
+{
+  "app": {
+    "name": "Florence",
+    "tagline": "Smart Investment Assistant"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "stocks": "Stocks",
+    "watchlist": "Watchlist",
+    "analysis": "Analysis",
+    "scout": "Investment Advisor",
+    "ipos": "IPOs",
+    "settings": "Settings",
+    "logout": "Logout"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "username": "Username",
+    "email": "Email",
+    "password": "Password",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "loginError": "Login failed",
+    "registerError": "Registration failed",
+    "loginSuccess": "Login successful",
+    "registerSuccess": "Registration successful"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "gold": "Gold",
+    "silver": "Silver",
+    "usd": "USD",
+    "eur": "EUR",
+    "bist100": "BIST 100",
+    "macroeconomy": "Macroeconomy",
+    "inflation": "Inflation",
+    "interest": "Interest Rate",
+    "unemployment": "Unemployment"
+  },
+  "stocks": {
+    "title": "Stocks",
+    "search": "Search stocks...",
+    "symbol": "Symbol",
+    "company": "Company",
+    "price": "Price",
+    "change": "Change",
+    "volume": "Volume",
+    "sector": "Sector",
+    "details": "Details",
+    "addToWatchlist": "Add to Watchlist",
+    "removeFromWatchlist": "Remove from Watchlist"
+  },
+  "stockDetail": {
+    "title": "Stock Detail",
+    "overview": "Overview",
+    "chart": "Chart",
+    "news": "News",
+    "reports": "Reports",
+    "quickReport": "Quick Report",
+    "deepReport": "Deep Report",
+    "simulation": "Simulation",
+    "probability": "Probability",
+    "confidenceInterval": "Confidence Interval",
+    "period": "Period",
+    "interval": "Interval"
+  },
+  "watchlist": {
+    "title": "Watchlist",
+    "empty": "Your watchlist is empty. Add stocks from the Stocks page.",
+    "addSuccess": "Added to watchlist",
+    "removeSuccess": "Removed from watchlist"
+  },
+  "analysis": {
+    "title": "Analysis",
+    "probabilitySimulation": "Probability Simulation",
+    "confidenceInterval": "Confidence Interval",
+    "days": "Days",
+    "target": "Target Price",
+    "bounds": "Bounds",
+    "calculate": "Calculate"
+  },
+  "scout": {
+    "title": "Investment Advisor",
+    "budget": "Investment Budget",
+    "horizon": "Investment Horizon",
+    "shortTerm": "Short Term",
+    "mediumTerm": "Medium Term",
+    "longTerm": "Long Term",
+    "riskTolerance": "Risk Tolerance",
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High",
+    "analyze": "Analyze",
+    "results": "Recommendations"
+  },
+  "ipos": {
+    "title": "IPOs",
+    "upcoming": "Upcoming IPOs",
+    "company": "Company",
+    "price": "Price",
+    "date": "Date",
+    "status": "Status"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "retry": "Retry",
+    "noData": "No data available",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "search": "Search",
+    "filter": "Filter"
+  },
+  "time": {
+    "today": "Today",
+    "thisWeek": "This Week",
+    "thisMonth": "This Month",
+    "1d": "1 Day",
+    "5d": "5 Days",
+    "1mo": "1 Month",
+    "3mo": "3 Months",
+    "6mo": "6 Months",
+    "1y": "1 Year",
+    "5y": "5 Years",
+    "max": "Max"
+  }
+}

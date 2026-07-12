@@ -1,0 +1,129 @@
+{
+  "app": {
+    "name": "Florence",
+    "tagline": "Akıllı Yatırım Asistanı"
+  },
+  "nav": {
+    "dashboard": "Genel Bakış",
+    "stocks": "Hisseler",
+    "watchlist": "Takip Listesi",
+    "analysis": "Analiz",
+    "scout": "Yatırım Danışmanı",
+    "ipos": "Halka Arzlar",
+    "settings": "Ayarlar",
+    "logout": "Çıkış Yap"
+  },
+  "auth": {
+    "login": "Giriş Yap",
+    "register": "Kayıt Ol",
+    "username": "Kullanıcı Adı",
+    "email": "E-posta",
+    "password": "Şifre",
+    "noAccount": "Hesabın yok mu?",
+    "hasAccount": "Zaten hesabın var mı?",
+    "loginError": "Giriş başarısız",
+    "registerError": "Kayıt başarısız",
+    "loginSuccess": "Giriş başarılı",
+    "registerSuccess": "Kayıt başarılı"
+  },
+  "dashboard": {
+    "title": "Genel Bakış",
+    "gold": "Altın",
+    "silver": "Gümüş",
+    "usd": "Dolar",
+    "eur": "Euro",
+    "bist100": "BIST 100",
+    "macroeconomy": "Makroekonomi",
+    "inflation": "Enflasyon",
+    "interest": "Faiz Oranı",
+    "unemployment": "İşsizlik"
+  },
+  "stocks": {
+    "title": "Hisseler",
+    "search": "Hisse ara...",
+    "symbol": "Sembol",
+    "company": "Şirket",
+    "price": "Fiyat",
+    "change": "Değişim",
+    "volume": "Hacim",
+    "sector": "Sektör",
+    "details": "Detaylar",
+    "addToWatchlist": "Takip Listesine Ekle",
+    "removeFromWatchlist": "Takip Listesinden Çıkar"
+  },
+  "stockDetail": {
+    "title": "Hisse Detayı",
+    "overview": "Genel Bakış",
+    "chart": "Grafik",
+    "news": "Haberler",
+    "reports": "Raporlar",
+    "quickReport": "Hızlı Rapor",
+    "deepReport": "Derinlemesine Rapor",
+    "simulation": "Simülasyon",
+    "probability": "Olasılık",
+    "confidenceInterval": "Güven Aralığı",
+    "period": "Periyot",
+    "interval": "Aralık"
+  },
+  "watchlist": {
+    "title": "Takip Listesi",
+    "empty": "Takip listeniz boş. Hisseler sayfasından hisse ekleyebilirsiniz.",
+    "addSuccess": "Takip listenize eklendi",
+    "removeSuccess": "Takip listenizden çıkarıldı"
+  },
+  "analysis": {
+    "title": "Analiz",
+    "probabilitySimulation": "Olasılık Simülasyonu",
+    "confidenceInterval": "Güven Aralığı",
+    "days": "Gün",
+    "target": "Hedef Fiyat",
+    "bounds": "Sınırlar",
+    "calculate": "Hesapla"
+  },
+  "scout": {
+    "title": "Yatırım Danışmanı",
+    "budget": "Yatırım Bütçesi",
+    "horizon": "Yatırım Vadesi",
+    "shortTerm": "Kısa Vade",
+    "mediumTerm": "Orta Vade",
+    "longTerm": "Uzun Vade",
+    "riskTolerance": "Risk Toleransı",
+    "low": "Düşük",
+    "medium": "Orta",
+    "high": "Yüksek",
+    "analyze": "Analiz Et",
+    "results": "Öneriler"
+  },
+  "ipos": {
+    "title": "Halka Arzlar",
+    "upcoming": "Yaklaşan Halka Arzlar",
+    "company": "Şirket",
+    "price": "Fiyat",
+    "date": "Tarih",
+    "status": "Durum"
+  },
+  "common": {
+    "loading": "Yükleniyor...",
+    "error": "Bir hata oluştu",
+    "retry": "Tekrar Dene",
+    "noData": "Veri bulunamadı",
+    "save": "Kaydet",
+    "cancel": "İptal",
+    "delete": "Sil",
+    "search": "Ara",
+    "filter": "Filtrele"
+  },
+  "time": {
+    "today": "Bugün",
+    "thisWeek": "Bu Hafta",
+    "thisMonth": "Bu Ay",
+    "1d": "1 Gün",
+    "5d": "5 Gün",
+    "1mo": "1 Ay",
+    "3mo": "3 Ay",
+    "6mo": "6 Ay",
+    "1y": "1 Yıl",
+    "5y": "5 Yıl",
+    "max": "Maks"
+  }
+}

@@ -1,0 +1,23 @@
+import { create } from 'zustand'
+
+type Theme = 'dark' | 'light'
+
+interface ThemeState {
+  theme: Theme
+  setTheme: (theme: Theme) => void
+  toggleTheme: () => void
+}
+
+export const useThemeStore = create<ThemeState>((set) => ({
+  theme: 'dark',
+  setTheme: (theme) => {
+    document.documentElement.classList.toggle('dark', theme === 'dark')
+    set({ theme })
+  },
+  toggleTheme: () =>
+    set((state) => {
+      const next = state.theme === 'dark' ? 'light' : 'dark'
+      document.documentElement.classList.toggle('dark', next === 'dark')
+      return { theme: next }
+    }),
+}))
