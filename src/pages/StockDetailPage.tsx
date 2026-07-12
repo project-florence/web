@@ -7,7 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, TrendingUp, TrendingDown } from 'lucide-react'
+import { cn } from '@/lib/utils'
 import { StockChart } from '@/components/shared/StockChart'
 import { FavoriteButton } from '@/components/shared/FavoriteButton'
 import api from '@/lib/api'
@@ -30,7 +31,7 @@ function fmt(n: number | null | undefined): string {
   if (n === null || n === undefined) return '—'
   if (Math.abs(n) >= 1_000_000_000) return `${(n / 1_000_000_000).toFixed(2)}B`
   if (Math.abs(n) >= 1_000_000) return `${(n / 1_000_000).toFixed(2)}M`
-  if (Math.abs(n) >= 1_000) return `${(n / 1_000).toFixed(2)}B`
+  if (Math.abs(n) >= 1_000) return `${(n / 1_000).toFixed(2)}K`
   return n.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
 
@@ -39,13 +40,32 @@ function fmtCurrency(n: number | null | undefined): string {
   return `₺${n.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
 }
 
-function StatCard({ label, value, sub }: { label: string; value: string; sub?: string }) {
+function StatCard({ label, value, sub, positive }: {
+  label: string
+  value: string
+  sub?: string
+  positive?: boolean | null
+}) {
   return (
-    <Card>
+    <Card className={cn(
+      'border-l-2 transition-colors',
+      positive === true && 'border-l-success',
+      positive === false && 'border-l-destructive',
+      positive === undefined && 'border-l-border',
+    )}>
       <CardContent className="p-4">
         <p className="text-xs text-muted-foreground mb-1">{label}</p>
-        <p className="text-lg font-bold">{value}</p>
-        {sub && <p className="text-xs text-muted-foreground mt-0.5">{sub}</p>}
+        <p className={cn(
+          'text-lg font-bold',
+          positive === true && 'text-success',
+          positive === false && 'text-destructive',
+        )}>{value}</p>
+        {sub && <p className={cn(
+          'text-xs mt-0.5',
+          positive === true && 'text-success/80',
+          positive === false && 'text-destructive/80',
+          positive === undefined && 'text-muted-foreground',
+        )}>{sub}</p>}
       </CardContent>
     </Card>
   )
@@ -155,12 +175,24 @@ export default function StockDetailPage() {
           <div className="flex items-center gap-3">
             <h2 className="text-3xl font-bold tracking-tight">{ticker}</h2>
             {change !== undefined && (
-              <Badge variant={change >= 0 ? 'default' : 'destructive'} className="text-sm px-2 py-0.5">
+              <Badge
+                variant="outline"
+                className={cn(
+                  'text-sm px-3 py-1 font-semibold border-2',
+                  change >= 0
+                    ? 'text-success border-success bg-success/10'
+                    : 'text-destructive border-destructive bg-destructive/10',
+                )}
+              >
+                {change >= 0 ? <TrendingUp className="h-3.5 w-3.5 mr-1 inline" /> : <TrendingDown className="h-3.5 w-3.5 mr-1 inline" />}
                 {change >= 0 ? '+' : ''}{change.toFixed(2)}%
               </Badge>
             )}
           </div>
-          <p className="text-muted-foreground mt-1">{companyName}</p>
+          <p className={cn(
+            'mt-1 font-medium',
+            change !== undefined && (change >= 0 ? 'text-success' : 'text-destructive'),
+          )}>{companyName}</p>
           {info?.sector && <p className="text-xs text-muted-foreground">{info.sector} · {info.industry}</p>}
         </div>
         {ticker && <FavoriteButton ticker={ticker} />}
@@ -168,12 +200,12 @@ export default function StockDetailPage() {
 
       {m && (
         <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
-          <StatCard label="Fiyat" value={fmtCurrency(m.currentPrice)} />
+          <StatCard label="Fiyat" value={fmtCurrency(m.currentPrice)} positive={change !== undefined ? change >= 0 : undefined} />
           <StatCard label="Piyasa Değeri" value={fmt(m.marketCap)} />
           <StatCard label="Gün Aralığı" value={fmtCurrency(m.dayLow)} sub={`— ${fmtCurrency(m.dayHigh)}`} />
           <StatCard label="Hacim" value={fmt(m.regularMarketVolume)} />
-          <StatCard label="52H Yüksek" value={fmtCurrency(m.fiftyTwoWeekHigh)} />
-          <StatCard label="52H Düşük" value={fmtCurrency(m.fiftyTwoWeekLow)} />
+          <StatCard label="52H Yüksek" value={fmtCurrency(m.fiftyTwoWeekHigh)} positive />
+          <StatCard label="52H Düşük" value={fmtCurrency(m.fiftyTwoWeekLow)} positive={false} />
         </div>
       )}
 
