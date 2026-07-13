@@ -79,20 +79,45 @@ export function StockChart({ data, loading }: StockChartProps) {
     if (!seriesRef.current) return
 
     if (data.length > 0) {
-      hasDataRef.current = true
-      const candleData: CandlestickData[] = data.map((d) => ({
-        time: (new Date(d.ts).getTime() / 1000) as Time,
-        open: d.open,
-        high: d.high,
-        low: d.low,
-        close: d.close,
-      }))
-      seriesRef.current.setData(candleData)
-      chartRef.current?.timeScale().fitContent()
+      const valid = data.filter((d) => {
+        const o = d.open
+        const h = d.high
+        const l = d.low
+        const c = d.close
+        return (
+          o != null && h != null && l != null && c != null &&
+          isFinite(o) && isFinite(h) && isFinite(l) && isFinite(c)
+        )
+      })
+
+      if (valid.length > 0) {
+        hasDataRef.current = true
+        const candleData: CandlestickData[] = valid.map((d) => ({
+          time: (new Date(d.ts).getTime() / 1000) as Time,
+          open: d.open!,
+          high: d.high!,
+          low: d.low!,
+          close: d.close!,
+        }))
+        try {
+          seriesRef.current.setData(candleData)
+          chartRef.current?.timeScale().fitContent()
+        } catch {
+          console.warn('StockChart: setData failed')
+        }
+      }
     }
   }, [data])
 
-  const isEmpty = data.length === 0
+  const hasValidData = data.some((d) => {
+    const o = d.open
+    const h = d.high
+    const l = d.low
+    const c = d.close
+    return o != null && h != null && l != null && c != null &&
+      isFinite(o) && isFinite(h) && isFinite(l) && isFinite(c)
+  })
+  const isEmpty = !hasValidData
   const neverHadData = !hasDataRef.current
 
   return (
