@@ -7,6 +7,8 @@ import {
   BarChart3,
   Search,
   Rocket,
+  DollarSign,
+  Gem,
   User,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -122,6 +124,34 @@ export function Sidebar() {
         >
           <Rocket className="h-4 w-4" />
           {t('nav.ipos')}
+        </NavLink>
+        <NavLink
+          to="/currency"
+          className={({ isActive }) =>
+            cn(
+              'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+              isActive
+                ? 'bg-primary/10 text-primary'
+                : 'text-muted-foreground hover:text-foreground hover:bg-muted',
+            )
+          }
+        >
+          <DollarSign className="h-4 w-4" />
+          {t('nav.currency')}
+        </NavLink>
+        <NavLink
+          to="/metals"
+          className={({ isActive }) =>
+            cn(
+              'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+              isActive
+                ? 'bg-primary/10 text-primary'
+                : 'text-muted-foreground hover:text-foreground hover:bg-muted',
+            )
+          }
+        >
+          <Gem className="h-4 w-4" />
+          {t('nav.metals')}
         </NavLink>
       </nav>
 

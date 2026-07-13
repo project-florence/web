@@ -15,6 +15,8 @@ const WatchlistPage = lazy(() => import('@/pages/WatchlistPage'))
 const AnalysisPage = lazy(() => import('@/pages/AnalysisPage'))
 const ScoutPage = lazy(() => import('@/pages/ScoutPage'))
 const IposPage = lazy(() => import('@/pages/IposPage'))
+const CurrencyPage = lazy(() => import('@/pages/CurrencyPage'))
+const MetalsPage = lazy(() => import('@/pages/MetalsPage'))
 const ProfilePage = lazy(() => import('@/pages/ProfilePage'))
 
 const queryClient = new QueryClient({
@@ -58,6 +60,8 @@ export default function App() {
                 <Route path="analysis" element={<AnalysisPage />} />
                 <Route path="scout" element={<ScoutPage />} />
                 <Route path="ipos" element={<IposPage />} />
+                <Route path="currency" element={<CurrencyPage />} />
+                <Route path="metals" element={<MetalsPage />} />
                 <Route path="profile" element={<ProfilePage />} />
               </Route>
             </Routes>
