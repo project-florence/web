@@ -10,7 +10,7 @@
     "analysis": "Analysis",
     "scout": "Investment Advisor",
     "ipos": "IPOs",
-    "settings": "Settings",
+    "profile": "Profile",
     "logout": "Logout"
   },
   "auth": {
@@ -101,6 +101,29 @@
     "price": "Price",
     "date": "Date",
     "status": "Status"
+  },
+  "profile": {
+    "title": "Profile",
+    "credits": "Credit Balance",
+    "account": "Account",
+    "security": "Security",
+    "data": "Data",
+    "username": "Username",
+    "email": "Email",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "changePassword": "Change Password",
+    "saveUsername": "Save Username",
+    "saveEmail": "Save Email",
+    "passwordChanged": "Password changed successfully",
+    "usernameChanged": "Username changed successfully",
+    "emailChanged": "Email changed successfully",
+    "exportData": "Export My Data",
+    "exportDesc": "Export all your data in JSON format",
+    "deleteAccount": "Delete My Account",
+    "deleteDesc": "Permanently delete your account. This action cannot be undone.",
+    "passwordRequired": "Your current password is required for this action",
+    "confirmDelete": "Are you sure you want to delete your account? This action cannot be undone."
   },
   "common": {
     "loading": "Loading...",

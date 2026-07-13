@@ -7,11 +7,9 @@ import {
   BarChart3,
   Search,
   Rocket,
-  LogOut,
+  User,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
-import { useAuthStore } from '@/stores/authStore'
 import { useNavStore } from '@/stores/navStore'
 import type { MouseEvent } from 'react'
 
@@ -19,7 +17,6 @@ export function Sidebar() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const location = useLocation()
-  const logout = useAuthStore((s) => s.logout)
   const lastStockTicker = useNavStore((s) => s.lastStockTicker)
 
   const handleStocksClick = (e: MouseEvent) => {
@@ -128,14 +125,20 @@ export function Sidebar() {
         </NavLink>
       </nav>
 
-      <Button
-        variant="ghost"
-        className="justify-start gap-3 text-muted-foreground"
-        onClick={logout}
+      <NavLink
+        to="/profile"
+        className={({ isActive }) =>
+          cn(
+            'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+            isActive
+              ? 'bg-primary/10 text-primary'
+              : 'text-muted-foreground hover:text-foreground hover:bg-muted',
+          )
+        }
       >
-        <LogOut className="h-4 w-4" />
-        {t('nav.logout')}
-      </Button>
+        <User className="h-4 w-4" />
+        {t('nav.profile')}
+      </NavLink>
     </aside>
   )
 }

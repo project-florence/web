@@ -10,7 +10,7 @@
     "analysis": "Analiz",
     "scout": "Yatırım Danışmanı",
     "ipos": "Halka Arzlar",
-    "settings": "Ayarlar",
+    "profile": "Profil",
     "logout": "Çıkış Yap"
   },
   "auth": {
@@ -101,6 +101,29 @@
     "price": "Fiyat",
     "date": "Tarih",
     "status": "Durum"
+  },
+  "profile": {
+    "title": "Profil",
+    "credits": "Kredi Bakiyesi",
+    "account": "Hesap",
+    "security": "Güvenlik",
+    "data": "Veri",
+    "username": "Kullanıcı Adı",
+    "email": "E-posta",
+    "currentPassword": "Mevcut Şifre",
+    "newPassword": "Yeni Şifre",
+    "changePassword": "Şifre Değiştir",
+    "saveUsername": "Kullanıcı Adını Kaydet",
+    "saveEmail": "E-postayı Kaydet",
+    "passwordChanged": "Şifre başarıyla değiştirildi",
+    "usernameChanged": "Kullanıcı adı başarıyla değiştirildi",
+    "emailChanged": "E-posta başarıyla değiştirildi",
+    "exportData": "Verilerimi Dışa Aktar",
+    "exportDesc": "Tüm verilerinizi JSON formatında dışa aktarın",
+    "deleteAccount": "Hesabımı Sil",
+    "deleteDesc": "Hesabınızı kalıcı olarak silin. Bu işlem geri alınamaz.",
+    "passwordRequired": "Bu işlem için mevcut şifreniz gereklidir",
+    "confirmDelete": "Hesabınızı silmek istediğinize emin misiniz? Bu işlem geri alınamaz."
   },
   "common": {
     "loading": "Yükleniyor...",

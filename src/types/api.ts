@@ -173,3 +173,28 @@ export interface MarketQuote {
   change: number
   changePercent: number
 }
+
+export interface Profile {
+  username: string
+  email: string
+  credits: number
+}
+
+export interface Credits {
+  credits: number
+}
+
+export interface ChangePasswordPayload {
+  current_password: string
+  new_password: string
+}
+
+export interface UpdateEmailPayload {
+  new_email: string
+  current_password: string
+}
+
+export interface UpdateUsernamePayload {
+  new_username: string
+  current_password: string
+}
