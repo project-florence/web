@@ -171,7 +171,7 @@ export default function StockDetailPage() {
 
   return (
     <div className="space-y-6">
-      <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
+      <Button variant="ghost" size="sm" onClick={() => navigate('/stocks')}>
         <ArrowLeft className="h-4 w-4 mr-1" />
         Geri
       </Button>
