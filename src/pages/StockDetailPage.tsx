@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
@@ -11,6 +11,7 @@ import { ArrowLeft, TrendingUp, TrendingDown } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { StockChart } from '@/components/shared/StockChart'
 import { FavoriteButton } from '@/components/shared/FavoriteButton'
+import { useNavStore } from '@/stores/navStore'
 import api from '@/lib/api'
 import type { CompanyInfo, PriceHistory, NewsItem, ReportResult } from '@/types/api'
 
@@ -75,7 +76,12 @@ export default function StockDetailPage() {
   const { ticker } = useParams<{ ticker: string }>()
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const setLastStockTicker = useNavStore((s) => s.setLastStockTicker)
   const [period, setPeriod] = useState<(typeof PERIODS)[number]>(PERIODS[0])
+
+  useEffect(() => {
+    if (ticker) setLastStockTicker(ticker)
+  }, [ticker, setLastStockTicker])
 
   const { data: info, isLoading: infoLoading } = useQuery({
     queryKey: ['company-info', ticker],

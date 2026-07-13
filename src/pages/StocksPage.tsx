@@ -1,45 +1,75 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { StockSearch } from '@/components/shared/StockSearch'
 import { FavoriteButton } from '@/components/shared/FavoriteButton'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Building2, TrendingUp, TrendingDown } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { useNavStore } from '@/stores/navStore'
 import api from '@/lib/api'
-import type { BistCompany } from '@/types/api'
+import type { CompanySummary } from '@/types/api'
 
 const PER_PAGE = 50
+
+function fmtVolume(n: number | null): string {
+  if (n === null || n === undefined) return '—'
+  if (n >= 1_000_000_000) return `${(n / 1_000_000_000).toFixed(2)}B`
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(2)}M`
+  if (n >= 1_000) return `${(n / 1_000).toFixed(1)}K`
+  return n.toLocaleString('tr-TR')
+}
+
+function fmtCap(n: number | null): string {
+  if (n === null || n === undefined) return '—'
+  if (n >= 1_000_000_000_000) return `${(n / 1_000_000_000_000).toFixed(2)}T`
+  if (n >= 1_000_000_000) return `${(n / 1_000_000_000).toFixed(2)}B`
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(2)}M`
+  return n.toLocaleString('tr-TR')
+}
+
+function fmtPrice(n: number | null): string {
+  if (n === null || n === undefined) return '—'
+  return `₺${n.toFixed(2)}`
+}
 
 export default function StocksPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const [page, setPage] = useState(1)
+  const savedPage = useNavStore((s) => s.stocksPage)
+  const setStocksPage = useNavStore((s) => s.setStocksPage)
+  const [page, setPage] = useState(savedPage)
 
-  const { data: companies, isLoading } = useQuery({
-    queryKey: ['companies'],
+  useEffect(() => {
+    setStocksPage(page)
+  }, [page, setStocksPage])
+
+  const offset = (page - 1) * PER_PAGE
+
+  const { data, isLoading } = useQuery({
+    queryKey: ['companies-summary', page],
     queryFn: async () => {
-      const res = await api.get('/api/v1/bist/companies')
-      return res.data as BistCompany[]
+      const res = await api.get('/api/v1/companies/summary', {
+        params: { limit: PER_PAGE, offset, sort: 'popular' },
+      })
+      return res.data as CompanySummary[]
     },
-    staleTime: 30 * 24 * 60 * 60 * 1000,
-    gcTime: 30 * 24 * 60 * 60 * 1000,
+    staleTime: 5 * 60_000,
+    gcTime: 10 * 60_000,
+    placeholderData: (prev) => prev,
   })
 
-  const totalPages = companies ? Math.max(1, Math.ceil(companies.length / PER_PAGE)) : 1
-  const paged = companies?.slice((page - 1) * PER_PAGE, page * PER_PAGE)
+  const companies = data ?? []
+  const isLastPage = companies.length < PER_PAGE
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-3xl font-bold tracking-tight">{t('stocks.title')}</h2>
-        {companies && (
-          <span className="text-sm text-muted-foreground">
-            {companies.length} şirket
-          </span>
-        )}
       </div>
 
       <div className="max-w-sm">
@@ -49,7 +79,7 @@ export default function StocksPage() {
         />
       </div>
 
-      {!isLoading && companies && (
+      {!isLoading && (
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Button
@@ -60,34 +90,18 @@ export default function StocksPage() {
             >
               <ChevronLeft className="h-4 w-4" />
             </Button>
-            {Array.from({ length: Math.min(totalPages, 7) }, (_, i) => {
-              const start = Math.max(1, Math.min(page - 3, totalPages - 6))
-              const pg = start + i
-              if (pg > totalPages) return null
-              return (
-                <Button
-                  key={pg}
-                  variant={pg === page ? 'default' : 'outline'}
-                  size="sm"
-                  className="min-w-[2rem]"
-                  onClick={() => setPage(pg)}
-                >
-                  {pg}
-                </Button>
-              )
-            })}
+            <span className="text-sm text-muted-foreground min-w-[5rem] text-center">
+              Sayfa {page}
+            </span>
             <Button
               variant="outline"
               size="sm"
-              disabled={page >= totalPages}
-              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              disabled={isLastPage}
+              onClick={() => setPage((p) => p + 1)}
             >
               <ChevronRight className="h-4 w-4" />
             </Button>
           </div>
-          <span className="text-xs text-muted-foreground">
-            Sayfa {page} / {totalPages}
-          </span>
         </div>
       )}
 
@@ -98,24 +112,49 @@ export default function StocksPage() {
                 <CardContent className="p-4">
                   <Skeleton className="h-4 w-16 mb-2" />
                   <Skeleton className="h-5 w-40 mb-2" />
-                  <Skeleton className="h-4 w-24" />
+                  <Skeleton className="h-6 w-20 mb-2" />
+                  <Skeleton className="h-3 w-24" />
                 </CardContent>
               </Card>
             ))
-          : paged?.map((company) => (
+          : companies.map((company) => (
               <Card
                 key={company.ticker}
                 className="hover:bg-muted/50 transition-colors cursor-pointer"
                 onClick={() => navigate(`/stocks/${company.ticker}`)}
               >
                 <CardContent className="p-4">
-                  <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center justify-between mb-1">
                     <span className="font-mono font-bold text-primary">{company.ticker}</span>
                     <FavoriteButton ticker={company.ticker} />
                   </div>
-                  <p className="text-sm font-medium truncate">{company.name}</p>
-                  <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
-                    <span>{company.city}</span>
+                  <p className="text-sm font-medium truncate mb-2">{company.name}</p>
+
+                  <div className="flex items-baseline gap-2 mb-2">
+                    <span className="text-xl font-bold">{fmtPrice(company.last_price)}</span>
+                    {company.change_pct !== null && (
+                      <span className={cn(
+                        'text-sm font-semibold flex items-center gap-0.5',
+                        company.change_pct >= 0 ? 'text-success' : 'text-destructive',
+                      )}>
+                        {company.change_pct >= 0
+                          ? <TrendingUp className="h-3 w-3" />
+                          : <TrendingDown className="h-3 w-3" />
+                        }
+                        {company.change_pct >= 0 ? '+' : ''}{company.change_pct.toFixed(2)}%
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                    {company.sector && (
+                      <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4">
+                        <Building2 className="h-2.5 w-2.5 mr-0.5" />
+                        {company.sector}
+                      </Badge>
+                    )}
+                    <span>H: {fmtVolume(company.volume)}</span>
+                    <span>PiD: {fmtCap(company.market_cap)}</span>
                   </div>
                 </CardContent>
               </Card>

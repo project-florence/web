@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
   LayoutDashboard,
@@ -12,19 +12,22 @@ import {
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { useAuthStore } from '@/stores/authStore'
-
-const navItems = [
-  { to: '/', icon: LayoutDashboard, label: 'nav.dashboard' },
-  { to: '/stocks', icon: TrendingUp, label: 'nav.stocks' },
-  { to: '/watchlist', icon: Star, label: 'nav.watchlist' },
-  { to: '/analysis', icon: BarChart3, label: 'nav.analysis' },
-  { to: '/scout', icon: Search, label: 'nav.scout' },
-  { to: '/ipos', icon: Rocket, label: 'nav.ipos' },
-]
+import { useNavStore } from '@/stores/navStore'
+import type { MouseEvent } from 'react'
 
 export function Sidebar() {
   const { t } = useTranslation()
+  const navigate = useNavigate()
+  const location = useLocation()
   const logout = useAuthStore((s) => s.logout)
+  const lastStockTicker = useNavStore((s) => s.lastStockTicker)
+
+  const handleStocksClick = (e: MouseEvent) => {
+    if (lastStockTicker) {
+      e.preventDefault()
+      navigate(`/stocks/${lastStockTicker}`)
+    }
+  }
 
   return (
     <aside className="fixed left-0 top-0 z-40 h-screen w-64 border-r border-border bg-sidebar p-4 flex flex-col">
@@ -36,24 +39,93 @@ export function Sidebar() {
       </div>
 
       <nav className="flex-1 space-y-1">
-        {navItems.map((item) => (
-          <NavLink
-            key={item.to}
-            to={item.to}
-            end={item.to === '/'}
-            className={({ isActive }) =>
-              cn(
-                'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
-                isActive
-                  ? 'bg-primary/10 text-primary'
-                  : 'text-muted-foreground hover:text-foreground hover:bg-muted',
-              )
-            }
-          >
-            <item.icon className="h-4 w-4" />
-            {t(item.label)}
-          </NavLink>
-        ))}
+        <NavLink
+          to="/"
+          end
+          className={({ isActive }) =>
+            cn(
+              'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+              isActive
+                ? 'bg-primary/10 text-primary'
+                : 'text-muted-foreground hover:text-foreground hover:bg-muted',
+            )
+          }
+        >
+          <LayoutDashboard className="h-4 w-4" />
+          {t('nav.dashboard')}
+        </NavLink>
+        <NavLink
+          to="/stocks"
+          end={!lastStockTicker}
+          onClick={handleStocksClick}
+          className={({ isActive }) =>
+            cn(
+              'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+              (isActive || location.pathname.startsWith('/stocks/'))
+                ? 'bg-primary/10 text-primary'
+                : 'text-muted-foreground hover:text-foreground hover:bg-muted',
+            )
+          }
+        >
+          <TrendingUp className="h-4 w-4" />
+          {t('nav.stocks')}
+        </NavLink>
+        <NavLink
+          to="/watchlist"
+          className={({ isActive }) =>
+            cn(
+              'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+              isActive
+                ? 'bg-primary/10 text-primary'
+                : 'text-muted-foreground hover:text-foreground hover:bg-muted',
+            )
+          }
+        >
+          <Star className="h-4 w-4" />
+          {t('nav.watchlist')}
+        </NavLink>
+        <NavLink
+          to="/analysis"
+          className={({ isActive }) =>
+            cn(
+              'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+              isActive
+                ? 'bg-primary/10 text-primary'
+                : 'text-muted-foreground hover:text-foreground hover:bg-muted',
+            )
+          }
+        >
+          <BarChart3 className="h-4 w-4" />
+          {t('nav.analysis')}
+        </NavLink>
+        <NavLink
+          to="/scout"
+          className={({ isActive }) =>
+            cn(
+              'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+              isActive
+                ? 'bg-primary/10 text-primary'
+                : 'text-muted-foreground hover:text-foreground hover:bg-muted',
+            )
+          }
+        >
+          <Search className="h-4 w-4" />
+          {t('nav.scout')}
+        </NavLink>
+        <NavLink
+          to="/ipos"
+          className={({ isActive }) =>
+            cn(
+              'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+              isActive
+                ? 'bg-primary/10 text-primary'
+                : 'text-muted-foreground hover:text-foreground hover:bg-muted',
+            )
+          }
+        >
+          <Rocket className="h-4 w-4" />
+          {t('nav.ipos')}
+        </NavLink>
       </nav>
 
       <Button

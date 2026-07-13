@@ -18,6 +18,20 @@ export interface BistCompany {
   company_id: string
 }
 
+export interface CompanySummary {
+  ticker: string
+  name: string
+  sector: string | null
+  last_price: number | null
+  change_pct: number | null
+  day_high: number | null
+  day_low: number | null
+  volume: number | null
+  market_cap: number | null
+  currency: string | null
+  price_updated_at: string | null
+}
+
 export interface SearchResult {
   name: string
   ticker: string
