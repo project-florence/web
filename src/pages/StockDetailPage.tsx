@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
@@ -13,7 +13,7 @@ import { StockChart } from '@/components/shared/StockChart'
 import { FavoriteButton } from '@/components/shared/FavoriteButton'
 import { useNavStore } from '@/stores/navStore'
 import api from '@/lib/api'
-import type { CompanyInfo, PriceHistory, NewsItem, ReportResult } from '@/types/api'
+import type { CompanyInfo, PriceHistory, NewsItem } from '@/types/api'
 
 const PERIODS = [
   { label: '1ay', value: '1mo', interval: '1d' },
@@ -30,6 +30,7 @@ function safeFixed(n: number | null | undefined, digits: number, fallback = '—
 
 function fmt(n: number | null | undefined): string {
   if (n === null || n === undefined) return '—'
+  if (Math.abs(n) >= 1_000_000_000_000) return `${(n / 1_000_000_000_000).toFixed(2)}T`
   if (Math.abs(n) >= 1_000_000_000) return `${(n / 1_000_000_000).toFixed(2)}B`
   if (Math.abs(n) >= 1_000_000) return `${(n / 1_000_000).toFixed(2)}M`
   if (Math.abs(n) >= 1_000) return `${(n / 1_000).toFixed(2)}K`
@@ -39,6 +40,11 @@ function fmt(n: number | null | undefined): string {
 function fmtCurrency(n: number | null | undefined): string {
   if (n === null || n === undefined) return '—'
   return `₺${n.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+}
+
+function fmtPct(n: number | null | undefined): string {
+  if (n === null || n === undefined) return '—'
+  return `%${n.toFixed(2)}`
 }
 
 function StatCard({ label, value, sub, positive }: {
@@ -70,6 +76,11 @@ function StatCard({ label, value, sub, positive }: {
       </CardContent>
     </Card>
   )
+}
+
+function pctChange(a: number | undefined, b: number | undefined): number | undefined {
+  if (a === undefined || b === undefined || b === 0) return undefined
+  return ((a - b) / b) * 100
 }
 
 export default function StockDetailPage() {
@@ -105,6 +116,18 @@ export default function StockDetailPage() {
     staleTime: 2 * 60_000,
   })
 
+  const { data: dailyHistory } = useQuery({
+    queryKey: ['daily-change', ticker],
+    queryFn: async () => {
+      const res = await api.get(`/api/v1/price/history/${ticker}`, {
+        params: { period: '5d', interval: '1d' },
+      })
+      return res.data as PriceHistory[]
+    },
+    enabled: !!ticker,
+    staleTime: 60_000,
+  })
+
   const { data: news, isLoading: newsLoading } = useQuery({
     queryKey: ['news', ticker],
     queryFn: async () => {
@@ -113,36 +136,6 @@ export default function StockDetailPage() {
     },
     enabled: !!ticker,
     staleTime: 5 * 60_000,
-  })
-
-  const { data: quickReport, isLoading: quickReportLoading } = useQuery({
-    queryKey: ['quick-report', ticker],
-    queryFn: async () => {
-      const res = await api.get(`/api/v1/generate/report/quick/${ticker}`)
-      return res.data as ReportResult
-    },
-    enabled: !!ticker,
-    staleTime: 30 * 60_000,
-  })
-
-  const { data: deepReport, isLoading: deepReportLoading } = useQuery({
-    queryKey: ['deep-report', ticker],
-    queryFn: async () => {
-      const res = await api.get(`/api/v1/generate/report/deep/${ticker}`)
-      return res.data as ReportResult
-    },
-    enabled: !!ticker,
-    staleTime: 60 * 60_000,
-  })
-
-  const { data: searchInfo } = useQuery({
-    queryKey: ['search-info', ticker],
-    queryFn: async () => {
-      const res = await api.get(`/api/v1/companies/search/${ticker}`)
-      return res.data as Array<{ name: string; ticker: string }>
-    },
-    enabled: !!ticker,
-    staleTime: Infinity,
   })
 
   if (infoLoading && !info) {
@@ -164,10 +157,20 @@ export default function StockDetailPage() {
   const m = info?.market
   const v = info?.valuation
   const f = info?.financials
-  const latest = history?.[history.length - 1]
-  const prev = history?.[history.length - 2]
-  const change = latest && prev ? ((latest.close - prev.close) / prev.close) * 100 : undefined
-  const companyName = info?.name || searchInfo?.[0]?.name || ticker
+  const tData = info?.trading
+  const bs = info?.balanceSheet
+  const companyName = info?.name || ticker
+
+  const dh = dailyHistory
+  const dailyClose = dh?.[dh.length - 1]?.close
+  const dailyPrevClose = dh?.[dh.length - 2]?.close
+  const dailyChange = pctChange(dailyClose, dailyPrevClose)
+
+  const periodLatest = history?.[history.length - 1]?.close
+  const periodPrev = history?.[history.length - 2]?.close
+  const periodChange = pctChange(periodLatest, periodPrev)
+
+  const isDailyPeriod = period.interval === '1d'
 
   return (
     <div className="space-y-6">
@@ -180,24 +183,24 @@ export default function StockDetailPage() {
         <div>
           <div className="flex items-center gap-3">
             <h2 className="text-3xl font-bold tracking-tight">{ticker}</h2>
-            {change !== undefined && (
+            {dailyChange !== undefined && (
               <Badge
                 variant="outline"
                 className={cn(
                   'text-sm px-3 py-1 font-semibold border-2',
-                  change >= 0
+                  dailyChange >= 0
                     ? 'text-success border-success bg-success/10'
                     : 'text-destructive border-destructive bg-destructive/10',
                 )}
               >
-                {change >= 0 ? <TrendingUp className="h-3.5 w-3.5 mr-1 inline" /> : <TrendingDown className="h-3.5 w-3.5 mr-1 inline" />}
-                {change >= 0 ? '+' : ''}{change.toFixed(2)}%
+                {dailyChange >= 0 ? <TrendingUp className="h-3.5 w-3.5 mr-1 inline" /> : <TrendingDown className="h-3.5 w-3.5 mr-1 inline" />}
+                {dailyChange >= 0 ? '+' : ''}{dailyChange.toFixed(2)}%
               </Badge>
             )}
           </div>
           <p className={cn(
             'mt-1 font-medium',
-            change !== undefined && (change >= 0 ? 'text-success' : 'text-destructive'),
+            dailyChange !== undefined && (dailyChange >= 0 ? 'text-success' : 'text-destructive'),
           )}>{companyName}</p>
           {info?.sector && <p className="text-xs text-muted-foreground">{info.sector} · {info.industry}</p>}
         </div>
@@ -206,7 +209,7 @@ export default function StockDetailPage() {
 
       {m && (
         <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
-          <StatCard label="Fiyat" value={fmtCurrency(m.currentPrice)} positive={change !== undefined ? change >= 0 : undefined} />
+          <StatCard label="Fiyat" value={fmtCurrency(m.currentPrice)} positive={dailyChange !== undefined ? dailyChange >= 0 : undefined} />
           <StatCard label="Piyasa Değeri" value={fmt(m.marketCap)} />
           <StatCard label="Gün Aralığı" value={fmtCurrency(m.dayLow)} sub={`— ${fmtCurrency(m.dayHigh)}`} />
           <StatCard label="Hacim" value={fmt(m.regularMarketVolume)} />
@@ -220,17 +223,32 @@ export default function StockDetailPage() {
           <StatCard label="F/K (Trailing)" value={safeFixed(v.trailingPE, 2)} />
           <StatCard label="F/K (Forward)" value={safeFixed(v.forwardPE, 2)} />
           <StatCard label="PD/DD" value={safeFixed(v.priceToBook, 2)} />
+          <StatCard label="PEG Oranı" value={safeFixed(v.pegRatio, 2)} />
+          <StatCard label="F/S (TTM)" value={safeFixed(v.priceToSalesTrailing12Months, 2)} />
+          <StatCard label="Enterprise Değer" value={fmt(v.enterpriseValue)} />
           <StatCard label="Temettü Verimi" value={v.dividendYield ? `%${safeFixed(v.dividendYield, 2)}` : '—'} />
           <StatCard label="Hedef Fiyat (Ort)" value={fmtCurrency(v.targetMeanPrice)} />
-          <StatCard label="Hedef Fiyat (Yüksek)" value={fmtCurrency(v.targetHighPrice)} />
-          <StatCard label="Hedef Fiyat (Düşük)" value={fmtCurrency(v.targetLowPrice)} />
-          <StatCard label="Hedefe Uzaklık" value={v.targetMeanPrice && m ? `%${((v.targetMeanPrice / m.currentPrice - 1) * 100).toFixed(1)}` : '—'} />
+        </div>
+      )}
+
+      {tData && (
+        <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+          <StatCard label="Beta" value={safeFixed(tData.beta, 2)} positive={tData.beta < 1 ? true : tData.beta > 1 ? false : undefined} />
+          <StatCard label="Ort. Hacim" value={fmt(tData.averageVolume)} />
+          <StatCard label="Ort. Hacim (10g)" value={fmt(tData.averageVolume10days)} />
+          <StatCard label="50g Ort." value={fmtCurrency(tData.fiftyDayAverage)} />
+          <StatCard label="200g Ort." value={fmtCurrency(tData.twoHundredDayAverage)} />
+          <StatCard label="Dolaşımdaki Hisse" value={fmt(tData.sharesOutstanding)} />
+          <StatCard label="Float" value={fmt(tData.floatShares)} />
+          <StatCard label="İçeriden Oran" value={`%${(tData.heldPercentInsiders * 100).toFixed(1)}`} />
+          <StatCard label="Kurumsal Oran" value={`%${(tData.heldPercentInstitutions * 100).toFixed(1)}`} />
+          <StatCard label="Short Oran" value={tData.shortRatio !== null ? safeFixed(tData.shortRatio, 1) : '—'} />
         </div>
       )}
 
       <Card>
         <CardContent className="p-4">
-          <div className="flex items-center gap-2 mb-4">
+          <div className="flex items-center gap-2 mb-4 flex-wrap">
             <span className="text-sm font-medium">Periyot:</span>
             <div className="flex gap-1">
               {PERIODS.map((p) => (
@@ -245,6 +263,14 @@ export default function StockDetailPage() {
                 </Button>
               ))}
             </div>
+            {!isDailyPeriod && periodChange !== undefined && (
+              <span className={cn(
+                'text-xs font-medium ml-2',
+                periodChange >= 0 ? 'text-success' : 'text-destructive',
+              )}>
+                {period.label} değişim: {periodChange >= 0 ? '+' : ''}{periodChange.toFixed(2)}%
+              </span>
+            )}
           </div>
           <StockChart data={history ?? []} loading={historyLoading} />
         </CardContent>
@@ -253,8 +279,8 @@ export default function StockDetailPage() {
       <Tabs defaultValue="news">
         <TabsList>
           <TabsTrigger value="news">{t('stockDetail.news')}</TabsTrigger>
-          <TabsTrigger value="reports">{t('stockDetail.reports')}</TabsTrigger>
           {f && <TabsTrigger value="financials">Finansallar</TabsTrigger>}
+          {bs && <TabsTrigger value="balance">Bilanço</TabsTrigger>}
         </TabsList>
 
         <TabsContent value="news" className="mt-4">
@@ -283,48 +309,34 @@ export default function StockDetailPage() {
           </div>
         </TabsContent>
 
-        <TabsContent value="reports" className="mt-4">
-          <div className="grid gap-4 md:grid-cols-2">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-sm">{t('stockDetail.quickReport')}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {quickReportLoading ? (
-                  <Skeleton className="h-12 w-full" />
-                ) : (
-                  <p className="text-sm text-muted-foreground">{quickReport || t('common.noData')}</p>
-                )}
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-sm">{t('stockDetail.deepReport')}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {deepReportLoading ? (
-                  <Skeleton className="h-12 w-full" />
-                ) : (
-                  <p className="text-sm text-muted-foreground">{deepReport || t('common.noData')}</p>
-                )}
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
-
         {f && (
           <TabsContent value="financials" className="mt-4">
             <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
               <StatCard label="Gelir" value={fmt(f.totalRevenue)} />
               <StatCard label="Net Kar" value={fmt(f.netIncomeToCommon)} />
-              <StatCard label="Kar Marjı" value={`%${(f.profitMargins * 100).toFixed(2)}`} />
-              <StatCard label="Ciro Büyüme" value={f.revenueGrowth ? `%${(f.revenueGrowth * 100).toFixed(1)}` : '—'} />
-              <StatCard label="Öz Sermaye Kârlılığı" value={`%${(f.returnOnEquity * 100).toFixed(2)}`} />
-              <StatCard label="Nakit" value={fmt(info.balanceSheet.totalCash)} />
-              <StatCard label="Borç" value={fmt(info.balanceSheet.totalDebt)} />
-              <StatCard label="Borç/Öz Sermaye" value={info.balanceSheet.debtToEquity.toFixed(1)} />
-              <StatCard label="Cari Oran" value={info.balanceSheet.currentRatio.toFixed(2)} />
+              <StatCard label="Kar Marjı" value={fmtPct(f.profitMargins * 100)} />
+              <StatCard label="Brüt Marj" value={fmtPct(f.grossMargins * 100)} />
               <StatCard label="EBITDA" value={fmt(f.ebitda)} />
+              <StatCard label="EBITDA Marj" value={fmtPct(f.ebitdaMargins * 100)} />
+              <StatCard label="Ciro Büyüme" value={f.revenueGrowth ? fmtPct(f.revenueGrowth * 100) : '—'} />
+              <StatCard label="Öz Sermaye Kârlılığı" value={fmtPct(f.returnOnEquity * 100)} />
+              <StatCard label="Aktif Kârlılığı" value={fmtPct(f.returnOnAssets * 100)} />
+              <StatCard label="Serbest Nakit Akışı" value={fmt(f.freeCashflow)} />
+            </div>
+          </TabsContent>
+        )}
+
+        {bs && (
+          <TabsContent value="balance" className="mt-4">
+            <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
+              <StatCard label="Nakit" value={fmt(bs.totalCash)} />
+              <StatCard label="Hisse Başı Nakit" value={fmtCurrency(bs.totalCashPerShare)} />
+              <StatCard label="Borç" value={fmt(bs.totalDebt)} />
+              <StatCard label="Borç/Öz Sermaye" value={safeFixed(bs.debtToEquity, 1)} />
+              <StatCard label="Cari Oran" value={safeFixed(bs.currentRatio, 2)} positive={bs.currentRatio >= 1 ? true : false} />
+              <StatCard label="Likidite Oranı" value={safeFixed(bs.quickRatio, 2)} positive={bs.quickRatio >= 1 ? true : false} />
+              <StatCard label="F/K Değer" value={m && f?.netIncomeToCommon ? safeFixed(m.marketCap / f.netIncomeToCommon, 2) : '—'} />
+              <StatCard label="Hisse Başı Kâr" value={fmtCurrency(f?.netIncomeToCommon ? v?.trailingEps : null)} />
             </div>
           </TabsContent>
         )}

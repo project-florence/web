@@ -54,32 +54,63 @@ export interface CompanyInfo {
     fiftyTwoWeekHigh: number
     fiftyTwoWeekLow: number
   }
+  trading: {
+    beta: number
+    sharesOutstanding: number
+    floatShares: number
+    averageVolume: number
+    averageVolume10days: number
+    fiftyDayAverage: number
+    twoHundredDayAverage: number
+    shortRatio: number | null
+    heldPercentInsiders: number
+    heldPercentInstitutions: number
+  }
   valuation: {
     trailingPE: number
     forwardPE: number | null
+    pegRatio: number
     priceToBook: number
+    priceToSalesTrailing12Months: number
+    enterpriseValue: number
+    enterpriseToEbitda: number
+    enterpriseToRevenue: number
+    bookValue: number
+    trailingEps: number
+    forwardEps: number | null
     dividendYield: number | null
     payoutRatio: number | null
     targetMeanPrice: number | null
     targetHighPrice: number | null
     targetLowPrice: number | null
+    recommendationKey: string
+    numberOfAnalystOpinions: number
   }
   financials: {
     totalRevenue: number
+    revenuePerShare: number
+    revenueGrowth: number
     grossProfits: number
+    grossMargins: number
+    ebitda: number
+    ebitdaMargins: number
     netIncomeToCommon: number
     profitMargins: number
     operatingMargins: number
-    revenueGrowth: number
+    operatingCashflow: number
+    freeCashflow: number
     earningsGrowth: number | null
+    earningsQuarterlyGrowth: number | null
     returnOnEquity: number
-    ebitda: number
+    returnOnAssets: number
   }
   balanceSheet: {
     totalCash: number
+    totalCashPerShare: number
     totalDebt: number
     debtToEquity: number
     currentRatio: number
+    quickRatio: number
   }
   description?: string
 }
