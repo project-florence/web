@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { createChart, CandlestickSeries, type IChartApi, type ISeriesApi, type CandlestickData, type Time } from 'lightweight-charts'
 import type { PriceHistory } from '@/types/api'
 import { themeConfig } from '@/config/theme'
+import { AlertCircle } from 'lucide-react'
 
 interface StockChartProps {
   data: PriceHistory[]
@@ -12,6 +13,8 @@ export function StockChart({ data, loading }: StockChartProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const chartRef = useRef<IChartApi | null>(null)
   const seriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null)
+  const hasDataRef = useRef(false)
+  const resizeHandlerRef = useRef<(() => void) | null>(null)
 
   useEffect(() => {
     if (!containerRef.current) return
@@ -61,44 +64,64 @@ export function StockChart({ data, loading }: StockChartProps) {
         chart.applyOptions({ width: containerRef.current.clientWidth })
       }
     }
+    resizeHandlerRef.current = handleResize
     window.addEventListener('resize', handleResize)
 
     return () => {
       window.removeEventListener('resize', handleResize)
       chart.remove()
+      chartRef.current = null
+      seriesRef.current = null
     }
   }, [])
 
   useEffect(() => {
-    if (!seriesRef.current || !data.length) return
+    if (!seriesRef.current) return
 
-    const candleData: CandlestickData[] = data.map((d) => ({
-      time: (new Date(d.ts).getTime() / 1000) as Time,
-      open: d.open,
-      high: d.high,
-      low: d.low,
-      close: d.close,
-    }))
-
-    seriesRef.current.setData(candleData)
-    chartRef.current?.timeScale().fitContent()
+    if (data.length > 0) {
+      hasDataRef.current = true
+      const candleData: CandlestickData[] = data.map((d) => ({
+        time: (new Date(d.ts).getTime() / 1000) as Time,
+        open: d.open,
+        high: d.high,
+        low: d.low,
+        close: d.close,
+      }))
+      seriesRef.current.setData(candleData)
+      chartRef.current?.timeScale().fitContent()
+    }
   }, [data])
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-[400px] rounded-lg bg-muted/20">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-      </div>
-    )
-  }
+  const isEmpty = data.length === 0
+  const neverHadData = !hasDataRef.current
 
-  if (!data.length) {
-    return (
-      <div className="flex items-center justify-center h-[400px] rounded-lg bg-muted/20 text-muted-foreground">
-        Veri bulunamadı
-      </div>
-    )
-  }
-
-  return <div ref={containerRef} className="w-full rounded-lg" />
+  return (
+    <div className="relative" style={{ height: 400 }}>
+      <div ref={containerRef} className="w-full h-full rounded-lg" />
+      {loading && (
+        <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-background/60 backdrop-blur-[1px]">
+          <div className="flex flex-col items-center gap-2">
+            <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+            <span className="text-sm text-muted-foreground">Yükleniyor...</span>
+          </div>
+        </div>
+      )}
+      {!loading && isEmpty && neverHadData && (
+        <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-background/60">
+          <div className="flex flex-col items-center gap-2 text-muted-foreground">
+            <AlertCircle className="h-8 w-8" />
+            <span className="text-sm">Bu periyot için veri bulunamadı</span>
+          </div>
+        </div>
+      )}
+      {!loading && isEmpty && !neverHadData && (
+        <div className="absolute top-2 right-2 z-10">
+          <div className="flex items-center gap-1.5 rounded-md bg-amber-500/10 border border-amber-500/30 px-2.5 py-1 text-xs text-amber-500">
+            <AlertCircle className="h-3 w-3" />
+            Yeni periyot için veri yok, önceki grafik gösteriliyor
+          </div>
+        </div>
+      )}
+    </div>
+  )
 }
