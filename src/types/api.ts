@@ -156,16 +156,36 @@ export interface ConfidenceInterval {
   days: number
 }
 
-export interface ScoutRequest {
-  investment_budget: number
-  investment_horizon: string
-  risk_tolerance: string
+export interface StockFitResult {
+  ticker: string
+  vector: [number, number, number]
+  score: number
+  distance: number
 }
 
-export interface ScoutResult {
+export interface StockFitResponse {
+  query: {
+    horizon_target: number
+    profitability_target: number
+    risk_tolerance: number
+  }
+  results: StockFitResult[]
+}
+
+export interface PortfolioProfileStock {
   ticker: string
-  score: number
-  reason: string
+  vector: [number, number, number]
+}
+
+export interface PortfolioProfileResponse {
+  avg_vector: [number, number, number]
+  estimated_profile: {
+    risk: string
+    horizon: string
+    profitability: string
+  }
+  portfolio: PortfolioProfileStock[]
+  similar_stocks: StockFitResult[]
 }
 
 export interface MarketQuote {
