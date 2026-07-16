@@ -55,7 +55,7 @@ function StatCard({ label, value, sub, positive }: {
 }) {
   return (
     <Card className={cn(
-      'border-l-2 transition-colors',
+      'border-l-2 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/5',
       positive === true && 'border-l-success',
       positive === false && 'border-l-destructive',
       positive === undefined && 'border-l-border',
@@ -254,7 +254,7 @@ export default function StockDetailPage() {
               {PERIODS.map((p) => (
                 <Button
                   key={p.value}
-                  variant={period.value === p.value ? 'default' : 'outline'}
+                  variant={period.value === p.value ? 'gradient' : 'outline'}
                   size="sm"
                   onClick={() => setPeriod(p)}
                   className="text-xs"
@@ -296,7 +296,7 @@ export default function StockDetailPage() {
                 ))
               : news?.map((item, i) => (
                   <a key={i} href={item.url} target="_blank" rel="noopener noreferrer">
-                    <Card className="hover:bg-muted/50 transition-colors cursor-pointer">
+                    <Card className="hover:bg-muted/50 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer">
                       <CardContent className="p-4">
                         <h4 className="font-medium text-sm">{item.title}</h4>
                         <p className="text-xs text-muted-foreground mt-1">

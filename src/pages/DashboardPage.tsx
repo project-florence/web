@@ -1,8 +1,11 @@
+import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useQuery } from '@tanstack/react-query'
 import { cn } from '@/lib/utils'
+import { TrendingUp, Search, BarChart3, Sparkles } from 'lucide-react'
 import api from '@/lib/api'
 
 interface RateEntry {
@@ -37,6 +40,7 @@ function StatCard({ title, value, change, loading }: {
 }) {
   return (
     <Card className={cn(
+      'transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/5',
       change !== undefined && change !== null && 'border-l-2',
       change !== undefined && change !== null && change >= 0 && 'border-l-success',
       change !== undefined && change !== null && change < 0 && 'border-l-destructive',
@@ -71,6 +75,7 @@ function StatCard({ title, value, change, loading }: {
 
 export default function DashboardPage() {
   const { t } = useTranslation()
+  const navigate = useNavigate()
 
   const { data: rates, isLoading: ratesLoading } = useQuery({
     queryKey: ['economy'],
@@ -103,32 +108,64 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <div>
+      <div className="flex items-center justify-between">
         <h2 className="text-3xl font-bold tracking-tight">{t('dashboard.title')}</h2>
       </div>
 
+      <Card className="bg-gradient-to-br from-primary/5 to-transparent border-primary/10">
+        <CardContent className="p-6 flex items-center justify-between flex-wrap gap-4">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <Sparkles className="h-5 w-5 text-primary" />
+              <h3 className="text-lg font-semibold">Hoş Geldiniz</h3>
+            </div>
+            <p className="text-sm text-muted-foreground">Piyasaları takip et, akıllı yatırım kararları al.</p>
+          </div>
+          <div className="flex gap-2">
+            <Button variant="gradient" size="sm" onClick={() => navigate('/stocks')}>
+              <TrendingUp className="h-4 w-4 mr-1" />
+              Hisse Ara
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => navigate('/analysis')}>
+              <BarChart3 className="h-4 w-4 mr-1" />
+              Analiz Yap
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => navigate('/scout')}>
+              <Search className="h-4 w-4 mr-1" />
+              Danışman
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <StatCard
-          title={t('dashboard.gold')}
-          value={goldPrice ? `₺${goldPrice.toLocaleString('tr-TR')}` : undefined}
-          change={goldChange}
-          loading={goldLoading}
-        />
-        <StatCard
-          title={t('dashboard.usd')}
-          value={usdPrice ? `₺${usdPrice.toFixed(2)}` : undefined}
-          change={usdChange}
-          loading={ratesLoading}
-        />
-        <StatCard
-          title={t('dashboard.eur')}
-          value={eurPrice ? `₺${eurPrice.toFixed(2)}` : undefined}
-          change={eurChange}
-          loading={ratesLoading}
-        />
+        <div className="animate-slideUp animate-delay-100">
+          <StatCard
+            title={t('dashboard.gold')}
+            value={goldPrice ? `₺${goldPrice.toLocaleString('tr-TR')}` : undefined}
+            change={goldChange}
+            loading={goldLoading}
+          />
+        </div>
+        <div className="animate-slideUp animate-delay-200">
+          <StatCard
+            title={t('dashboard.usd')}
+            value={usdPrice ? `₺${usdPrice.toFixed(2)}` : undefined}
+            change={usdChange}
+            loading={ratesLoading}
+          />
+        </div>
+        <div className="animate-slideUp animate-delay-300">
+          <StatCard
+            title={t('dashboard.eur')}
+            value={eurPrice ? `₺${eurPrice.toFixed(2)}` : undefined}
+            change={eurChange}
+            loading={ratesLoading}
+          />
+        </div>
       </div>
 
-      <Card>
+      <Card className="hover:border-primary/20 transition-colors duration-200">
         <CardHeader>
           <CardTitle className="text-sm">{t('dashboard.macroeconomy')}</CardTitle>
         </CardHeader>

@@ -37,7 +37,7 @@ export function CompanyCard({ company, action }: CompanyCardProps) {
 
   return (
     <Card
-      className="hover:bg-muted/50 transition-colors cursor-pointer"
+      className="hover:bg-muted/50 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/5 transition-all duration-200 cursor-pointer"
       onClick={() => navigate(`/stocks/${company.ticker}`)}
     >
       <CardContent className="p-4">

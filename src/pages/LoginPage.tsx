@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import api from '@/lib/api'
 import { useAuthStore } from '@/stores/authStore'
 import type { AxiosError } from 'axios'
+import bgImage from '@/assets/background/login_background.png'
 
 const loginSchema = z.object({
   username: z.string().min(1, 'Kullanıcı adı gerekli'),
@@ -57,48 +58,56 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <div className="mx-auto h-10 w-10 rounded-lg bg-primary flex items-center justify-center mb-4">
-            <span className="text-primary-foreground font-bold">F</span>
-          </div>
-          <CardTitle className="text-2xl">{t('app.name')}</CardTitle>
-          <CardDescription>{t('app.tagline')}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div>
-              <Input
-                placeholder={t('auth.username')}
-                {...register('username')}
-              />
-              {errors.username && (
-                <p className="text-sm text-destructive mt-1">{errors.username.message}</p>
-              )}
+    <div
+      className="relative min-h-screen flex items-center justify-center bg-background p-4 bg-cover bg-center overflow-hidden"
+      style={{ backgroundImage: `url(${bgImage})` }}
+    >
+      <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background/80 backdrop-blur-[2px]" />
+      <div className="relative z-10 w-full max-w-md animate-fadeIn">
+        <Card className="w-full bg-card/60 backdrop-blur-xl border border-white/5 shadow-2xl animate-slideUp">
+          <CardHeader className="text-center">
+            <div className="mx-auto h-14 w-14 rounded-xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center mb-4 shadow-lg shadow-primary/20 animate-pulse-glow">
+              <span className="text-primary-foreground font-bold text-xl">F</span>
             </div>
-            <div>
-              <Input
-                type="password"
-                placeholder={t('auth.password')}
-                {...register('password')}
-              />
-              {errors.password && (
-                <p className="text-sm text-destructive mt-1">{errors.password.message}</p>
-              )}
-            </div>
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? t('common.loading') : t('auth.login')}
-            </Button>
-          </form>
-          <p className="text-center text-sm text-muted-foreground mt-4">
-            {t('auth.noAccount')}{' '}
-            <Link to="/register" className="text-primary hover:underline">
-              {t('auth.register')}
-            </Link>
-          </p>
-        </CardContent>
-      </Card>
+            <CardTitle className="text-2xl">{t('app.name')}</CardTitle>
+            <CardDescription>{t('app.tagline')}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+              <div>
+                <Input
+                  placeholder={t('auth.username')}
+                  className="transition-all duration-200 focus-visible:ring-[3px] focus-visible:ring-primary/30"
+                  {...register('username')}
+                />
+                {errors.username && (
+                  <p className="text-sm text-destructive mt-1">{errors.username.message}</p>
+                )}
+              </div>
+              <div>
+                <Input
+                  type="password"
+                  placeholder={t('auth.password')}
+                  className="transition-all duration-200 focus-visible:ring-[3px] focus-visible:ring-primary/30"
+                  {...register('password')}
+                />
+                {errors.password && (
+                  <p className="text-sm text-destructive mt-1">{errors.password.message}</p>
+                )}
+              </div>
+              <Button type="submit" variant="gradient" className="w-full" disabled={loading}>
+                {loading ? t('common.loading') : t('auth.login')}
+              </Button>
+            </form>
+            <p className="text-center text-sm text-muted-foreground mt-4">
+              {t('auth.noAccount')}{' '}
+              <Link to="/register" className="text-primary hover:underline">
+                {t('auth.register')}
+              </Link>
+            </p>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   )
 }

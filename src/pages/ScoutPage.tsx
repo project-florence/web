@@ -77,7 +77,7 @@ export default function ScoutPage() {
               </Select>
             </div>
           </div>
-          <Button onClick={() => setRun(true)} className="w-full">{t('scout.analyze')}</Button>
+          <Button variant="gradient" onClick={() => setRun(true)} className="w-full">{t('scout.analyze')}</Button>
         </CardContent>
       </Card>
 
@@ -93,7 +93,7 @@ export default function ScoutPage() {
         <div className="space-y-4">
           <h3 className="text-xl font-semibold">{t('scout.results')}</h3>
           {results.map((result, i) => (
-            <Card key={i}>
+            <Card key={i} className="transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/5">
               <CardContent className="p-4 flex items-center justify-between">
                 <div>
                   <div className="flex items-center gap-3">

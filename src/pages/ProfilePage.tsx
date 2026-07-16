@@ -10,8 +10,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Separator } from '@/components/ui/separator'
 import { toast } from 'sonner'
-import { LogOut, Coins, User, Key, Download, Trash2, ArrowLeft } from 'lucide-react'
+import { LogOut, Coins, User, Key, Download, Trash2, ArrowLeft, Settings, Palette } from 'lucide-react'
 import { useAuthStore } from '@/stores/authStore'
+import { useThemeStore } from '@/stores/themeStore'
+import { themes } from '@/config/themes'
+import type { ThemeName } from '@/config/themes'
 import api from '@/lib/api'
 import type { Profile, Credits } from '@/types/api'
 
@@ -19,6 +22,8 @@ export default function ProfilePage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const logout = useAuthStore((s) => s.logout)
+  const themeName = useThemeStore((s) => s.themeName)
+  const applyTheme = useThemeStore((s) => s.applyTheme)
 
   const { data: profile, isLoading: profileLoading } = useQuery({
     queryKey: ['profile'],
@@ -129,7 +134,7 @@ export default function ProfilePage() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <Card>
+        <Card className="transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/5">
           <CardContent className="p-5 flex items-center gap-4">
             <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
               <User className="h-6 w-6 text-primary" />
@@ -140,7 +145,7 @@ export default function ProfilePage() {
             </div>
           </CardContent>
         </Card>
-        <Card>
+        <Card className="transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-amber-500/5">
           <CardContent className="p-5 flex items-center gap-4">
             <div className="h-12 w-12 rounded-full bg-amber-500/10 flex items-center justify-center">
               <Coins className="h-6 w-6 text-amber-500" />
@@ -169,6 +174,10 @@ export default function ProfilePage() {
             <Download className="h-4 w-4 mr-2" />
             {t('profile.data')}
           </TabsTrigger>
+          <TabsTrigger value="settings" className="flex-1">
+            <Settings className="h-4 w-4 mr-2" />
+            Ayarlar
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="account" className="mt-4 space-y-4">
@@ -189,6 +198,7 @@ export default function ProfilePage() {
                 onChange={(e) => setUsernamePassword(e.target.value)}
               />
               <Button
+                variant="gradient"
                 size="sm"
                 disabled={!newUsername || !usernamePassword || usernameMutation.isPending}
                 onClick={() => usernameMutation.mutate()}
@@ -215,6 +225,7 @@ export default function ProfilePage() {
                 onChange={(e) => setEmailPassword(e.target.value)}
               />
               <Button
+                variant="gradient"
                 size="sm"
                 disabled={!newEmail || !emailPassword || emailMutation.isPending}
                 onClick={() => emailMutation.mutate()}
@@ -244,6 +255,7 @@ export default function ProfilePage() {
                 onChange={(e) => setNewPassword(e.target.value)}
               />
               <Button
+                variant="gradient"
                 disabled={!curPassword || !newPassword || passwordMutation.isPending}
                 onClick={() => passwordMutation.mutate()}
               >
@@ -307,13 +319,53 @@ export default function ProfilePage() {
             </CardContent>
           </Card>
         </TabsContent>
+
+        <TabsContent value="settings" className="mt-4 space-y-4">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center gap-2">
+                <Palette className="h-4 w-4 text-primary" />
+                <CardTitle className="text-sm">Tema</CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {Object.entries(themes).map(([key, theme]) => {
+                  const isActive = themeName === key
+                  return (
+                    <Card
+                      key={key}
+                      onClick={() => applyTheme(key as ThemeName)}
+                      className={`cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg ${
+                        isActive ? 'ring-2 ring-primary' : ''
+                      }`}
+                    >
+                      <CardContent className="p-4">
+                        <div className="flex gap-1.5 mb-2">
+                          <div className="h-5 w-5 rounded-full" style={{ backgroundColor: theme.colors.primary }} />
+                          <div className="h-5 w-5 rounded-full" style={{ backgroundColor: theme.colors.accent }} />
+                          <div className="h-5 w-5 rounded-full" style={{ backgroundColor: theme.colors.success }} />
+                          <div className="h-5 w-5 rounded-full" style={{ backgroundColor: theme.colors.background, border: '1px solid ' + theme.colors.border }} />
+                        </div>
+                        <p className="text-sm font-medium">{theme.name}</p>
+                        {isActive && (
+                          <p className="text-xs text-primary mt-1">Aktif</p>
+                        )}
+                      </CardContent>
+                    </Card>
+                  )
+                })}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
       </Tabs>
 
       <Separator />
 
       <Button
         variant="outline"
-        className="w-full text-muted-foreground"
+        className="w-full text-muted-foreground hover:text-destructive hover:border-destructive/30 hover:bg-destructive/5 transition-all duration-200"
         onClick={() => {
           logout()
           navigate('/login', { replace: true })

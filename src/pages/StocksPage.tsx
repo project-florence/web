@@ -95,12 +95,13 @@ export default function StocksPage() {
                 </CardContent>
               </Card>
             ))
-          : companies.map((company) => (
-              <CompanyCard
-                key={company.ticker}
-                company={company}
-                action={<FavoriteButton ticker={company.ticker} />}
-              />
+          : companies.map((company, i) => (
+              <div key={company.ticker} className="animate-slideUp" style={{ animationDelay: `${(i % 12) * 50}ms` }}>
+                <CompanyCard
+                  company={company}
+                  action={<FavoriteButton ticker={company.ticker} />}
+                />
+              </div>
             ))}
       </div>
     </div>

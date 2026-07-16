@@ -43,14 +43,14 @@ export function Sidebar() {
           end
           className={({ isActive }) =>
             cn(
-              'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+              'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group',
               isActive
-                ? 'bg-primary/10 text-primary'
-                : 'text-muted-foreground hover:text-foreground hover:bg-muted',
+                ? 'bg-primary/10 text-primary border-l-2 border-primary rounded-l-none'
+                : 'text-muted-foreground hover:text-foreground hover:bg-muted hover:translate-x-0.5',
             )
           }
         >
-          <LayoutDashboard className="h-4 w-4" />
+          <LayoutDashboard className="h-4 w-4 transition-transform duration-200 group-hover:scale-110" />
           {t('nav.dashboard')}
         </NavLink>
         <NavLink
@@ -59,98 +59,98 @@ export function Sidebar() {
           onClick={handleStocksClick}
           className={({ isActive }) =>
             cn(
-              'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+              'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group',
               (isActive || location.pathname.startsWith('/stocks/'))
-                ? 'bg-primary/10 text-primary'
-                : 'text-muted-foreground hover:text-foreground hover:bg-muted',
+                ? 'bg-primary/10 text-primary border-l-2 border-primary rounded-l-none'
+                : 'text-muted-foreground hover:text-foreground hover:bg-muted hover:translate-x-0.5',
             )
           }
         >
-          <TrendingUp className="h-4 w-4" />
+          <TrendingUp className="h-4 w-4 transition-transform duration-200 group-hover:scale-110" />
           {t('nav.stocks')}
         </NavLink>
         <NavLink
           to="/watchlist"
           className={({ isActive }) =>
             cn(
-              'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+              'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group',
               isActive
-                ? 'bg-primary/10 text-primary'
-                : 'text-muted-foreground hover:text-foreground hover:bg-muted',
+                ? 'bg-primary/10 text-primary border-l-2 border-primary rounded-l-none'
+                : 'text-muted-foreground hover:text-foreground hover:bg-muted hover:translate-x-0.5',
             )
           }
         >
-          <Star className="h-4 w-4" />
+          <Star className="h-4 w-4 transition-transform duration-200 group-hover:scale-110" />
           {t('nav.watchlist')}
         </NavLink>
         <NavLink
           to="/analysis"
           className={({ isActive }) =>
             cn(
-              'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+              'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group',
               isActive
-                ? 'bg-primary/10 text-primary'
-                : 'text-muted-foreground hover:text-foreground hover:bg-muted',
+                ? 'bg-primary/10 text-primary border-l-2 border-primary rounded-l-none'
+                : 'text-muted-foreground hover:text-foreground hover:bg-muted hover:translate-x-0.5',
             )
           }
         >
-          <BarChart3 className="h-4 w-4" />
+          <BarChart3 className="h-4 w-4 transition-transform duration-200 group-hover:scale-110" />
           {t('nav.analysis')}
         </NavLink>
         <NavLink
           to="/scout"
           className={({ isActive }) =>
             cn(
-              'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+              'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group',
               isActive
-                ? 'bg-primary/10 text-primary'
-                : 'text-muted-foreground hover:text-foreground hover:bg-muted',
+                ? 'bg-primary/10 text-primary border-l-2 border-primary rounded-l-none'
+                : 'text-muted-foreground hover:text-foreground hover:bg-muted hover:translate-x-0.5',
             )
           }
         >
-          <Search className="h-4 w-4" />
+          <Search className="h-4 w-4 transition-transform duration-200 group-hover:scale-110" />
           {t('nav.scout')}
         </NavLink>
         <NavLink
           to="/ipos"
           className={({ isActive }) =>
             cn(
-              'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+              'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group',
               isActive
-                ? 'bg-primary/10 text-primary'
-                : 'text-muted-foreground hover:text-foreground hover:bg-muted',
+                ? 'bg-primary/10 text-primary border-l-2 border-primary rounded-l-none'
+                : 'text-muted-foreground hover:text-foreground hover:bg-muted hover:translate-x-0.5',
             )
           }
         >
-          <Rocket className="h-4 w-4" />
+          <Rocket className="h-4 w-4 transition-transform duration-200 group-hover:scale-110" />
           {t('nav.ipos')}
         </NavLink>
         <NavLink
           to="/currency"
           className={({ isActive }) =>
             cn(
-              'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+              'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group',
               isActive
-                ? 'bg-primary/10 text-primary'
-                : 'text-muted-foreground hover:text-foreground hover:bg-muted',
+                ? 'bg-primary/10 text-primary border-l-2 border-primary rounded-l-none'
+                : 'text-muted-foreground hover:text-foreground hover:bg-muted hover:translate-x-0.5',
             )
           }
         >
-          <DollarSign className="h-4 w-4" />
+          <DollarSign className="h-4 w-4 transition-transform duration-200 group-hover:scale-110" />
           {t('nav.currency')}
         </NavLink>
         <NavLink
           to="/metals"
           className={({ isActive }) =>
             cn(
-              'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+              'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group',
               isActive
-                ? 'bg-primary/10 text-primary'
-                : 'text-muted-foreground hover:text-foreground hover:bg-muted',
+                ? 'bg-primary/10 text-primary border-l-2 border-primary rounded-l-none'
+                : 'text-muted-foreground hover:text-foreground hover:bg-muted hover:translate-x-0.5',
             )
           }
         >
-          <Gem className="h-4 w-4" />
+          <Gem className="h-4 w-4 transition-transform duration-200 group-hover:scale-110" />
           {t('nav.metals')}
         </NavLink>
       </nav>
@@ -159,14 +159,14 @@ export function Sidebar() {
         to="/profile"
         className={({ isActive }) =>
           cn(
-            'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+            'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group',
             isActive
-              ? 'bg-primary/10 text-primary'
-              : 'text-muted-foreground hover:text-foreground hover:bg-muted',
+              ? 'bg-primary/10 text-primary border-l-2 border-primary rounded-l-none'
+              : 'text-muted-foreground hover:text-foreground hover:bg-muted hover:translate-x-0.5',
           )
         }
       >
-        <User className="h-4 w-4" />
+        <User className="h-4 w-4 transition-transform duration-200 group-hover:scale-110" />
         {t('nav.profile')}
       </NavLink>
     </aside>

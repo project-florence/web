@@ -35,12 +35,13 @@ const CURRENCY_FLAGS: Record<string, string> = {
   NZD: '🇳🇿', PLN: '🇵🇱', CZK: '🇨🇿', HUF: '🇭🇺', ILS: '🇮🇱',
 }
 
-function CurrencyCard({ code, entry }: { code: string; entry: RateEntry }) {
+function CurrencyCard({ code, entry, index = 0 }: { code: string; entry: RateEntry; index?: number }) {
   const price = parsePrice(entry.Buying)
   const change = parseChange(entry.Change)
 
   return (
-    <Card>
+    <div className="animate-slideUp" style={{ animationDelay: `${(index % 10) * 60}ms` }}>
+      <Card className="transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/5">
       <CardContent className="p-4">
         <div className="flex items-center gap-2 mb-2">
           <span className="text-lg">{CURRENCY_FLAGS[code] || '💱'}</span>
@@ -67,6 +68,7 @@ function CurrencyCard({ code, entry }: { code: string; entry: RateEntry }) {
         )}
       </CardContent>
     </Card>
+    </div>
   )
 }
 
@@ -103,16 +105,16 @@ export default function CurrencyPage() {
           <div>
             <h3 className="text-sm font-medium text-muted-foreground mb-3">Başlıca Kurlar</h3>
             <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-              {pinnedRates.map(([code, entry]) => (
-                <CurrencyCard key={code} code={code} entry={entry} />
+              {pinnedRates.map(([code, entry], i) => (
+                <CurrencyCard key={code} code={code} entry={entry} index={i} />
               ))}
             </div>
           </div>
           <div>
             <h3 className="text-sm font-medium text-muted-foreground mb-3">Diğer Kurlar</h3>
             <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-              {otherRates.map(([code, entry]) => (
-                <CurrencyCard key={code} code={code} entry={entry} />
+              {otherRates.map(([code, entry], i) => (
+                <CurrencyCard key={code} code={code} entry={entry} index={i + 5} />
               ))}
             </div>
           </div>

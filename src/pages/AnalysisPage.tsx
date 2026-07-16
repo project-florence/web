@@ -77,7 +77,7 @@ export default function AnalysisPage() {
 
     if (isExpanded) {
       return (
-        <Card className="md:col-span-2">
+        <Card className="md:col-span-2 animate-slideUp">
           <CardHeader className="flex flex-row items-center gap-3 pb-3">
             <Button variant="ghost" size="sm" onClick={() => { setView('cards'); setRunProb(false); setRunCi(false) }}>
               <ArrowLeft className="h-4 w-4 mr-1" />
@@ -94,7 +94,7 @@ export default function AnalysisPage() {
 
     return (
       <Card
-        className="cursor-pointer hover:bg-muted/50 transition-colors"
+        className="cursor-pointer hover:bg-muted/50 hover:-translate-y-0.5 hover:shadow-lg transition-all duration-200"
         onClick={() => setView(id)}
       >
         <CardContent className="p-6">
@@ -173,13 +173,14 @@ export default function AnalysisPage() {
               value={target}
               onChange={(e) => setTarget(e.target.value)}
             />
-            <Button
-              onClick={() => setRunProb(true)}
-              className="w-full"
-              disabled={!target}
-            >
-              {t('analysis.calculate')}
-            </Button>
+        <Button
+          variant="gradient"
+          onClick={() => setRunProb(true)}
+          className="w-full"
+          disabled={!target}
+        >
+          {t('analysis.calculate')}
+        </Button>
             {probLoading && <Skeleton className="h-16 w-full" />}
             {probError && (
               <p className="text-sm text-destructive">Hesaplama sırasında bir hata oluştu.</p>
@@ -220,6 +221,7 @@ export default function AnalysisPage() {
               </SelectContent>
             </Select>
             <Button
+              variant="gradient"
               onClick={() => setRunCi(true)}
               className="w-full"
             >

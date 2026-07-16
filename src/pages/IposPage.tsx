@@ -37,7 +37,7 @@ export default function IposPage() {
       ) : ipos && ipos.length > 0 ? (
         <div className="grid gap-4">
           {ipos.map((ipo, i) => (
-            <Card key={i}>
+            <Card key={i} className="transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/5">
               <CardContent className="p-4 flex items-center justify-between">
                 <div>
                   <h3 className="font-semibold">{ipo.company}</h3>
