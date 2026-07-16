@@ -20,9 +20,11 @@
             emerald: { bg:'#0a0f0f',fg:'#ecfdf5',card:'#0f1a1a',popover:'#0f1a1a',primary:'#10b981',primaryFg:'#0a0f0f',secondary:'#1e293b',muted:'#14532d',mutedFg:'#6ee7b7',accent:'#34d399',success:'#22c55e',destructive:'#ef4444',border:'#14532d',ring:'#10b981',sidebar:'#080d0d' },
             midnight: { bg:'#0a0a0f',fg:'#f5f3ff',card:'#0f0a1a',popover:'#0f0a1a',primary:'#8b5cf6',primaryFg:'#f5f3ff',secondary:'#1e1b4b',muted:'#1e1b4b',mutedFg:'#a78bfa',accent:'#a78bfa',success:'#22c55e',destructive:'#ef4444',border:'#2e1065',ring:'#8b5cf6',sidebar:'#08050f' },
             sunset: { bg:'#0f0f0a',fg:'#fffbeb',card:'#1a1a0f',popover:'#1a1a0f',primary:'#f59e0b',primaryFg:'#0f0f0a',secondary:'#422006',muted:'#422006',mutedFg:'#fbbf24',accent:'#fb923c',success:'#22c55e',destructive:'#ef4444',border:'#78350f',ring:'#f59e0b',sidebar:'#0a0a05' },
+            light: { bg:'#f8fafc',fg:'#0f172a',card:'#ffffff',popover:'#ffffff',primary:'#2563eb',primaryFg:'#ffffff',secondary:'#e2e8f0',muted:'#f1f5f9',mutedFg:'#64748b',accent:'#f59e0b',success:'#16a34a',destructive:'#dc2626',border:'#e2e8f0',ring:'#2563eb',sidebar:'#ffffff' },
           }[name];
           if (!colors) return;
           var r = document.documentElement;
+          if (name === 'light') { r.classList.remove('dark') } else { r.classList.add('dark') }
           r.style.setProperty('--background', colors.bg);
           r.style.setProperty('--foreground', colors.fg);
           r.style.setProperty('--card', colors.card);

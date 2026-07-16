@@ -47,6 +47,7 @@ export interface ThemeCharts {
 
 export interface ThemeDefinition {
   name: string
+  mode: 'dark' | 'light'
   colors: ThemeColors
   charts: ThemeCharts
 }
@@ -54,6 +55,7 @@ export interface ThemeDefinition {
 export const themes: Record<string, ThemeDefinition> = {
   florence: {
     name: 'Florence',
+    mode: 'dark',
     colors: {
       background: '#0a0a0f',
       foreground: '#f8fafc',
@@ -102,6 +104,7 @@ export const themes: Record<string, ThemeDefinition> = {
   },
   ocean: {
     name: 'Okyanus',
+    mode: 'dark',
     colors: {
       background: '#0a0f1a',
       foreground: '#ecfeff',
@@ -150,6 +153,7 @@ export const themes: Record<string, ThemeDefinition> = {
   },
   emerald: {
     name: 'Zümrüt',
+    mode: 'dark',
     colors: {
       background: '#0a0f0f',
       foreground: '#ecfdf5',
@@ -198,6 +202,7 @@ export const themes: Record<string, ThemeDefinition> = {
   },
   midnight: {
     name: 'Geceyarısı',
+    mode: 'dark',
     colors: {
       background: '#0a0a0f',
       foreground: '#f5f3ff',
@@ -246,6 +251,7 @@ export const themes: Record<string, ThemeDefinition> = {
   },
   sunset: {
     name: 'Günbatımı',
+    mode: 'dark',
     colors: {
       background: '#0f0f0a',
       foreground: '#fffbeb',
@@ -290,6 +296,55 @@ export const themes: Record<string, ThemeDefinition> = {
       gridColor: '#422006',
       textColor: '#fbbf24',
       crosshairColor: '#334155',
+    },
+  },
+  light: {
+    name: 'Aydınlık',
+    mode: 'light',
+    colors: {
+      background: '#f8fafc',
+      foreground: '#0f172a',
+      card: '#ffffff',
+      cardForeground: '#0f172a',
+      popover: '#ffffff',
+      popoverForeground: '#0f172a',
+      primary: '#2563eb',
+      primaryForeground: '#ffffff',
+      secondary: '#e2e8f0',
+      secondaryForeground: '#0f172a',
+      muted: '#f1f5f9',
+      mutedForeground: '#64748b',
+      accent: '#f59e0b',
+      accentForeground: '#0f172a',
+      success: '#16a34a',
+      successForeground: '#ffffff',
+      warning: '#d97706',
+      warningForeground: '#ffffff',
+      destructive: '#dc2626',
+      destructiveForeground: '#ffffff',
+      border: '#e2e8f0',
+      input: '#e2e8f0',
+      ring: '#2563eb',
+      chart1: '#2563eb',
+      chart2: '#16a34a',
+      chart3: '#f59e0b',
+      chart4: '#dc2626',
+      chart5: '#8b5cf6',
+      sidebar: '#ffffff',
+      sidebarForeground: '#0f172a',
+      sidebarPrimary: '#2563eb',
+      sidebarPrimaryForeground: '#ffffff',
+      sidebarAccent: '#f1f5f9',
+      sidebarAccentForeground: '#0f172a',
+      sidebarBorder: '#e2e8f0',
+      sidebarRing: '#2563eb',
+    },
+    charts: {
+      upColor: '#16a34a',
+      downColor: '#dc2626',
+      gridColor: '#e2e8f0',
+      textColor: '#64748b',
+      crosshairColor: '#94a3b8',
     },
   },
 }

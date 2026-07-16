@@ -43,7 +43,11 @@ function setCSSVariables(theme: ThemeDefinition) {
   root.style.setProperty('--sidebar-accent-foreground', c.sidebarAccentForeground)
   root.style.setProperty('--sidebar-border', c.sidebarBorder)
   root.style.setProperty('--sidebar-ring', c.sidebarRing)
-  root.classList.add('dark')
+  if (theme.mode === 'dark') {
+    root.classList.add('dark')
+  } else {
+    root.classList.remove('dark')
+  }
 }
 
 interface ThemeState {

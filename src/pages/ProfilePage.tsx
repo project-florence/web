@@ -10,7 +10,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Separator } from '@/components/ui/separator'
 import { toast } from 'sonner'
-import { LogOut, Coins, User, Key, Download, Trash2, ArrowLeft, Settings, Palette } from 'lucide-react'
+import { LogOut, Coins, User, Key, Download, Trash2, ArrowLeft, Settings, Palette, Globe } from 'lucide-react'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useAuthStore } from '@/stores/authStore'
 import { useThemeStore } from '@/stores/themeStore'
 import { themes } from '@/config/themes'
@@ -19,7 +20,7 @@ import api from '@/lib/api'
 import type { Profile, Credits } from '@/types/api'
 
 export default function ProfilePage() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const navigate = useNavigate()
   const logout = useAuthStore((s) => s.logout)
   const themeName = useThemeStore((s) => s.themeName)
@@ -356,6 +357,26 @@ export default function ProfilePage() {
                   )
                 })}
               </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <div className="flex items-center gap-2">
+                <Globe className="h-4 w-4 text-primary" />
+                <CardTitle className="text-sm">Dil / Language</CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <Select value={i18n.language} onValueChange={(v) => v && i18n.changeLanguage(v)}>
+                <SelectTrigger className="w-full sm:w-48">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="tr">Türkçe</SelectItem>
+                  <SelectItem value="en">English</SelectItem>
+                </SelectContent>
+              </Select>
             </CardContent>
           </Card>
         </TabsContent>
