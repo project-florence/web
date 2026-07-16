@@ -8,6 +8,55 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <script>
+      (function() {
+        try {
+          var raw = JSON.parse(localStorage.getItem('florence-theme') || '{}');
+          var name = raw && raw.state && raw.state.themeName;
+          if (!name) return;
+          var colors = {
+            florence: { bg:'#0a0a0f',fg:'#f8fafc',card:'#1a1a2e',popover:'#1a1a2e',primary:'#2563eb',primaryFg:'#ffffff',secondary:'#334155',muted:'#1e293b',mutedFg:'#94a3b8',accent:'#f59e0b',success:'#22c55e',destructive:'#ef4444',border:'#2d2d4a',ring:'#2563eb',sidebar:'#0f0f1a' },
+            ocean: { bg:'#0a0f1a',fg:'#ecfeff',card:'#0f1a2e',popover:'#0f1a2e',primary:'#06b6d4',primaryFg:'#0a0f1a',secondary:'#1e293b',muted:'#164e63',mutedFg:'#7dd3fc',accent:'#2dd4bf',success:'#22c55e',destructive:'#ef4444',border:'#1e3a5f',ring:'#06b6d4',sidebar:'#080d1a' },
+            emerald: { bg:'#0a0f0f',fg:'#ecfdf5',card:'#0f1a1a',popover:'#0f1a1a',primary:'#10b981',primaryFg:'#0a0f0f',secondary:'#1e293b',muted:'#14532d',mutedFg:'#6ee7b7',accent:'#34d399',success:'#22c55e',destructive:'#ef4444',border:'#14532d',ring:'#10b981',sidebar:'#080d0d' },
+            midnight: { bg:'#0a0a0f',fg:'#f5f3ff',card:'#0f0a1a',popover:'#0f0a1a',primary:'#8b5cf6',primaryFg:'#f5f3ff',secondary:'#1e1b4b',muted:'#1e1b4b',mutedFg:'#a78bfa',accent:'#a78bfa',success:'#22c55e',destructive:'#ef4444',border:'#2e1065',ring:'#8b5cf6',sidebar:'#08050f' },
+            sunset: { bg:'#0f0f0a',fg:'#fffbeb',card:'#1a1a0f',popover:'#1a1a0f',primary:'#f59e0b',primaryFg:'#0f0f0a',secondary:'#422006',muted:'#422006',mutedFg:'#fbbf24',accent:'#fb923c',success:'#22c55e',destructive:'#ef4444',border:'#78350f',ring:'#f59e0b',sidebar:'#0a0a05' },
+          }[name];
+          if (!colors) return;
+          var r = document.documentElement;
+          r.style.setProperty('--background', colors.bg);
+          r.style.setProperty('--foreground', colors.fg);
+          r.style.setProperty('--card', colors.card);
+          r.style.setProperty('--card-foreground', colors.fg);
+          r.style.setProperty('--popover', colors.popover);
+          r.style.setProperty('--popover-foreground', colors.fg);
+          r.style.setProperty('--primary', colors.primary);
+          r.style.setProperty('--primary-foreground', colors.primaryFg);
+          r.style.setProperty('--secondary', colors.secondary);
+          r.style.setProperty('--secondary-foreground', colors.fg);
+          r.style.setProperty('--muted', colors.muted);
+          r.style.setProperty('--muted-foreground', colors.mutedFg);
+          r.style.setProperty('--accent', colors.accent);
+          r.style.setProperty('--accent-foreground', colors.fg);
+          r.style.setProperty('--success', colors.success);
+          r.style.setProperty('--success-foreground', colors.fg);
+          r.style.setProperty('--warning', '#f59e0b');
+          r.style.setProperty('--warning-foreground', colors.fg);
+          r.style.setProperty('--destructive', colors.destructive);
+          r.style.setProperty('--destructive-foreground', colors.fg);
+          r.style.setProperty('--border', colors.border);
+          r.style.setProperty('--input', colors.border);
+          r.style.setProperty('--ring', colors.ring);
+          r.style.setProperty('--sidebar', colors.sidebar);
+          r.style.setProperty('--sidebar-foreground', colors.fg);
+          r.style.setProperty('--sidebar-primary', colors.primary);
+          r.style.setProperty('--sidebar-primary-foreground', colors.primaryFg);
+          r.style.setProperty('--sidebar-accent', colors.muted);
+          r.style.setProperty('--sidebar-accent-foreground', colors.fg);
+          r.style.setProperty('--sidebar-border', colors.border);
+          r.style.setProperty('--sidebar-ring', colors.ring);
+        } catch(e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

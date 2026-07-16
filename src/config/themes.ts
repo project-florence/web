@@ -1,0 +1,297 @@
+export interface ThemeColors {
+  background: string
+  foreground: string
+  card: string
+  cardForeground: string
+  popover: string
+  popoverForeground: string
+  primary: string
+  primaryForeground: string
+  secondary: string
+  secondaryForeground: string
+  muted: string
+  mutedForeground: string
+  accent: string
+  accentForeground: string
+  success: string
+  successForeground: string
+  warning: string
+  warningForeground: string
+  destructive: string
+  destructiveForeground: string
+  border: string
+  input: string
+  ring: string
+  chart1: string
+  chart2: string
+  chart3: string
+  chart4: string
+  chart5: string
+  sidebar: string
+  sidebarForeground: string
+  sidebarPrimary: string
+  sidebarPrimaryForeground: string
+  sidebarAccent: string
+  sidebarAccentForeground: string
+  sidebarBorder: string
+  sidebarRing: string
+}
+
+export interface ThemeCharts {
+  upColor: string
+  downColor: string
+  gridColor: string
+  textColor: string
+  crosshairColor: string
+}
+
+export interface ThemeDefinition {
+  name: string
+  colors: ThemeColors
+  charts: ThemeCharts
+}
+
+export const themes: Record<string, ThemeDefinition> = {
+  florence: {
+    name: 'Florence',
+    colors: {
+      background: '#0a0a0f',
+      foreground: '#f8fafc',
+      card: '#1a1a2e',
+      cardForeground: '#f8fafc',
+      popover: '#1a1a2e',
+      popoverForeground: '#f8fafc',
+      primary: '#2563eb',
+      primaryForeground: '#ffffff',
+      secondary: '#334155',
+      secondaryForeground: '#f8fafc',
+      muted: '#1e293b',
+      mutedForeground: '#94a3b8',
+      accent: '#f59e0b',
+      accentForeground: '#0f172a',
+      success: '#22c55e',
+      successForeground: '#0f172a',
+      warning: '#f59e0b',
+      warningForeground: '#0f172a',
+      destructive: '#ef4444',
+      destructiveForeground: '#f8fafc',
+      border: '#2d2d4a',
+      input: '#2d2d4a',
+      ring: '#2563eb',
+      chart1: '#3b82f6',
+      chart2: '#22c55e',
+      chart3: '#f59e0b',
+      chart4: '#ef4444',
+      chart5: '#8b5cf6',
+      sidebar: '#0f0f1a',
+      sidebarForeground: '#f8fafc',
+      sidebarPrimary: '#2563eb',
+      sidebarPrimaryForeground: '#ffffff',
+      sidebarAccent: '#1e293b',
+      sidebarAccentForeground: '#f8fafc',
+      sidebarBorder: '#2d2d4a',
+      sidebarRing: '#2563eb',
+    },
+    charts: {
+      upColor: '#22c55e',
+      downColor: '#ef4444',
+      gridColor: '#1e293b',
+      textColor: '#94a3b8',
+      crosshairColor: '#475569',
+    },
+  },
+  ocean: {
+    name: 'Okyanus',
+    colors: {
+      background: '#0a0f1a',
+      foreground: '#ecfeff',
+      card: '#0f1a2e',
+      cardForeground: '#ecfeff',
+      popover: '#0f1a2e',
+      popoverForeground: '#ecfeff',
+      primary: '#06b6d4',
+      primaryForeground: '#0a0f1a',
+      secondary: '#1e293b',
+      secondaryForeground: '#ecfeff',
+      muted: '#164e63',
+      mutedForeground: '#7dd3fc',
+      accent: '#2dd4bf',
+      accentForeground: '#0a0f1a',
+      success: '#22c55e',
+      successForeground: '#0a0f1a',
+      warning: '#eab308',
+      warningForeground: '#0a0f1a',
+      destructive: '#ef4444',
+      destructiveForeground: '#f8fafc',
+      border: '#1e3a5f',
+      input: '#1e3a5f',
+      ring: '#06b6d4',
+      chart1: '#06b6d4',
+      chart2: '#22c55e',
+      chart3: '#2dd4bf',
+      chart4: '#ef4444',
+      chart5: '#a78bfa',
+      sidebar: '#080d1a',
+      sidebarForeground: '#ecfeff',
+      sidebarPrimary: '#06b6d4',
+      sidebarPrimaryForeground: '#0a0f1a',
+      sidebarAccent: '#164e63',
+      sidebarAccentForeground: '#ecfeff',
+      sidebarBorder: '#1e3a5f',
+      sidebarRing: '#06b6d4',
+    },
+    charts: {
+      upColor: '#22c55e',
+      downColor: '#ef4444',
+      gridColor: '#164e63',
+      textColor: '#7dd3fc',
+      crosshairColor: '#334155',
+    },
+  },
+  emerald: {
+    name: 'Zümrüt',
+    colors: {
+      background: '#0a0f0f',
+      foreground: '#ecfdf5',
+      card: '#0f1a1a',
+      cardForeground: '#ecfdf5',
+      popover: '#0f1a1a',
+      popoverForeground: '#ecfdf5',
+      primary: '#10b981',
+      primaryForeground: '#0a0f0f',
+      secondary: '#1e293b',
+      secondaryForeground: '#ecfdf5',
+      muted: '#14532d',
+      mutedForeground: '#6ee7b7',
+      accent: '#34d399',
+      accentForeground: '#0a0f0f',
+      success: '#22c55e',
+      successForeground: '#0a0f0f',
+      warning: '#eab308',
+      warningForeground: '#0a0f0f',
+      destructive: '#ef4444',
+      destructiveForeground: '#f8fafc',
+      border: '#14532d',
+      input: '#14532d',
+      ring: '#10b981',
+      chart1: '#10b981',
+      chart2: '#22c55e',
+      chart3: '#34d399',
+      chart4: '#ef4444',
+      chart5: '#8b5cf6',
+      sidebar: '#080d0d',
+      sidebarForeground: '#ecfdf5',
+      sidebarPrimary: '#10b981',
+      sidebarPrimaryForeground: '#0a0f0f',
+      sidebarAccent: '#14532d',
+      sidebarAccentForeground: '#ecfdf5',
+      sidebarBorder: '#14532d',
+      sidebarRing: '#10b981',
+    },
+    charts: {
+      upColor: '#34d399',
+      downColor: '#ef4444',
+      gridColor: '#14532d',
+      textColor: '#6ee7b7',
+      crosshairColor: '#334155',
+    },
+  },
+  midnight: {
+    name: 'Geceyarısı',
+    colors: {
+      background: '#0a0a0f',
+      foreground: '#f5f3ff',
+      card: '#0f0a1a',
+      cardForeground: '#f5f3ff',
+      popover: '#0f0a1a',
+      popoverForeground: '#f5f3ff',
+      primary: '#8b5cf6',
+      primaryForeground: '#f5f3ff',
+      secondary: '#1e1b4b',
+      secondaryForeground: '#f5f3ff',
+      muted: '#1e1b4b',
+      mutedForeground: '#a78bfa',
+      accent: '#a78bfa',
+      accentForeground: '#0a0a0f',
+      success: '#22c55e',
+      successForeground: '#0a0a0f',
+      warning: '#eab308',
+      warningForeground: '#0a0a0f',
+      destructive: '#ef4444',
+      destructiveForeground: '#f8fafc',
+      border: '#2e1065',
+      input: '#2e1065',
+      ring: '#8b5cf6',
+      chart1: '#8b5cf6',
+      chart2: '#22c55e',
+      chart3: '#a78bfa',
+      chart4: '#ef4444',
+      chart5: '#f472b6',
+      sidebar: '#08050f',
+      sidebarForeground: '#f5f3ff',
+      sidebarPrimary: '#8b5cf6',
+      sidebarPrimaryForeground: '#f5f3ff',
+      sidebarAccent: '#1e1b4b',
+      sidebarAccentForeground: '#f5f3ff',
+      sidebarBorder: '#2e1065',
+      sidebarRing: '#8b5cf6',
+    },
+    charts: {
+      upColor: '#22c55e',
+      downColor: '#ef4444',
+      gridColor: '#1e1b4b',
+      textColor: '#a78bfa',
+      crosshairColor: '#334155',
+    },
+  },
+  sunset: {
+    name: 'Günbatımı',
+    colors: {
+      background: '#0f0f0a',
+      foreground: '#fffbeb',
+      card: '#1a1a0f',
+      cardForeground: '#fffbeb',
+      popover: '#1a1a0f',
+      popoverForeground: '#fffbeb',
+      primary: '#f59e0b',
+      primaryForeground: '#0f0f0a',
+      secondary: '#422006',
+      secondaryForeground: '#fffbeb',
+      muted: '#422006',
+      mutedForeground: '#fbbf24',
+      accent: '#fb923c',
+      accentForeground: '#0f0f0a',
+      success: '#22c55e',
+      successForeground: '#0f0f0a',
+      warning: '#f59e0b',
+      warningForeground: '#0f0f0a',
+      destructive: '#ef4444',
+      destructiveForeground: '#f8fafc',
+      border: '#78350f',
+      input: '#78350f',
+      ring: '#f59e0b',
+      chart1: '#f59e0b',
+      chart2: '#22c55e',
+      chart3: '#fb923c',
+      chart4: '#ef4444',
+      chart5: '#a78bfa',
+      sidebar: '#0a0a05',
+      sidebarForeground: '#fffbeb',
+      sidebarPrimary: '#f59e0b',
+      sidebarPrimaryForeground: '#0f0f0a',
+      sidebarAccent: '#422006',
+      sidebarAccentForeground: '#fffbeb',
+      sidebarBorder: '#78350f',
+      sidebarRing: '#f59e0b',
+    },
+    charts: {
+      upColor: '#22c55e',
+      downColor: '#ef4444',
+      gridColor: '#422006',
+      textColor: '#fbbf24',
+      crosshairColor: '#334155',
+    },
+  },
+}
+
+export type ThemeName = keyof typeof themes

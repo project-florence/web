@@ -1,7 +1,8 @@
 import { useEffect, useRef } from 'react'
 import { createChart, CandlestickSeries, type IChartApi, type ISeriesApi, type CandlestickData, type Time } from 'lightweight-charts'
 import type { PriceHistory } from '@/types/api'
-import { themeConfig } from '@/config/theme'
+import { useThemeStore } from '@/stores/themeStore'
+import { themes } from '@/config/themes'
 import { AlertCircle } from 'lucide-react'
 
 interface StockChartProps {
@@ -15,29 +16,31 @@ export function StockChart({ data, loading }: StockChartProps) {
   const seriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null)
   const hasDataRef = useRef(false)
   const resizeHandlerRef = useRef<(() => void) | null>(null)
+  const themeName = useThemeStore((s) => s.themeName)
 
   useEffect(() => {
     if (!containerRef.current) return
 
+    const chars = themes[themeName].charts
     const chart = createChart(containerRef.current, {
       layout: {
         background: { color: 'transparent' },
-        textColor: themeConfig.charts.textColor,
+        textColor: chars.textColor,
       },
       grid: {
-        vertLines: { color: themeConfig.charts.gridColor },
-        horzLines: { color: themeConfig.charts.gridColor },
+        vertLines: { color: chars.gridColor },
+        horzLines: { color: chars.gridColor },
       },
       crosshair: {
         mode: 0,
-        vertLine: { color: themeConfig.charts.crosshairColor, width: 1, style: 2 },
-        horzLine: { color: themeConfig.charts.crosshairColor, width: 1, style: 2 },
+        vertLine: { color: chars.crosshairColor, width: 1, style: 2 },
+        horzLine: { color: chars.crosshairColor, width: 1, style: 2 },
       },
       rightPriceScale: {
-        borderColor: themeConfig.charts.gridColor,
+        borderColor: chars.gridColor,
       },
       timeScale: {
-        borderColor: themeConfig.charts.gridColor,
+        borderColor: chars.gridColor,
         timeVisible: false,
         secondsVisible: false,
       },
@@ -48,12 +51,12 @@ export function StockChart({ data, loading }: StockChartProps) {
     })
 
     const series = chart.addSeries(CandlestickSeries, {
-      upColor: themeConfig.charts.upColor,
-      downColor: themeConfig.charts.downColor,
-      borderUpColor: themeConfig.charts.upColor,
-      borderDownColor: themeConfig.charts.downColor,
-      wickUpColor: themeConfig.charts.upColor,
-      wickDownColor: themeConfig.charts.downColor,
+      upColor: chars.upColor,
+      downColor: chars.downColor,
+      borderUpColor: chars.upColor,
+      borderDownColor: chars.downColor,
+      wickUpColor: chars.upColor,
+      wickDownColor: chars.downColor,
     })
 
     chartRef.current = chart
@@ -73,7 +76,8 @@ export function StockChart({ data, loading }: StockChartProps) {
       chartRef.current = null
       seriesRef.current = null
     }
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [themeName])
 
   useEffect(() => {
     if (!seriesRef.current) return
