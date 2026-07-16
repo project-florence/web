@@ -273,7 +273,23 @@ export default function ProfilePage() {
               <p className="text-xs text-muted-foreground">{t('profile.exportDesc')}</p>
             </CardHeader>
             <CardContent>
-              <Button variant="outline" disabled>
+              <Button
+                variant="outline"
+                onClick={async () => {
+                  try {
+                    const res = await api.get('/api/v1/user/export')
+                    const blob = new Blob([JSON.stringify(res.data, null, 2)], { type: 'application/json' })
+                    const url = URL.createObjectURL(blob)
+                    const a = document.createElement('a')
+                    a.href = url
+                    a.download = `florence-export-${new Date().toISOString().split('T')[0]}.json`
+                    a.click()
+                    URL.revokeObjectURL(url)
+                  } catch {
+                    toast.error(t('common.error'))
+                  }
+                }}
+              >
                 <Download className="h-4 w-4 mr-2" />
                 {t('profile.exportData')}
               </Button>
