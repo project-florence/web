@@ -1,0 +1,79 @@
+import type { ReactNode } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Card, CardContent } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { TrendingUp, TrendingDown, Building2 } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import type { CompanySummary } from '@/types/api'
+
+function fmtVolume(n: number | null): string {
+  if (n === null || n === undefined) return '—'
+  if (n >= 1_000_000_000) return `${(n / 1_000_000_000).toFixed(2)}B`
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(2)}M`
+  if (n >= 1_000) return `${(n / 1_000).toFixed(1)}K`
+  return n.toLocaleString('tr-TR')
+}
+
+function fmtCap(n: number | null): string {
+  if (n === null || n === undefined) return '—'
+  if (n >= 1_000_000_000_000) return `${(n / 1_000_000_000_000).toFixed(2)}T`
+  if (n >= 1_000_000_000) return `${(n / 1_000_000_000).toFixed(2)}B`
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(2)}M`
+  return n.toLocaleString('tr-TR')
+}
+
+function fmtPrice(n: number | null): string {
+  if (n === null || n === undefined) return '—'
+  return `₺${n.toFixed(2)}`
+}
+
+interface CompanyCardProps {
+  company: CompanySummary
+  action?: ReactNode
+}
+
+export function CompanyCard({ company, action }: CompanyCardProps) {
+  const navigate = useNavigate()
+
+  return (
+    <Card
+      className="hover:bg-muted/50 transition-colors cursor-pointer"
+      onClick={() => navigate(`/stocks/${company.ticker}`)}
+    >
+      <CardContent className="p-4">
+        <div className="flex items-center justify-between mb-1">
+          <span className="font-mono font-bold text-primary">{company.ticker}</span>
+          {action}
+        </div>
+        <p className="text-sm font-medium truncate mb-2">{company.name}</p>
+
+        <div className="flex items-baseline gap-2 mb-2">
+          <span className="text-xl font-bold">{fmtPrice(company.last_price)}</span>
+          {company.change_pct !== null && (
+            <span className={cn(
+              'text-sm font-semibold flex items-center gap-0.5',
+              company.change_pct >= 0 ? 'text-success' : 'text-destructive',
+            )}>
+              {company.change_pct >= 0
+                ? <TrendingUp className="h-3 w-3" />
+                : <TrendingDown className="h-3 w-3" />
+              }
+              {company.change_pct >= 0 ? '+' : ''}{company.change_pct.toFixed(2)}%
+            </span>
+          )}
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+          {company.sector && (
+            <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4">
+              <Building2 className="h-2.5 w-2.5 mr-0.5" />
+              {company.sector}
+            </Badge>
+          )}
+          <span>H: {fmtVolume(company.volume)}</span>
+          <span>PiD: {fmtCap(company.market_cap)}</span>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
