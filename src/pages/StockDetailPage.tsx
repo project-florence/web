@@ -9,6 +9,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, TrendingUp, TrendingDown, FlaskConical } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { StockSearch } from '@/components/shared/StockSearch'
 import { StockChart } from '@/components/shared/StockChart'
 import { FavoriteButton } from '@/components/shared/FavoriteButton'
 import { useNavStore } from '@/stores/navStore'
@@ -174,10 +175,18 @@ export default function StockDetailPage() {
 
   return (
     <div className="space-y-6">
-      <Button variant="ghost" size="sm" onClick={() => navigate('/stocks')}>
-        <ArrowLeft className="h-4 w-4 mr-1" />
-        Geri
-      </Button>
+      <div className="flex items-center gap-3">
+        <Button variant="ghost" size="sm" onClick={() => navigate('/stocks')}>
+          <ArrowLeft className="h-4 w-4 mr-1" />
+          Geri
+        </Button>
+        <div className="max-w-xs flex-1">
+          <StockSearch
+            onSelect={(t) => navigate(`/stocks/${t}`)}
+            placeholder="Hisse ara..."
+          />
+        </div>
+      </div>
 
       <div className="flex items-start justify-between flex-wrap gap-4">
         <div>
