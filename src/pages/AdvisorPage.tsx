@@ -37,7 +37,7 @@ function VectorBars({ vector }: { vector: [number, number, number] }) {
     <div className="flex items-center gap-2">
       {vector.map((v, i) => (
         <div key={i} className="flex-1">
-          <div className="h-12 rounded-md bg-muted relative overflow-hidden">
+          <div className="h-10 rounded-md bg-muted relative overflow-hidden">
             <div
               className={cn('absolute bottom-0 left-0 right-0 rounded-t-sm transition-all duration-500', colors[i])}
               style={{ height: `${Math.round(v * 100)}%` }}
@@ -81,15 +81,15 @@ function FitResultCard({ result, rank }: { result: StockFitResult; rank: number 
       style={{ animationDelay: `${rank * 80}ms` }}
       onClick={() => navigate(`/stocks/${result.ticker}`)}
     >
-      <CardContent className="p-4">
-        <div className="flex items-start gap-3">
-          <div className="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center shrink-0 shadow-sm shadow-primary/20">
+      <CardContent className="p-3">
+        <div className="flex items-start gap-2.5">
+          <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center shrink-0 shadow-sm shadow-primary/20">
             <span className="text-primary-foreground font-bold text-xs">{rank}</span>
           </div>
           <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center justify-between mb-1.5">
               <div>
-                <span className="font-mono font-bold text-primary text-lg">{result.ticker}</span>
+                <span className="font-mono font-bold text-primary text-base">{result.ticker}</span>
                 <Badge variant="secondary" className="ml-2 text-[10px]">
                   <Sparkles className="h-3 w-3 mr-0.5" />
                   %{Math.round(result.score * 100)}
@@ -100,7 +100,7 @@ function FitResultCard({ result, rank }: { result: StockFitResult; rank: number 
               </span>
             </div>
             <ScoreBar value={result.score} label="Uygunluk" />
-            <div className="mt-3">
+            <div className="mt-2">
               <VectorBars vector={result.vector} />
             </div>
           </div>
@@ -110,7 +110,7 @@ function FitResultCard({ result, rank }: { result: StockFitResult; rank: number 
   )
 }
 
-export default function ScoutPage() {
+export default function AdvisorPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const [mode, setMode] = useState<Mode>('fit')
@@ -152,7 +152,7 @@ export default function ScoutPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="max-w-lg mx-auto space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-3xl font-bold tracking-tight">{t('scout.title')}</h2>
       </div>
@@ -185,8 +185,8 @@ export default function ScoutPage() {
                 {t('scout.results')}
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-5">
-              <div className="grid gap-4 md:grid-cols-3">
+            <CardContent className="space-y-4">
+              <div className="space-y-4">
                 <div>
                   <label className="text-xs font-medium text-muted-foreground mb-1.5 block">{t('scout.horizon')}</label>
                   <ChipGroup
@@ -340,10 +340,10 @@ export default function ScoutPage() {
 
               <div>
                 <h3 className="text-sm font-medium text-muted-foreground mb-3">{t('scout.yourPortfolio')}</h3>
-                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="space-y-3">
                   {portfolioData.portfolio.map((stock) => (
                     <Card key={stock.ticker} className="transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg cursor-pointer" onClick={() => navigate(`/stocks/${stock.ticker}`)}>
-                      <CardContent className="p-3">
+                      <CardContent className="p-2.5">
                         <span className="font-mono font-bold text-primary">{stock.ticker}</span>
                         <div className="mt-2">
                           <VectorBars vector={stock.vector} />

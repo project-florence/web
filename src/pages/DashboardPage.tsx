@@ -130,7 +130,7 @@ export default function DashboardPage() {
               <BarChart3 className="h-4 w-4 mr-1" />
               Analiz Yap
             </Button>
-            <Button variant="outline" size="sm" onClick={() => navigate('/scout')}>
+            <Button variant="outline" size="sm" onClick={() => navigate('/advisor')}>
               <Search className="h-4 w-4 mr-1" />
               Danışman
             </Button>
