@@ -124,6 +124,7 @@
     "email": "E-posta",
     "currentPassword": "Mevcut Şifre",
     "newPassword": "Yeni Şifre",
+    "language": "Dil",
     "changePassword": "Şifre Değiştir",
     "saveUsername": "Kullanıcı Adını Kaydet",
     "saveEmail": "E-postayı Kaydet",

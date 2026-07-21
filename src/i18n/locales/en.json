@@ -124,6 +124,7 @@
     "email": "Email",
     "currentPassword": "Current Password",
     "newPassword": "New Password",
+    "language": "Language",
     "changePassword": "Change Password",
     "saveUsername": "Save Username",
     "saveEmail": "Save Email",
