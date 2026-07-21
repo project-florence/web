@@ -7,7 +7,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
-import { ArrowLeft, TrendingUp, TrendingDown, FlaskConical } from 'lucide-react'
+import { ArrowLeft, TrendingUp, TrendingDown, FlaskConical, FileText } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { StockSearch } from '@/components/shared/StockSearch'
 import { StockChart } from '@/components/shared/StockChart'
@@ -219,6 +219,10 @@ export default function StockDetailPage() {
               <Button variant="outline" size="sm" onClick={() => navigate(`/simulation?ticker=${ticker}`)}>
                 <FlaskConical className="h-4 w-4 mr-1" />
                 Simülasyon
+              </Button>
+              <Button variant="outline" size="sm" onClick={() => navigate(`/reports?ticker=${ticker}`)}>
+                <FileText className="h-4 w-4 mr-1" />
+                Rapor
               </Button>
             </div>
           )}

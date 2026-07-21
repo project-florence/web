@@ -11,6 +11,7 @@
     "scout": "Yatırım Danışmanı",
     "ipos": "Halka Arzlar",
     "currency": "Döviz Kurları",
+    "reports": "Raporlar",
     "metals": "Kıymetli Madenler",
     "profile": "Profil",
     "logout": "Çıkış Yap"
@@ -137,6 +138,26 @@
     "deleteDesc": "Hesabınızı kalıcı olarak silin. Bu işlem geri alınamaz.",
     "passwordRequired": "Bu işlem için mevcut şifreniz gereklidir",
     "confirmDelete": "Hesabınızı silmek istediğinize emin misiniz? Bu işlem geri alınamaz."
+  },
+  "reports": {
+    "title": "Raporlar",
+    "newReport": "Yeni Rapor",
+    "history": "Geçmiş",
+    "selectStock": "Hisse seçin...",
+    "reportType": "Rapor Türü",
+    "quickReport": "Hızlı Rapor",
+    "deepReport": "Derin Rapor",
+    "generate": "Rapor Oluştur",
+    "search": "Raporlarda ara...",
+    "noResults": "Rapor bulunamadı",
+    "sentiments": "Haber Duyarlılığı",
+    "tokens": "Token",
+    "cost": "Maliyet",
+    "estCost": "~{cost} 🪙",
+    "sentimentPositive": "Olumlu",
+    "sentimentNegative": "Olumsuz",
+    "sentimentNeutral": "Nötr",
+    "createReport": "Rapor"
   },
   "common": {
     "loading": "Yükleniyor...",

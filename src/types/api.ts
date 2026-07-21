@@ -138,6 +138,50 @@ export interface NewsItem {
 
 export type ReportResult = string
 
+export interface ReportTypeInfo {
+  type: string
+  name_en: string
+  name_tr: string
+  description: string
+  description_tr: string
+  est_cost: number
+}
+
+export interface ReportInfo {
+  quick_report: ReportTypeInfo
+  deep_report: ReportTypeInfo
+  token_cost_per_1k: number
+}
+
+export interface ReportHistoryItem {
+  id: number
+  ticker: string
+  type: string
+  title: string
+  token_usage: { total: number; prompt: number; completion: number }
+  created_at: string
+}
+
+export interface ReportSentiment {
+  index: number
+  url: string
+  sentiment: string
+  reasoning: string
+}
+
+export interface ReportDetail {
+  report_id: number
+  credits_spend: number
+  remaining_credits: number
+  about: string
+  type: string
+  title: string
+  report: string
+  sentiments: ReportSentiment[]
+  token_usage: { prompt: number; completion: number; total: number }
+  created_at: string
+}
+
 export interface IpoListItem {
   id: number
   slug: string

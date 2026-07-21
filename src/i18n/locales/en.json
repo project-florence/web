@@ -11,6 +11,7 @@
     "scout": "Investment Advisor",
     "ipos": "IPOs",
     "currency": "Currency",
+    "reports": "Reports",
     "metals": "Precious Metals",
     "profile": "Profile",
     "logout": "Logout"
@@ -137,6 +138,26 @@
     "deleteDesc": "Permanently delete your account. This action cannot be undone.",
     "passwordRequired": "Your current password is required for this action",
     "confirmDelete": "Are you sure you want to delete your account? This action cannot be undone."
+  },
+  "reports": {
+    "title": "Reports",
+    "newReport": "New Report",
+    "history": "History",
+    "selectStock": "Search stocks...",
+    "reportType": "Report Type",
+    "quickReport": "Quick Report",
+    "deepReport": "Deep Report",
+    "generate": "Generate Report",
+    "search": "Search reports...",
+    "noResults": "No reports found",
+    "sentiments": "News Sentiment",
+    "tokens": "Tokens",
+    "cost": "Cost",
+    "estCost": "~{cost} 🪙",
+    "sentimentPositive": "Positive",
+    "sentimentNegative": "Negative",
+    "sentimentNeutral": "Neutral",
+    "createReport": "Report"
   },
   "common": {
     "loading": "Loading...",

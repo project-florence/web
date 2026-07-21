@@ -1,0 +1,478 @@
+import { useState, useEffect } from 'react'
+import { useSearchParams, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
+import { cn } from '@/lib/utils'
+import { FileText, Search, Sparkles, TrendingUp, ExternalLink, ChevronDown, ChevronUp, Coins, Clock } from 'lucide-react'
+import { StockSearch } from '@/components/shared/StockSearch'
+import { CreditCostTooltip } from '@/components/shared/CreditCostTooltip'
+import api from '@/lib/api'
+import type { ReportInfo, ReportHistoryItem, ReportDetail, ReportTypeInfo } from '@/types/api'
+
+type Tab = 'new' | 'history'
+
+const sentimentColors: Record<string, string> = {
+  positive: 'border-success/40 bg-success/5',
+  negative: 'border-destructive/40 bg-destructive/5',
+  neutral: 'border-muted-foreground/30 bg-muted/30',
+}
+
+const sentimentBadge: Record<string, string> = {
+  positive: 'bg-success/10 text-success border-success/30',
+  negative: 'bg-destructive/10 text-destructive border-destructive/30',
+  neutral: 'bg-muted text-muted-foreground border-border',
+}
+
+export default function ReportsPage() {
+  const { t, i18n } = useTranslation()
+  const navigate = useNavigate()
+  const queryClient = useQueryClient()
+  const [searchParams] = useSearchParams()
+
+  const [tab, setTab] = useState<Tab>('new')
+  const [ticker, setTicker] = useState(searchParams.get('ticker') || '')
+  const [reportType, setReportType] = useState('quick_report')
+  const [expandedId, setExpandedId] = useState<number | null>(null)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [debouncedSearch, setDebouncedSearch] = useState('')
+
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(searchQuery), 300)
+    return () => clearTimeout(timer)
+  }, [searchQuery])
+
+  const { data: reportInfo } = useQuery({
+    queryKey: ['report-info'],
+    queryFn: async () => {
+      const res = await api.get('/api/v1/reports/info')
+      return res.data as ReportInfo
+    },
+    staleTime: 5 * 60_000,
+  })
+
+  const { data: history, isLoading: historyLoading } = useQuery({
+    queryKey: ['report-history', debouncedSearch],
+    queryFn: async () => {
+      if (debouncedSearch) {
+        const res = await api.get('/api/v1/reports/search', {
+          params: { q: debouncedSearch, limit: 50 },
+        })
+        return res.data as ReportHistoryItem[]
+      }
+      const res = await api.get('/api/v1/reports/history', {
+        params: { sort: 'created_at', order: 'desc' },
+      })
+      return res.data as ReportHistoryItem[]
+    },
+    staleTime: 30_000,
+  })
+
+  const { data: reportDetail, isLoading: detailLoading } = useQuery({
+    queryKey: ['report-detail', expandedId],
+    queryFn: async () => {
+      const res = await api.get(`/api/v1/reports/${expandedId}`)
+      return res.data as ReportDetail
+    },
+    enabled: !!expandedId,
+    staleTime: 5 * 60_000,
+  })
+
+  const generateMutation = useMutation({
+    mutationFn: async () => {
+      const res = await api.post(`/api/v1/reports/generate?ticker=${ticker}&type=${reportType}`)
+      return res.data as ReportDetail
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['credits'] })
+      queryClient.invalidateQueries({ queryKey: ['report-history'] })
+    },
+  })
+
+  const types = reportInfo ? [reportInfo.quick_report, reportInfo.deep_report].filter(Boolean) : []
+  const selectedType = types.find((t) => t?.type === reportType) ?? null
+  const estCost = selectedType?.est_cost ?? 0
+
+  const lang = i18n.language === 'tr' ? 'tr' : 'en'
+  const typeName = (rt: ReportTypeInfo) => lang === 'tr' ? rt.name_tr : rt.name_en
+  const typeDesc = (rt: ReportTypeInfo) => lang === 'tr' ? rt.description_tr : rt.description
+
+  const formatDate = (d: string) => {
+    try {
+      return new Date(d).toLocaleDateString(lang === 'tr' ? 'tr-TR' : 'en-US', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+    } catch {
+      return d
+    }
+  }
+
+  const renderMarkdown = (text: string) => {
+    const lines = text.split('\n')
+    return lines.map((line, i) => {
+      if (line.startsWith('### ')) return <h3 key={i} className="text-sm font-semibold mt-3 mb-1">{line.slice(4)}</h3>
+      if (line.startsWith('## ')) return <h2 key={i} className="text-base font-bold mt-4 mb-1.5">{line.slice(3)}</h2>
+      if (line.startsWith('# ')) return <h1 key={i} className="text-lg font-bold mt-4 mb-2">{line.slice(2)}</h1>
+      if (line.startsWith('* ') || line.startsWith('- ')) {
+        const content = line.slice(2).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        return <li key={i} className="text-xs text-muted-foreground ml-3 list-disc" dangerouslySetInnerHTML={{ __html: content }} />
+      }
+      const rendered = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      if (!line.trim()) return <div key={i} className="h-1" />
+      return <p key={i} className="text-xs text-muted-foreground leading-relaxed" dangerouslySetInnerHTML={{ __html: rendered }} />
+    })
+  }
+
+  const tabs: { key: Tab; label: string }[] = [
+    { key: 'new', label: t('reports.newReport') },
+    { key: 'history', label: t('reports.history') },
+  ]
+
+  return (
+    <div className="max-w-lg mx-auto space-y-6">
+      <h2 className="text-3xl font-bold tracking-tight">{t('reports.title')}</h2>
+
+      <div className="flex gap-2">
+        {tabs.map((tabItem) => (
+          <Button
+            key={tabItem.key}
+            variant={tab === tabItem.key ? 'gradient' : 'outline'}
+            size="sm"
+            onClick={() => setTab(tabItem.key)}
+          >
+            {tabItem.label}
+          </Button>
+        ))}
+      </div>
+
+      {tab === 'new' ? (
+        <>
+          <StockSearch
+            onSelect={(t) => setTicker(t)}
+            placeholder={t('reports.selectStock')}
+          />
+
+          {ticker && (
+            <Card>
+              <CardContent className="p-4 space-y-4">
+                <div className="flex items-center gap-2">
+                  <span className="font-mono font-bold text-primary text-lg">{ticker}</span>
+                </div>
+
+                <div>
+                  <label className="text-xs font-medium text-muted-foreground mb-2 block">
+                    {t('reports.reportType')}
+                  </label>
+                  <div className="space-y-2">
+                    {types.map((rt) => rt && (
+                      <button
+                        key={rt.type}
+                        type="button"
+                        onClick={() => setReportType(rt.type)}
+                        className={cn(
+                          'w-full text-left p-3 rounded-lg border transition-colors',
+                          reportType === rt.type
+                            ? 'border-primary/40 bg-primary/5'
+                            : 'border-border hover:border-muted-foreground/30',
+                        )}
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium">{typeName(rt)}</span>
+                          <span className="text-xs text-amber-500 font-mono">~{rt.est_cost} 🪙</span>
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-0.5 leading-relaxed">
+                          {typeDesc(rt)}
+                        </p>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <CreditCostTooltip cost={estCost}>
+                  <Button
+                    variant="gradient"
+                    className="w-full h-10"
+                    disabled={generateMutation.isPending}
+                    onClick={() => generateMutation.mutate()}
+                  >
+                    <Sparkles className="h-4 w-4 mr-2 shrink-0" />
+                    <span className="mr-1">{t('reports.generate')}</span>
+                    <span className="text-xs opacity-80">~{estCost}🪙</span>
+                  </Button>
+                </CreditCostTooltip>
+              </CardContent>
+            </Card>
+          )}
+
+          {generateMutation.isPending && (
+            <div className="space-y-3">
+              <Skeleton className="h-32 w-full rounded-xl" />
+              <Skeleton className="h-20 w-full rounded-xl" />
+            </div>
+          )}
+
+          {generateMutation.error && (
+            <Card>
+              <CardContent className="p-4">
+                <p className="text-sm text-destructive">Rapor oluşturulurken bir hata oluştu.</p>
+              </CardContent>
+            </Card>
+          )}
+
+          {generateMutation.data && (
+            <div className="space-y-3 animate-fadeIn">
+              <Card>
+                <CardContent className="p-4 space-y-3">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <FileText className="h-4 w-4 text-primary shrink-0" />
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium leading-snug">{generateMutation.data.title}</p>
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                          {generateMutation.data.type === 'quick_report'
+                            ? t('reports.quickReport') : t('reports.deepReport')}
+                          {' · '}
+                          {generateMutation.data.about}
+                        </p>
+                      </div>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="shrink-0"
+                      onClick={() => navigate(`/stocks/${generateMutation.data.about}`)}
+                    >
+                      <TrendingUp className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
+
+                  <div className="text-xs leading-relaxed space-y-1">
+                    {renderMarkdown(generateMutation.data.report)}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {generateMutation.data.sentiments?.length > 0 && (
+                <Card>
+                  <CardContent className="p-4 space-y-3">
+                    <div className="flex items-center gap-2">
+                      <ExternalLink className="h-4 w-4 text-primary" />
+                      <span className="text-sm font-medium">{t('reports.sentiments')}</span>
+                    </div>
+                    {generateMutation.data.sentiments.map((s, i) => (
+                      <div
+                        key={i}
+                        className={cn(
+                          'p-3 rounded-lg border text-xs space-y-1',
+                          sentimentColors[s.sentiment] || sentimentColors.neutral,
+                        )}
+                      >
+                        <div className="flex items-center gap-2">
+                          <Badge
+                            variant="outline"
+                            className={cn('text-[10px] px-1.5 py-0', sentimentBadge[s.sentiment])}
+                          >
+                            {s.sentiment === 'positive'
+                              ? t('reports.sentimentPositive')
+                              : s.sentiment === 'negative'
+                                ? t('reports.sentimentNegative')
+                                : t('reports.sentimentNeutral')}
+                          </Badge>
+                          <a
+                            href={s.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-muted-foreground hover:text-foreground ml-auto"
+                          >
+                            <ExternalLink className="h-3 w-3" />
+                          </a>
+                        </div>
+                        <p className="text-muted-foreground">{s.reasoning}</p>
+                      </div>
+                    ))}
+                  </CardContent>
+                </Card>
+              )}
+
+              <Card>
+                <CardContent className="p-4 space-y-1">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-muted-foreground flex items-center gap-1">
+                      <Coins className="h-3 w-3 text-amber-500" />
+                      {t('reports.cost')}
+                    </span>
+                    <span className="font-mono">{generateMutation.data.credits_spend.toFixed(2)} 🪙</span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-muted-foreground flex items-center gap-1">
+                      <Sparkles className="h-3 w-3" />
+                      {t('reports.tokens')}
+                    </span>
+                    <span className="font-mono">{generateMutation.data.token_usage.total.toLocaleString()}</span>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+        </>
+      ) : (
+        <>
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+            <Input
+              placeholder={t('reports.search')}
+              className="h-9 pl-9 text-sm"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+
+          {historyLoading ? (
+            <div className="space-y-2">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <Skeleton key={i} className="h-16 w-full rounded-xl" />
+              ))}
+            </div>
+          ) : history && history.length > 0 ? (
+            <div className="space-y-2">
+              {history.map((item) => {
+                const isExpanded = expandedId === item.id
+                return (
+                  <div key={item.id}>
+                    <Card
+                      className={cn(
+                        'transition-all duration-200 cursor-pointer',
+                        isExpanded && 'border-primary/30',
+                      )}
+                      onClick={() => setExpandedId(isExpanded ? null : item.id)}
+                    >
+                      <CardContent className="p-3.5">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-1.5">
+                              <Badge variant="outline" className="text-[10px] px-1.5 py-0 font-mono">
+                                {item.ticker}
+                              </Badge>
+                              <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+                                {item.type === 'quick_report' ? t('reports.quickReport') : t('reports.deepReport')}
+                              </Badge>
+                            </div>
+                            <p className="text-sm font-medium mt-1 leading-snug line-clamp-1">{item.title}</p>
+                            <p className="text-xs text-muted-foreground mt-0.5 flex items-center gap-1">
+                              <Clock className="h-3 w-3" />
+                              {formatDate(item.created_at)}
+                            </p>
+                          </div>
+                          {isExpanded ? (
+                            <ChevronUp className="h-4 w-4 text-primary shrink-0 mt-1" />
+                          ) : (
+                            <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0 mt-1" />
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {isExpanded && (
+                      <div className="animate-slideUp">
+                        {detailLoading ? (
+                          <Card className="border-t-0 rounded-t-none">
+                            <CardContent className="p-4 space-y-3">
+                              <Skeleton className="h-5 w-48" />
+                              <Skeleton className="h-4 w-full" />
+                              <Skeleton className="h-4 w-3/4" />
+                              <Skeleton className="h-20 w-full" />
+                            </CardContent>
+                          </Card>
+                        ) : reportDetail && reportDetail.report_id === item.id ? (
+                          <Card className="border-t-0 rounded-t-none border-primary/20">
+                            <CardContent className="p-4 space-y-3">
+                              <div className="flex items-start justify-between gap-2">
+                                <p className="text-sm font-medium">{reportDetail.title}</p>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="shrink-0 -mr-2 -mt-1"
+                                  onClick={() => navigate(`/stocks/${reportDetail.about}`)}
+                                >
+                                  <TrendingUp className="h-3.5 w-3.5" />
+                                </Button>
+                              </div>
+
+                              <div className="text-xs leading-relaxed space-y-1">
+                                {renderMarkdown(reportDetail.report)}
+                              </div>
+
+                              {reportDetail.sentiments?.length > 0 && (
+                                <div className="space-y-2 pt-2 border-t border-border">
+                                  <p className="text-xs font-medium flex items-center gap-1.5">
+                                    <ExternalLink className="h-3.5 w-3.5 text-primary" />
+                                    {t('reports.sentiments')}
+                                  </p>
+                                  {reportDetail.sentiments.map((s, i) => (
+                                    <div
+                                      key={i}
+                                      className={cn(
+                                        'p-2.5 rounded-lg border text-xs space-y-1',
+                                        sentimentColors[s.sentiment] || sentimentColors.neutral,
+                                      )}
+                                    >
+                                      <div className="flex items-center gap-2">
+                                        <Badge
+                                          variant="outline"
+                                          className={cn('text-[10px] px-1.5 py-0', sentimentBadge[s.sentiment])}
+                                        >
+                                          {s.sentiment === 'positive'
+                                            ? t('reports.sentimentPositive')
+                                            : s.sentiment === 'negative'
+                                              ? t('reports.sentimentNegative')
+                                              : t('reports.sentimentNeutral')}
+                                        </Badge>
+                                        <a href={s.url} target="_blank" rel="noopener noreferrer" className="ml-auto">
+                                          <ExternalLink className="h-3 w-3 text-muted-foreground hover:text-foreground" />
+                                        </a>
+                                      </div>
+                                      <p className="text-muted-foreground">{s.reasoning}</p>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+
+                              <div className="flex items-center justify-between text-xs pt-2 border-t border-border text-muted-foreground">
+                                <span className="flex items-center gap-1">
+                                  <Coins className="h-3 w-3 text-amber-500" />
+                                  {reportDetail.credits_spend.toFixed(2)} 🪙
+                                </span>
+                                <span className="flex items-center gap-1">
+                                  <Sparkles className="h-3 w-3" />
+                                  {reportDetail.token_usage.total.toLocaleString()} {t('reports.tokens')}
+                                </span>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ) : null}
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          ) : (
+            <Card>
+              <CardContent className="p-12 text-center text-muted-foreground text-sm">
+                {t('reports.noResults')}
+              </CardContent>
+            </Card>
+          )}
+        </>
+      )}
+    </div>
+  )
+}
