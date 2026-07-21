@@ -156,6 +156,10 @@ export interface ConfidenceInterval {
   days: number
 }
 
+export interface EstimateCostResponse {
+  cost: number
+}
+
 export interface SimulationResponse {
   probability: number
   confidence: {

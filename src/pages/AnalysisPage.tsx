@@ -11,9 +11,7 @@ import { CreditCostTooltip } from '@/components/shared/CreditCostTooltip'
 import { cn } from '@/lib/utils'
 import { Target, FlaskConical, BarChart3, Coins } from 'lucide-react'
 import api from '@/lib/api'
-import type { CompanyInfo, SimulationResponse } from '@/types/api'
-
-const SIMULATION_COST = 0.15
+import type { CompanyInfo, SimulationResponse, EstimateCostResponse } from '@/types/api'
 
 export default function AnalysisPage() {
   const { t } = useTranslation()
@@ -46,6 +44,20 @@ export default function AnalysisPage() {
     },
     enabled: run && !!ticker,
   })
+
+  const { data: costData } = useQuery({
+    queryKey: ['estimate-cost', ticker, days],
+    queryFn: async () => {
+      const res = await api.get(`/api/v1/simulations/estimate-cost/${ticker}`, {
+        params: { days },
+      })
+      return res.data as EstimateCostResponse
+    },
+    enabled: !!ticker,
+    staleTime: 30_000,
+  })
+
+  const simulationCost = costData?.cost ?? 0
 
   const currentPrice = info?.market.currentPrice
 
@@ -121,7 +133,7 @@ export default function AnalysisPage() {
               </Select>
             </div>
 
-            <CreditCostTooltip cost={SIMULATION_COST}>
+            <CreditCostTooltip cost={simulationCost}>
               <Button
                 variant="gradient"
                 className="w-full h-10"
@@ -129,7 +141,7 @@ export default function AnalysisPage() {
               >
                 <FlaskConical className="h-4 w-4 mr-2 shrink-0" />
                 <span className="mr-1">{t('analysis.calculate')}</span>
-                <span className="text-xs opacity-80">🪙 {SIMULATION_COST.toFixed(2)}</span>
+                <span className="text-xs opacity-80">🪙 {simulationCost.toFixed(3)}</span>
               </Button>
             </CreditCostTooltip>
           </CardContent>
