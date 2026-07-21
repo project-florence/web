@@ -11,7 +11,7 @@ import { CreditCostTooltip } from '@/components/shared/CreditCostTooltip'
 import { cn } from '@/lib/utils'
 import { Target, FlaskConical, BarChart3, Coins } from 'lucide-react'
 import api from '@/lib/api'
-import type { CompanyInfo, SimulationResponse, EstimateCostResponse } from '@/types/api'
+import type { CompanyInfo, SimulationResponse, PerDayCostResponse } from '@/types/api'
 
 export default function AnalysisPage() {
   const { t } = useTranslation()
@@ -45,19 +45,18 @@ export default function AnalysisPage() {
     enabled: run && !!ticker,
   })
 
-  const { data: costData } = useQuery({
-    queryKey: ['estimate-cost', ticker, days],
+  const { data: perDayCostData } = useQuery({
+    queryKey: ['per-day-cost'],
     queryFn: async () => {
-      const res = await api.get(`/api/v1/simulations/estimate-cost/${ticker}`, {
-        params: { days },
-      })
-      return res.data as EstimateCostResponse
+      const res = await api.get('/api/v1/simulations/per-day-cost')
+      return res.data as PerDayCostResponse
     },
-    enabled: !!ticker,
-    staleTime: 30_000,
+    staleTime: Infinity,
   })
 
-  const simulationCost = costData?.cost ?? 0
+  const simulationCost = perDayCostData
+    ? Number((days * perDayCostData.per_day_cost).toFixed(perDayCostData.round))
+    : 0
 
   const currentPrice = info?.market.currentPrice
 
