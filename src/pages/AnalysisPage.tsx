@@ -11,7 +11,7 @@ import { CreditCostTooltip } from '@/components/shared/CreditCostTooltip'
 import { cn } from '@/lib/utils'
 import { Target, FlaskConical, BarChart3, Coins } from 'lucide-react'
 import api from '@/lib/api'
-import type { CompanyInfo, SimulationResponse, PerDayCostResponse } from '@/types/api'
+import type { CompanyInfo, SimulationResponse, PerDayCostResponse, Credits } from '@/types/api'
 
 export default function AnalysisPage() {
   const { t } = useTranslation()
@@ -59,9 +59,20 @@ export default function AnalysisPage() {
     console.error('[AnalysisPage] per-day-cost query failed:', costError)
   }
 
+  const { data: credits } = useQuery({
+    queryKey: ['credits'],
+    queryFn: async () => {
+      const res = await api.get('/api/v1/credits')
+      return res.data as Credits
+    },
+    staleTime: 30_000,
+  })
+
   const simulationCost = perDayCostData
     ? Number((days * perDayCostData.per_day_cost).toFixed(perDayCostData.round))
     : 0
+
+  const insufficientCredits = credits !== undefined && simulationCost > credits.credits
 
   const currentPrice = info?.market.currentPrice
 
@@ -137,17 +148,34 @@ export default function AnalysisPage() {
               </Select>
             </div>
 
-            <CreditCostTooltip cost={simulationCost}>
-              <Button
-                variant="gradient"
-                className="w-full h-10"
-                onClick={() => setRun(true)}
-              >
-                <FlaskConical className="h-4 w-4 mr-2 shrink-0" />
-                <span className="mr-1">{t('analysis.calculate')}</span>
-                <span className="text-xs opacity-80">🪙 {perDayCostData ? simulationCost.toFixed(3) : '—'}</span>
-              </Button>
-            </CreditCostTooltip>
+            {insufficientCredits ? (
+              <div className="space-y-2">
+                <Button
+                  variant="outline"
+                  className="w-full h-10 border-destructive/50 text-destructive cursor-not-allowed"
+                  disabled
+                >
+                  <FlaskConical className="h-4 w-4 mr-2 shrink-0" />
+                  <span className="mr-1">{t('analysis.calculate')}</span>
+                  <span className="text-xs">🪙 {simulationCost.toFixed(3)}</span>
+                </Button>
+                <p className="text-xs text-destructive text-center">
+                  Yetersiz kredi. <span className="font-mono">₺{credits?.credits.toFixed(2) ?? '—'}</span> 🪙 mevcut
+                </p>
+              </div>
+            ) : (
+              <CreditCostTooltip cost={simulationCost}>
+                <Button
+                  variant="gradient"
+                  className="w-full h-10"
+                  onClick={() => setRun(true)}
+                >
+                  <FlaskConical className="h-4 w-4 mr-2 shrink-0" />
+                  <span className="mr-1">{t('analysis.calculate')}</span>
+                  <span className="text-xs opacity-80">🪙 {perDayCostData ? simulationCost.toFixed(3) : '—'}</span>
+                </Button>
+              </CreditCostTooltip>
+            )}
           </CardContent>
         </Card>
       )}
