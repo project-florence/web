@@ -162,7 +162,8 @@ export interface PerDayCostResponse {
 }
 
 export interface SimulationResponse {
-  probability: number
+  prob_above: number
+  prob_below: number
   confidence: {
     min: number
     max: number

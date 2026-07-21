@@ -244,26 +244,32 @@ export default function AnalysisPage() {
                 <Target className="h-4 w-4 text-primary" />
                 <span className="text-sm font-medium">Olasılık</span>
               </div>
-              <div className="text-center">
-                <span className={cn(
-                  'text-3xl font-bold',
-                  result.probability >= 0.7 ? 'text-success' : result.probability >= 0.4 ? 'text-amber-500' : 'text-destructive',
-                )}>
-                  %{(result.probability * 100).toFixed(2)}
-                </span>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {result.target ? `₺${result.target}` : 'Otomatik hedef'} fiyatına {result.days} günde ulaşma olasılığı
-                </p>
-              </div>
-              <div className="h-2 rounded-full bg-muted overflow-hidden">
-                <div
-                  className={cn(
-                    'h-full rounded-full transition-all duration-500',
-                    result.probability >= 0.7 ? 'bg-success' : result.probability >= 0.4 ? 'bg-amber-500' : 'bg-destructive',
-                  )}
-                  style={{ width: `${result.probability * 100}%` }}
-                />
-              </div>
+              {(() => {
+                const targetNum = result.target && result.target !== 'auto' ? Number(result.target) : null
+                const isAboveTarget = !targetNum || (currentPrice !== undefined && targetNum >= currentPrice)
+                const dp = isAboveTarget ? result.prob_above : result.prob_below
+                const pct = dp * 100
+                const labelDir = isAboveTarget ? 'ulaşma' : 'altına inme'
+                const good = isAboveTarget ? dp >= 0.7 : dp <= 0.3
+                const bad = isAboveTarget ? dp <= 0.3 : dp >= 0.7
+                const color = good ? 'text-success' : bad ? 'text-destructive' : 'text-amber-500'
+                const bar = good ? 'bg-success' : bad ? 'bg-destructive' : 'bg-amber-500'
+                return (
+                  <>
+                    <div className="text-center">
+                      <span className={cn('text-3xl font-bold', color)}>
+                        %{pct.toFixed(2)}
+                      </span>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {result.target ? `₺${result.target}` : 'Otomatik hedef'} fiyatına {result.days} günde {labelDir} olasılığı
+                      </p>
+                    </div>
+                    <div className="h-2 rounded-full bg-muted overflow-hidden">
+                      <div className={cn('h-full rounded-full transition-all duration-500', bar)} style={{ width: `${pct}%` }} />
+                    </div>
+                  </>
+                )
+              })()}
             </CardContent>
           </Card>
 
