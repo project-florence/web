@@ -7,7 +7,7 @@ import { CompanyCard } from '@/components/shared/CompanyCard'
 import { Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 import api from '@/lib/api'
-import type { FavoritesResponse, CompanySummary } from '@/types/api'
+import type { FavoritesResponse, CompanySummaryResponse } from '@/types/api'
 
 export default function WatchlistPage() {
   const { t } = useTranslation()
@@ -28,7 +28,7 @@ export default function WatchlistPage() {
       const res = await api.get('/api/v1/companies/summary', {
         params: { limit: 500, tickers: favorites!.join(',') },
       })
-      return res.data as CompanySummary[]
+      return (res.data as CompanySummaryResponse).data
     },
     enabled: !!favorites?.length,
     staleTime: 60_000,
