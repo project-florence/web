@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import { Card, CardContent } from '@/components/ui/card'
@@ -16,8 +17,9 @@ const SIMULATION_COST = 0.15
 
 export default function AnalysisPage() {
   const { t } = useTranslation()
+  const [searchParams] = useSearchParams()
 
-  const [ticker, setTicker] = useState('')
+  const [ticker, setTicker] = useState(searchParams.get('ticker') || '')
   const [days, setDays] = useState(30)
   const [target, setTarget] = useState('')
   const [bounds, setBounds] = useState('0.05')
@@ -125,8 +127,9 @@ export default function AnalysisPage() {
                 className="w-full h-10"
                 onClick={() => setRun(true)}
               >
-                <FlaskConical className="h-4 w-4 mr-2" />
-                {t('analysis.calculate')}
+                <FlaskConical className="h-4 w-4 mr-2 shrink-0" />
+                <span className="mr-1">{t('analysis.calculate')}</span>
+                <span className="text-xs opacity-80">🪙 {SIMULATION_COST.toFixed(2)}</span>
               </Button>
             </CreditCostTooltip>
           </CardContent>

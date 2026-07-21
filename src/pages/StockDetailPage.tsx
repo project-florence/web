@@ -7,7 +7,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
-import { ArrowLeft, TrendingUp, TrendingDown } from 'lucide-react'
+import { ArrowLeft, TrendingUp, TrendingDown, FlaskConical } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { StockChart } from '@/components/shared/StockChart'
 import { FavoriteButton } from '@/components/shared/FavoriteButton'
@@ -204,7 +204,15 @@ export default function StockDetailPage() {
           )}>{companyName}</p>
           {info?.sector && <p className="text-xs text-muted-foreground">{info.sector} · {info.industry}</p>}
         </div>
-        {ticker && <FavoriteButton ticker={ticker} />}
+        {ticker && (
+            <div className="flex items-center gap-2">
+              <FavoriteButton ticker={ticker} />
+              <Button variant="outline" size="sm" onClick={() => navigate(`/analysis?ticker=${ticker}`)}>
+                <FlaskConical className="h-4 w-4 mr-1" />
+                Simülasyon
+              </Button>
+            </div>
+          )}
       </div>
 
       {m && (
