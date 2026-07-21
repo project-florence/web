@@ -26,7 +26,9 @@
     "loginError": "Login failed",
     "registerError": "Registration failed",
     "loginSuccess": "Login successful",
-    "registerSuccess": "Registration successful"
+    "registerSuccess": "Registration successful",
+    "networkError": "Cannot connect to server. Please check your internet connection.",
+    "serverError": "Server error. Please try again later."
   },
   "dashboard": {
     "title": "Dashboard",

@@ -51,7 +51,13 @@ export default function LoginPage() {
       navigate('/', { replace: true })
     } catch (err) {
       const error = err as AxiosError<{ detail: string }>
-      toast.error(error.response?.data?.detail || t('auth.loginError'))
+      if (!error.response) {
+        toast.error(t('auth.networkError'))
+      } else if (error.response.status >= 500) {
+        toast.error(t('auth.serverError'))
+      } else {
+        toast.error(error.response.data?.detail || t('auth.loginError'))
+      }
     } finally {
       setLoading(false)
     }

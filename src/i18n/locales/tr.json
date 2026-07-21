@@ -26,7 +26,9 @@
     "loginError": "Giriş başarısız",
     "registerError": "Kayıt başarısız",
     "loginSuccess": "Giriş başarılı",
-    "registerSuccess": "Kayıt başarılı"
+    "registerSuccess": "Kayıt başarılı",
+    "networkError": "Sunucuya bağlanılamıyor. İnternet bağlantınızı kontrol edin.",
+    "serverError": "Sunucu hatası. Lütfen daha sonra tekrar deneyin."
   },
   "dashboard": {
     "title": "Genel Bakış",
