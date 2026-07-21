@@ -138,6 +138,25 @@ export interface NewsItem {
 
 export type ReportResult = string
 
+export interface IpoListItem {
+  id: number
+  slug: string
+  title: string
+  link: string
+  date: string
+  modified: string
+}
+
+export interface IpoDetail {
+  slug: string
+  ticker: string
+  company_name: string
+  info: Record<string, string>
+  sections: Record<string, string>
+  company: { city: string; founded: string }
+  updated_at: string
+}
+
 export interface FavoritesResponse {
   favorites: string[]
 }
