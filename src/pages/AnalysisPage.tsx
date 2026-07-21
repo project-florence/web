@@ -148,8 +148,8 @@ export default function AnalysisPage() {
               </Select>
             </div>
 
-            {insufficientCredits ? (
-              <div className="space-y-2">
+            <CreditCostTooltip cost={simulationCost}>
+              {insufficientCredits ? (
                 <Button
                   variant="outline"
                   className="w-full h-10 border-destructive/50 text-destructive cursor-not-allowed"
@@ -159,12 +159,7 @@ export default function AnalysisPage() {
                   <span className="mr-1">{t('analysis.calculate')}</span>
                   <span className="text-xs">🪙 {simulationCost.toFixed(3)}</span>
                 </Button>
-                <p className="text-xs text-destructive text-center">
-                  Yetersiz kredi. <span className="font-mono">₺{credits?.credits.toFixed(2) ?? '—'}</span> 🪙 mevcut
-                </p>
-              </div>
-            ) : (
-              <CreditCostTooltip cost={simulationCost}>
+              ) : (
                 <Button
                   variant="gradient"
                   className="w-full h-10"
@@ -174,8 +169,8 @@ export default function AnalysisPage() {
                   <span className="mr-1">{t('analysis.calculate')}</span>
                   <span className="text-xs opacity-80">🪙 {perDayCostData ? simulationCost.toFixed(3) : '—'}</span>
                 </Button>
-              </CreditCostTooltip>
-            )}
+              )}
+            </CreditCostTooltip>
           </CardContent>
         </Card>
       )}
