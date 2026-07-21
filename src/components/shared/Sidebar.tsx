@@ -84,7 +84,7 @@ export function Sidebar() {
           {t('nav.watchlist')}
         </NavLink>
         <NavLink
-          to="/analysis"
+          to="/simulation"
           className={({ isActive }) =>
             cn(
               'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group',
@@ -95,7 +95,7 @@ export function Sidebar() {
           }
         >
           <BarChart3 className="h-4 w-4 transition-transform duration-200 group-hover:scale-110" />
-          {t('nav.analysis')}
+          {t('nav.simulation')}
         </NavLink>
         <NavLink
           to="/advisor"

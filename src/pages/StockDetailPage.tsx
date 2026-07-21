@@ -207,7 +207,7 @@ export default function StockDetailPage() {
         {ticker && (
             <div className="flex items-center gap-2">
               <FavoriteButton ticker={ticker} />
-              <Button variant="outline" size="sm" onClick={() => navigate(`/analysis?ticker=${ticker}`)}>
+              <Button variant="outline" size="sm" onClick={() => navigate(`/simulation?ticker=${ticker}`)}>
                 <FlaskConical className="h-4 w-4 mr-1" />
                 Simülasyon
               </Button>

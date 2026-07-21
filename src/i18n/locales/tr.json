@@ -7,7 +7,7 @@
     "dashboard": "Genel Bakış",
     "stocks": "Hisseler",
     "watchlist": "Takip Listesi",
-    "analysis": "Analiz",
+    "simulation": "Simülasyon",
     "scout": "Yatırım Danışmanı",
     "ipos": "Halka Arzlar",
     "currency": "Döviz Kurları",
@@ -75,14 +75,9 @@
     "addSuccess": "Takip listenize eklendi",
     "removeSuccess": "Takip listenizden çıkarıldı"
   },
-  "analysis": {
-    "title": "Analiz",
-    "probabilitySimulation": "Olasılık Simülasyonu",
-    "confidenceInterval": "Güven Aralığı",
-    "days": "Gün",
-    "target": "Hedef Fiyat",
-    "bounds": "Sınırlar",
-    "calculate": "Hesapla"
+  "simulation": {
+    "title": "Simülasyon",
+    "calculate": "Simüle Et"
   },
   "scout": {
     "title": "Yatırım Danışmanı",

@@ -13,7 +13,7 @@ import { Target, FlaskConical, BarChart3, Coins } from 'lucide-react'
 import api from '@/lib/api'
 import type { CompanyInfo, SimulationResponse, PerDayCostResponse, Credits } from '@/types/api'
 
-export default function AnalysisPage() {
+export default function SimulationPage() {
   const { t } = useTranslation()
   const [searchParams] = useSearchParams()
 
@@ -56,7 +56,7 @@ export default function AnalysisPage() {
   })
 
   if (costError) {
-    console.error('[AnalysisPage] per-day-cost query failed:', costError)
+    console.error('[SimulationPage] per-day-cost query failed:', costError)
   }
 
   const { data: credits } = useQuery({
@@ -78,7 +78,7 @@ export default function AnalysisPage() {
 
   return (
     <div className="max-w-lg mx-auto space-y-6">
-      <h2 className="text-3xl font-bold tracking-tight">{t('analysis.title')}</h2>
+      <h2 className="text-3xl font-bold tracking-tight">{t('simulation.title')}</h2>
 
       <StockSearch
         onSelect={(t) => { setTicker(t); setRun(false) }}
@@ -202,7 +202,7 @@ export default function AnalysisPage() {
                   disabled
                 >
                   <FlaskConical className="h-4 w-4 mr-2 shrink-0" />
-                  <span className="mr-1">{t('analysis.calculate')}</span>
+                  <span className="mr-1">{t('simulation.calculate')}</span>
                   <span className="text-xs">🪙 {simulationCost.toFixed(3)}</span>
                 </Button>
               ) : (
@@ -212,7 +212,7 @@ export default function AnalysisPage() {
                   onClick={() => setRun(true)}
                 >
                   <FlaskConical className="h-4 w-4 mr-2 shrink-0" />
-                  <span className="mr-1">{t('analysis.calculate')}</span>
+                  <span className="mr-1">{t('simulation.calculate')}</span>
                   <span className="text-xs opacity-80">🪙 {perDayCostData ? simulationCost.toFixed(3) : '—'}</span>
                 </Button>
               )}

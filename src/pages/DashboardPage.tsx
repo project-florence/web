@@ -126,7 +126,7 @@ export default function DashboardPage() {
               <TrendingUp className="h-4 w-4 mr-1" />
               Hisse Ara
             </Button>
-            <Button variant="outline" size="sm" onClick={() => navigate('/analysis')}>
+            <Button variant="outline" size="sm" onClick={() => navigate('/simulation')}>
               <BarChart3 className="h-4 w-4 mr-1" />
               Analiz Yap
             </Button>

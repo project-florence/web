@@ -7,7 +7,7 @@
     "dashboard": "Dashboard",
     "stocks": "Stocks",
     "watchlist": "Watchlist",
-    "analysis": "Analysis",
+    "simulation": "Simulation",
     "scout": "Investment Advisor",
     "ipos": "IPOs",
     "currency": "Currency",
@@ -75,14 +75,9 @@
     "addSuccess": "Added to watchlist",
     "removeSuccess": "Removed from watchlist"
   },
-  "analysis": {
-    "title": "Analysis",
-    "probabilitySimulation": "Probability Simulation",
-    "confidenceInterval": "Confidence Interval",
-    "days": "Days",
-    "target": "Target Price",
-    "bounds": "Bounds",
-    "calculate": "Calculate"
+  "simulation": {
+    "title": "Simulation",
+    "calculate": "Simulate"
   },
   "scout": {
     "title": "Investment Advisor",

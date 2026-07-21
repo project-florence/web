@@ -12,7 +12,7 @@ const DashboardPage = lazy(() => import('@/pages/DashboardPage'))
 const StocksPage = lazy(() => import('@/pages/StocksPage'))
 const StockDetailPage = lazy(() => import('@/pages/StockDetailPage'))
 const WatchlistPage = lazy(() => import('@/pages/WatchlistPage'))
-const AnalysisPage = lazy(() => import('@/pages/AnalysisPage'))
+const SimulationPage = lazy(() => import('@/pages/SimulationPage'))
 const AdvisorPage = lazy(() => import('@/pages/AdvisorPage'))
 const IposPage = lazy(() => import('@/pages/IposPage'))
 const CurrencyPage = lazy(() => import('@/pages/CurrencyPage'))
@@ -57,7 +57,7 @@ export default function App() {
                 <Route path="stocks" element={<StocksPage />} />
                 <Route path="stocks/:ticker" element={<StockDetailPage />} />
                 <Route path="watchlist" element={<WatchlistPage />} />
-                <Route path="analysis" element={<AnalysisPage />} />
+                <Route path="simulation" element={<SimulationPage />} />
                 <Route path="advisor" element={<AdvisorPage />} />
                 <Route path="ipos" element={<IposPage />} />
                 <Route path="currency" element={<CurrencyPage />} />
