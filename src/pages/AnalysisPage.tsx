@@ -1,32 +1,29 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
+import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
-import { cn } from '@/lib/utils'
 import { StockSearch } from '@/components/shared/StockSearch'
-import { ArrowLeft, Target, BarChart3 } from 'lucide-react'
+import { CreditCostTooltip } from '@/components/shared/CreditCostTooltip'
+import { cn } from '@/lib/utils'
+import { Target, FlaskConical, BarChart3, Coins } from 'lucide-react'
 import api from '@/lib/api'
-import type { CompanyInfo } from '@/types/api'
+import type { CompanyInfo, SimulationResponse } from '@/types/api'
 
-type View = 'cards' | 'probability' | 'confidence'
+const SIMULATION_COST = 0.15
 
 export default function AnalysisPage() {
   const { t } = useTranslation()
 
-  const [view, setView] = useState<View>('cards')
   const [ticker, setTicker] = useState('')
   const [days, setDays] = useState(30)
   const [target, setTarget] = useState('')
-  const [bounds, setBounds] = useState('0.95')
+  const [bounds, setBounds] = useState('0.05')
+  const [run, setRun] = useState(false)
 
-  const [runProb, setRunProb] = useState(false)
-  const [runCi, setRunCi] = useState(false)
-
-  const { data: info, isLoading: infoLoading } = useQuery({
+  const { data: info } = useQuery({
     queryKey: ['company-info', ticker],
     queryFn: async () => {
       const res = await api.get(`/api/v1/companies/info/${ticker}`)
@@ -36,222 +33,192 @@ export default function AnalysisPage() {
     staleTime: 5 * 60_000,
   })
 
-  const { data: probResult, isLoading: probLoading, error: probError } = useQuery({
-    queryKey: ['probability', ticker, days, target],
+  const { data: result, isLoading, error } = useQuery({
+    queryKey: ['simulation', ticker, days, target, bounds],
     queryFn: async () => {
-      const res = await api.get(`/api/v1/simulations/probability/${ticker}`, {
-        params: { days, target },
-      })
-      return res.data as { percent: number; ticker: string; days: number; target: string }
+      const params: Record<string, string | number> = { days }
+      if (target) params.target = target
+      if (bounds) params.bounds = bounds
+      const res = await api.get(`/api/v1/simulations/${ticker}`, { params })
+      return res.data as SimulationResponse
     },
-    enabled: runProb && !!ticker && !!target,
-  })
-
-  const { data: ciResult, isLoading: ciLoading, error: ciError } = useQuery({
-    queryKey: ['confidence-interval', ticker, days, bounds],
-    queryFn: async () => {
-      const res = await api.get(`/api/v1/simulations/confidence-interval/${ticker}`, {
-        params: { days, bounds },
-      })
-      return res.data as { lower: number; upper: number; confidence: number; days: number }
-    },
-    enabled: runCi && !!ticker,
+    enabled: run && !!ticker,
   })
 
   const currentPrice = info?.market.currentPrice
 
-  const SimulationCard = ({
-    id,
-    icon: Icon,
-    title,
-    description,
-    children,
-  }: {
-    id: View
-    icon: typeof Target
-    title: string
-    description: string
-    children?: React.ReactNode
-  }) => {
-    const isExpanded = view === id
-
-    if (isExpanded) {
-      return (
-        <Card className="md:col-span-2 animate-slideUp">
-          <CardHeader className="flex flex-row items-center gap-3 pb-3">
-            <Button variant="ghost" size="sm" onClick={() => { setView('cards'); setRunProb(false); setRunCi(false) }}>
-              <ArrowLeft className="h-4 w-4 mr-1" />
-              {t('common.cancel')}
-            </Button>
-            <CardTitle className="text-lg">{title}</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {children}
-          </CardContent>
-        </Card>
-      )
-    }
-
-    return (
-      <Card
-        className="cursor-pointer hover:bg-muted/50 hover:-translate-y-0.5 hover:shadow-lg transition-all duration-200"
-        onClick={() => setView(id)}
-      >
-        <CardContent className="p-6">
-          <div className="flex items-center gap-3 mb-3">
-            <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
-              <Icon className="h-5 w-5 text-primary" />
-            </div>
-            <CardTitle className="text-base">{title}</CardTitle>
-          </div>
-          <p className="text-sm text-muted-foreground">{description}</p>
-        </CardContent>
-      </Card>
-    )
-  }
-
   return (
-    <div className="space-y-6">
+    <div className="max-w-lg mx-auto space-y-6">
       <h2 className="text-3xl font-bold tracking-tight">{t('analysis.title')}</h2>
 
-      {view === 'cards' && (
-        <div className="max-w-sm">
-          <StockSearch
-            onSelect={(t) => setTicker(t)}
-            placeholder="Hisse seçin..."
-          />
-        </div>
-      )}
+      <StockSearch
+        onSelect={(t) => { setTicker(t); setRun(false) }}
+        placeholder="Hisse seçin..."
+      />
 
       {ticker && (
-        <div className="flex items-center gap-3 flex-wrap">
-          <span className="font-mono font-bold text-primary text-lg">{ticker}</span>
-          {infoLoading && <Skeleton className="h-5 w-20" />}
-          {currentPrice && (
-            <span className="text-sm text-muted-foreground">
-              Güncel Fiyat: <span className="font-semibold text-foreground">₺{currentPrice.toFixed(2)}</span>
-            </span>
-          )}
-          {view !== 'cards' && (
-            <span className="text-xs text-muted-foreground">
-              {days} gün
-            </span>
-          )}
+        <Card>
+          <CardContent className="p-4 space-y-4">
+            <div className="flex items-center justify-between">
+              <span className="font-mono font-bold text-primary text-lg">{ticker}</span>
+              {currentPrice && (
+                <span className="text-sm text-muted-foreground">
+                  Güncel: <span className="font-semibold text-foreground">₺{currentPrice.toFixed(2)}</span>
+                </span>
+              )}
+            </div>
+
+            <div>
+              <label className="text-xs font-medium text-muted-foreground mb-1.5 block">
+                Vade: {days} gün
+              </label>
+              <input
+                type="range"
+                min={1}
+                max={365}
+                value={days}
+                onChange={(e) => setDays(Number(e.target.value))}
+                className="w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer accent-primary"
+              />
+              <div className="flex justify-between text-[10px] text-muted-foreground mt-0.5">
+                <span>1 gün</span>
+                <span>365 gün</span>
+              </div>
+            </div>
+
+            <div>
+              <label className="text-xs font-medium text-muted-foreground mb-1.5 block">
+                Hedef Fiyat (opsiyonel)
+              </label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">₺</span>
+                <input
+                  type="number"
+                  step="0.01"
+                  placeholder={currentPrice ? `Otomatik: ₺${(currentPrice * 1.1).toFixed(2)}` : 'Otomatik (güncel+%10)'}
+                  value={target}
+                  onChange={(e) => setTarget(e.target.value)}
+                  className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-7"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="text-xs font-medium text-muted-foreground mb-1.5 block">
+                Güven Aralığı
+              </label>
+              <Select value={bounds} onValueChange={(v) => v && setBounds(v)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="0.05">%90 (varsayılan)</SelectItem>
+                  <SelectItem value="0.025">%95</SelectItem>
+                  <SelectItem value="0.005">%99</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <CreditCostTooltip cost={SIMULATION_COST}>
+              <Button
+                variant="gradient"
+                className="w-full h-10"
+                onClick={() => setRun(true)}
+              >
+                <FlaskConical className="h-4 w-4 mr-2" />
+                {t('analysis.calculate')}
+              </Button>
+            </CreditCostTooltip>
+          </CardContent>
+        </Card>
+      )}
+
+      {isLoading && (
+        <div className="space-y-3">
+          <Skeleton className="h-28 w-full rounded-xl" />
+          <Skeleton className="h-20 w-full rounded-xl" />
         </div>
       )}
 
-      {ticker && view === 'cards' && (
-        <div className="max-w-md">
-          <label className="text-sm font-medium mb-1 block">Gün Sayısı: {days}</label>
-          <input
-            type="range"
-            min={1}
-            max={100}
-            value={days}
-            onChange={(e) => setDays(Number(e.target.value))}
-            className="w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer accent-primary"
-          />
-          <div className="flex justify-between text-xs text-muted-foreground mt-1">
-            <span>1 gün</span>
-            <span>100 gün</span>
-          </div>
-        </div>
+      {error && !isLoading && (
+        <Card>
+          <CardContent className="p-4">
+            <p className="text-sm text-destructive">Simülasyon sırasında bir hata oluştu.</p>
+          </CardContent>
+        </Card>
       )}
 
-      <div className="grid gap-6 md:grid-cols-2">
-        <SimulationCard
-          id="probability"
-          icon={Target}
-          title={t('analysis.probabilitySimulation')}
-          description="Seçilen hissenin belirtilen gün içinde hedef fiyata ulaşma olasılığını Monte Carlo simülasyonu ile hesaplar."
-        >
-          <div className="space-y-4">
-            <Input
-              placeholder="Hedef fiyat (₺)"
-              type="number"
-              step="0.01"
-              value={target}
-              onChange={(e) => setTarget(e.target.value)}
-            />
-        <Button
-          variant="gradient"
-          onClick={() => setRunProb(true)}
-          className="w-full"
-          disabled={!target}
-        >
-          {t('analysis.calculate')}
-        </Button>
-            {probLoading && <Skeleton className="h-16 w-full" />}
-            {probError && (
-              <p className="text-sm text-destructive">Hesaplama sırasında bir hata oluştu.</p>
-            )}
-            {probResult && (
-              <div className={cn(
-                'p-4 rounded-lg border',
-                probResult.percent >= 0.5
-                  ? 'border-success bg-success/10'
-                  : 'border-destructive bg-destructive/10',
-              )}>
-                <p className="text-2xl font-bold text-center">
-                  %{(probResult.percent * 100).toFixed(2)}
-                </p>
-                <p className="text-xs text-muted-foreground text-center mt-1">
-                  {probResult.target}₺ hedefine {probResult.days} günde ulaşma olasılığı
+      {result && (
+        <div className="space-y-3 animate-fadeIn">
+          <Card>
+            <CardContent className="p-4 space-y-3">
+              <div className="flex items-center gap-2">
+                <Target className="h-4 w-4 text-primary" />
+                <span className="text-sm font-medium">Olasılık</span>
+              </div>
+              <div className="text-center">
+                <span className={cn(
+                  'text-3xl font-bold',
+                  result.probability >= 0.7 ? 'text-success' : result.probability >= 0.4 ? 'text-amber-500' : 'text-destructive',
+                )}>
+                  %{(result.probability * 100).toFixed(2)}
+                </span>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {result.target ? `₺${result.target}` : 'Otomatik hedef'} fiyatına {result.days} günde ulaşma olasılığı
                 </p>
               </div>
-            )}
-          </div>
-        </SimulationCard>
+              <div className="h-2 rounded-full bg-muted overflow-hidden">
+                <div
+                  className={cn(
+                    'h-full rounded-full transition-all duration-500',
+                    result.probability >= 0.7 ? 'bg-success' : result.probability >= 0.4 ? 'bg-amber-500' : 'bg-destructive',
+                  )}
+                  style={{ width: `${result.probability * 100}%` }}
+                />
+              </div>
+            </CardContent>
+          </Card>
 
-        <SimulationCard
-          id="confidence"
-          icon={BarChart3}
-          title={t('analysis.confidenceInterval')}
-          description="Seçilen hissenin belirtilen gün içinde hangi fiyat aralığında olacağını istatistiksel olarak tahmin eder."
-        >
-          <div className="space-y-4">
-            <Select value={bounds} onValueChange={(v) => v && setBounds(v)}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="0.90">%90</SelectItem>
-                <SelectItem value="0.95">%95</SelectItem>
-                <SelectItem value="0.99">%99</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button
-              variant="gradient"
-              onClick={() => setRunCi(true)}
-              className="w-full"
-            >
-              {t('analysis.calculate')}
-            </Button>
-            {ciLoading && <Skeleton className="h-16 w-full" />}
-            {ciError && (
-              <p className="text-sm text-destructive">Hesaplama sırasında bir hata oluştu.</p>
-            )}
-            {ciResult && (
-              <div className="p-4 bg-muted rounded-lg">
-                <div className="flex items-center justify-center gap-4 text-center">
-                  <div>
-                    <p className="text-xs text-muted-foreground">Alt</p>
-                    <p className="text-xl font-bold text-destructive">₺{ciResult.lower.toFixed(2)}</p>
-                  </div>
-                  <div className="h-8 w-px bg-border" />
-                  <div>
-                    <p className="text-xs text-muted-foreground">Üst</p>
-                    <p className="text-xl font-bold text-success">₺{ciResult.upper.toFixed(2)}</p>
-                  </div>
+          <Card>
+            <CardContent className="p-4 space-y-3">
+              <div className="flex items-center gap-2">
+                <BarChart3 className="h-4 w-4 text-primary" />
+                <span className="text-sm font-medium">%{Math.round(result.confidence.percent * 100)} Güven Aralığı</span>
+              </div>
+              <div className="flex items-center justify-center gap-4 text-center">
+                <div>
+                  <p className="text-xs text-muted-foreground">Alt</p>
+                  <p className="text-xl font-bold text-destructive">₺{result.confidence.min.toFixed(2)}</p>
                 </div>
-                <p className="text-xs text-muted-foreground text-center mt-2">
-                  %{(ciResult.confidence * 100).toFixed(0)} güven aralığı · {ciResult.days} gün
-                </p>
+                <div className="h-10 w-px bg-border" />
+                <div>
+                  <p className="text-xs text-muted-foreground">Üst</p>
+                  <p className="text-xl font-bold text-success">₺{result.confidence.max.toFixed(2)}</p>
+                </div>
               </div>
-            )}
-          </div>
-        </SimulationCard>
-      </div>
+              <p className="text-xs text-muted-foreground text-center">
+                bounds: {result.bounds} · {result.days} gün
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="p-4 space-y-1">
+              <div className="flex items-center justify-between text-sm">
+                <div className="flex items-center gap-1.5">
+                  <Coins className="h-4 w-4 text-amber-500" />
+                  <span className="text-muted-foreground">Harcanan</span>
+                </div>
+                <span className="font-mono font-semibold">{result.credits_spend.toFixed(2)} 🪙</span>
+              </div>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">Kalan</span>
+                <span className="font-mono font-semibold">{result.remaining_credits.toFixed(2)} 🪙</span>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
   )
 }

@@ -156,6 +156,23 @@ export interface ConfidenceInterval {
   days: number
 }
 
+export interface SimulationResponse {
+  probability: number
+  confidence: {
+    min: number
+    max: number
+    percent: number
+    days: number
+    bounds: string
+  }
+  ticker: string
+  days: number
+  target: string | null
+  bounds: string
+  credits_spend: number
+  remaining_credits: number
+}
+
 export interface StockFitResult {
   ticker: string
   vector: [number, number, number]
