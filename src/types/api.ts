@@ -18,6 +18,11 @@ export interface BistCompany {
   company_id: string
 }
 
+export interface CompanySummaryResponse {
+  data: CompanySummary[]
+  total: number
+}
+
 export interface CompanySummary {
   ticker: string
   name: string

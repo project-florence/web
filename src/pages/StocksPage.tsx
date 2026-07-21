@@ -11,7 +11,7 @@ import { CompanyCard } from '@/components/shared/CompanyCard'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useNavStore } from '@/stores/navStore'
 import api from '@/lib/api'
-import type { CompanySummary } from '@/types/api'
+import type { CompanySummaryResponse } from '@/types/api'
 
 const PER_PAGE = 50
 
@@ -34,15 +34,16 @@ export default function StocksPage() {
       const res = await api.get('/api/v1/companies/summary', {
         params: { limit: PER_PAGE, offset, sort: 'popular' },
       })
-      return res.data as CompanySummary[]
+      return res.data as CompanySummaryResponse
     },
     staleTime: 5 * 60_000,
     gcTime: 10 * 60_000,
     placeholderData: (prev) => prev,
   })
 
-  const companies = data ?? []
-  const isLastPage = companies.length < PER_PAGE
+  const companies = data?.data ?? []
+  const totalPages = data ? Math.ceil(data.total / PER_PAGE) : 0
+  const isLastPage = page >= totalPages
 
   return (
     <div className="space-y-6">
@@ -69,7 +70,7 @@ export default function StocksPage() {
               <ChevronLeft className="h-4 w-4" />
             </Button>
             <span className="text-sm text-muted-foreground min-w-[5rem] text-center">
-              Sayfa {page}
+              {data ? `${page}/${totalPages}` : `Sayfa ${page}`}
             </span>
             <Button
               variant="outline"
