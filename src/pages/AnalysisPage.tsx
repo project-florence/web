@@ -131,27 +131,49 @@ export default function AnalysisPage() {
                 />
               </div>
               {currentPrice && (
-                <div className="flex gap-1 flex-wrap">
-                  {[10, 20, 30].map((pct) => (
-                    <button
-                      key={pct}
-                      type="button"
-                      onClick={() => { setTarget((currentPrice * (1 + pct / 100)).toFixed(2)); setRun(false) }}
-                      className="text-xs px-2 py-0.5 rounded-md border border-success/30 bg-success/10 text-success hover:bg-success/20 transition-colors"
-                    >
-                      +%{pct}
-                    </button>
-                  ))}
-                  {[10, 20, 30].map((pct) => (
-                    <button
-                      key={-pct}
-                      type="button"
-                      onClick={() => { setTarget((currentPrice * (1 - pct / 100)).toFixed(2)); setRun(false) }}
-                      className="text-xs px-2 py-0.5 rounded-md border border-destructive/30 bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors"
-                    >
-                      -%{pct}
-                    </button>
-                  ))}
+                <div className="flex items-center justify-center gap-1">
+                  <button
+                    type="button"
+                    onClick={() => { setTarget((currentPrice * 0.7).toFixed(2)); setRun(false) }}
+                    className="text-sm px-2.5 py-1 rounded-md border border-destructive/30 bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors"
+                  >
+                    -%30
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setTarget((currentPrice * 0.8).toFixed(2)); setRun(false) }}
+                    className="text-sm px-2.5 py-1 rounded-md border border-destructive/30 bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors"
+                  >
+                    -%20
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setTarget((currentPrice * 0.9).toFixed(2)); setRun(false) }}
+                    className="text-sm px-2.5 py-1 rounded-md border border-destructive/30 bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors"
+                  >
+                    -%10
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setTarget((currentPrice * 1.1).toFixed(2)); setRun(false) }}
+                    className="text-sm px-2.5 py-1 rounded-md border border-success/30 bg-success/10 text-success hover:bg-success/20 transition-colors"
+                  >
+                    +%10
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setTarget((currentPrice * 1.2).toFixed(2)); setRun(false) }}
+                    className="text-sm px-2.5 py-1 rounded-md border border-success/30 bg-success/10 text-success hover:bg-success/20 transition-colors"
+                  >
+                    +%20
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setTarget((currentPrice * 1.3).toFixed(2)); setRun(false) }}
+                    className="text-sm px-2.5 py-1 rounded-md border border-success/30 bg-success/10 text-success hover:bg-success/20 transition-colors"
+                  >
+                    +%30
+                  </button>
                 </div>
               )}
             </div>
