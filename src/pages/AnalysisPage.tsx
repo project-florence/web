@@ -130,6 +130,30 @@ export default function AnalysisPage() {
                   className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-7"
                 />
               </div>
+              {currentPrice && (
+                <div className="flex gap-1 flex-wrap">
+                  {[10, 20, 30].map((pct) => (
+                    <button
+                      key={pct}
+                      type="button"
+                      onClick={() => { setTarget((currentPrice * (1 + pct / 100)).toFixed(2)); setRun(false) }}
+                      className="text-xs px-2 py-0.5 rounded-md border border-success/30 bg-success/10 text-success hover:bg-success/20 transition-colors"
+                    >
+                      +%{pct}
+                    </button>
+                  ))}
+                  {[10, 20, 30].map((pct) => (
+                    <button
+                      key={-pct}
+                      type="button"
+                      onClick={() => { setTarget((currentPrice * (1 - pct / 100)).toFixed(2)); setRun(false) }}
+                      className="text-xs px-2 py-0.5 rounded-md border border-destructive/30 bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors"
+                    >
+                      -%{pct}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
             <div>
