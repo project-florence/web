@@ -28,7 +28,7 @@ export function CreditCostTooltip({
       <TooltipContent side="top">
         <div className="flex items-center gap-1.5 text-xs">
           <Coins className="h-3.5 w-3.5 text-amber-500 shrink-0" />
-          {cost.toFixed(2)} 🪙 harcanır · Kalan: {credits?.credits?.toFixed(2) ?? '—'}
+          {cost > 0 ? `${cost.toFixed(3)} 🪙 harcanır` : '🪙 —'} · Kalan: {credits?.credits?.toFixed(2) ?? '—'}
         </div>
       </TooltipContent>
     </Tooltip>

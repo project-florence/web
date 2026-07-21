@@ -45,14 +45,19 @@ export default function AnalysisPage() {
     enabled: run && !!ticker,
   })
 
-  const { data: perDayCostData } = useQuery({
+  const { data: perDayCostData, error: costError } = useQuery({
     queryKey: ['per-day-cost'],
     queryFn: async () => {
       const res = await api.get('/api/v1/simulations/per-day-cost')
       return res.data as PerDayCostResponse
     },
     staleTime: Infinity,
+    retry: 2,
   })
+
+  if (costError) {
+    console.error('[AnalysisPage] per-day-cost query failed:', costError)
+  }
 
   const simulationCost = perDayCostData
     ? Number((days * perDayCostData.per_day_cost).toFixed(perDayCostData.round))
@@ -140,7 +145,7 @@ export default function AnalysisPage() {
               >
                 <FlaskConical className="h-4 w-4 mr-2 shrink-0" />
                 <span className="mr-1">{t('analysis.calculate')}</span>
-                <span className="text-xs opacity-80">🪙 {simulationCost.toFixed(3)}</span>
+                <span className="text-xs opacity-80">🪙 {perDayCostData ? simulationCost.toFixed(3) : '—'}</span>
               </Button>
             </CreditCostTooltip>
           </CardContent>
