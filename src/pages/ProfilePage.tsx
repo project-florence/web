@@ -10,14 +10,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Separator } from '@/components/ui/separator'
 import { toast } from 'sonner'
-import { LogOut, Coins, User, Key, Download, Trash2, ArrowLeft, Settings, Palette, Globe } from 'lucide-react'
+import { LogOut, User, Key, Download, Trash2, ArrowLeft, Settings, Palette, Globe } from 'lucide-react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useAuthStore } from '@/stores/authStore'
 import { useThemeStore } from '@/stores/themeStore'
 import { themes } from '@/config/themes'
 import type { ThemeName } from '@/config/themes'
 import api from '@/lib/api'
-import type { Profile, Credits } from '@/types/api'
+import type { Profile } from '@/types/api'
+import { CreditDisplay } from '@/components/shared/CreditDisplay'
 
 export default function ProfilePage() {
   const { t, i18n } = useTranslation()
@@ -31,14 +32,6 @@ export default function ProfilePage() {
     queryFn: async () => {
       const res = await api.get('/api/v1/profile')
       return res.data as Profile
-    },
-  })
-
-  const { data: credits } = useQuery({
-    queryKey: ['credits'],
-    queryFn: async () => {
-      const res = await api.get('/api/v1/credits')
-      return res.data as Credits
     },
   })
 
@@ -147,16 +140,8 @@ export default function ProfilePage() {
           </CardContent>
         </Card>
         <Card className="transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-amber-500/5">
-          <CardContent className="p-5 flex items-center gap-4">
-            <div className="h-12 w-12 rounded-full bg-amber-500/10 flex items-center justify-center">
-              <Coins className="h-6 w-6 text-amber-500" />
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground">{t('profile.credits')}</p>
-              <p className="text-2xl font-bold text-amber-500">
-                {credits?.credits ?? profile?.credits ?? '—'}
-              </p>
-            </div>
+          <CardContent className="p-5">
+            <CreditDisplay size="lg" />
           </CardContent>
         </Card>
       </div>
