@@ -19,14 +19,26 @@ export default function IposPage() {
   const [tab, setTab] = useState<Tab>('active')
   const [expandedSlug, setExpandedSlug] = useState<string | null>(null)
 
-  const { data: list, isLoading: listLoading } = useQuery({
-    queryKey: ['ipos', tab],
+  const activeQuery = useQuery({
+    queryKey: ['ipos', 'active'],
     queryFn: async () => {
-      const res = await api.get(`/api/v1/ipos/${tab}`)
+      const res = await api.get('/api/v1/ipos/active')
       return res.data as IpoListItem[]
     },
     staleTime: 60_000,
   })
+
+  const draftQuery = useQuery({
+    queryKey: ['ipos', 'draft'],
+    queryFn: async () => {
+      const res = await api.get('/api/v1/ipos/draft')
+      return res.data as IpoListItem[]
+    },
+    staleTime: 60_000,
+  })
+
+  const list = tab === 'active' ? activeQuery.data : draftQuery.data
+  const listLoading = tab === 'active' ? activeQuery.isLoading : draftQuery.isLoading
 
   const { data: detail, isLoading: detailLoading } = useQuery({
     queryKey: ['ipo-detail', expandedSlug],
@@ -94,9 +106,9 @@ export default function IposPage() {
           >
             <tabItem.icon className="h-4 w-4 mr-1.5" />
             {tabItem.label}
-            {list && (
-              <span className="ml-1 text-xs opacity-70">({list.length})</span>
-            )}
+            <span className="ml-1 text-xs opacity-70">
+              ({tabItem.key === 'active' ? activeQuery.data?.length ?? '?' : draftQuery.data?.length ?? '?'})
+            </span>
           </Button>
         ))}
       </div>

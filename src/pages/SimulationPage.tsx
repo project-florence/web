@@ -1,7 +1,7 @@
-import { useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { useSearchParams, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -9,12 +9,14 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { StockSearch } from '@/components/shared/StockSearch'
 import { CreditCostTooltip } from '@/components/shared/CreditCostTooltip'
 import { cn } from '@/lib/utils'
-import { Target, FlaskConical, BarChart3, Coins } from 'lucide-react'
+import { Target, FlaskConical, BarChart3, Coins, TrendingUp } from 'lucide-react'
 import api from '@/lib/api'
 import type { CompanyInfo, SimulationResponse, PerDayCostResponse, Credits } from '@/types/api'
 
 export default function SimulationPage() {
   const { t } = useTranslation()
+  const navigate = useNavigate()
+  const queryClient = useQueryClient()
   const [searchParams] = useSearchParams()
 
   const [ticker, setTicker] = useState(searchParams.get('ticker') || '')
@@ -44,6 +46,12 @@ export default function SimulationPage() {
     },
     enabled: run && !!ticker,
   })
+
+  useEffect(() => {
+    if (result) {
+      queryClient.invalidateQueries({ queryKey: ['credits'] })
+    }
+  }, [result, queryClient])
 
   const { data: perDayCostData, error: costError } = useQuery({
     queryKey: ['per-day-cost'],
@@ -311,6 +319,15 @@ export default function SimulationPage() {
               </div>
             </CardContent>
           </Card>
+
+          <Button
+            variant="outline"
+            className="w-full h-10"
+            onClick={() => navigate(`/stocks/${result.ticker}`)}
+          >
+            <TrendingUp className="h-4 w-4 mr-2" />
+            {result.ticker} Hisse Detayı
+          </Button>
         </div>
       )}
     </div>

@@ -1,7 +1,5 @@
 import { Coins } from 'lucide-react'
-import { useQuery } from '@tanstack/react-query'
-import api from '@/lib/api'
-import type { Credits } from '@/types/api'
+import { useCredits } from '@/hooks/useCredits'
 import { cn } from '@/lib/utils'
 
 export function CreditDisplay({
@@ -9,16 +7,7 @@ export function CreditDisplay({
 }: {
   size?: 'sm' | 'lg'
 }) {
-  const { data: credits } = useQuery({
-    queryKey: ['credits'],
-    queryFn: async () => {
-      const res = await api.get('/api/v1/credits')
-      return res.data as Credits
-    },
-    staleTime: 30_000,
-  })
-
-  const balance = credits?.credits
+  const { balance } = useCredits()
 
   if (size === 'lg') {
     return (
