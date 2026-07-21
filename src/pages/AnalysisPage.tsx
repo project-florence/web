@@ -95,7 +95,7 @@ export default function AnalysisPage() {
                 min={1}
                 max={365}
                 value={days}
-                onChange={(e) => setDays(Number(e.target.value))}
+                onChange={(e) => { setDays(Number(e.target.value)); setRun(false) }}
                 className="w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer accent-primary"
               />
               <div className="flex justify-between text-[10px] text-muted-foreground mt-0.5">
@@ -115,7 +115,7 @@ export default function AnalysisPage() {
                   step="0.01"
                   placeholder={currentPrice ? `Otomatik: ₺${(currentPrice * 1.1).toFixed(2)}` : 'Otomatik (güncel+%10)'}
                   value={target}
-                  onChange={(e) => setTarget(e.target.value)}
+                  onChange={(e) => { setTarget(e.target.value); setRun(false) }}
                   className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-7"
                 />
               </div>
@@ -125,7 +125,7 @@ export default function AnalysisPage() {
               <label className="text-xs font-medium text-muted-foreground mb-1.5 block">
                 Güven Aralığı
               </label>
-              <Select value={bounds} onValueChange={(v) => v && setBounds(v)}>
+              <Select value={bounds} onValueChange={(v) => { if (v) { setBounds(v); setRun(false) } }}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
