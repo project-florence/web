@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback, type KeyboardEvent } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import { Input } from '@/components/ui/input'
 import { Search, TrendingUp, Building2 } from 'lucide-react'
@@ -14,6 +15,7 @@ interface StockSearchProps {
 }
 
 export function StockSearch({ onSelect, placeholder, className, autoFocus }: StockSearchProps) {
+  const { t } = useTranslation()
   const [query, setQuery] = useState('')
   const [debouncedQuery, setDebouncedQuery] = useState('')
   const [isOpen, setIsOpen] = useState(false)
@@ -99,7 +101,7 @@ export function StockSearch({ onSelect, placeholder, className, autoFocus }: Sto
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none" />
         <Input
           ref={inputRef}
-          placeholder={placeholder || 'Hisse veya şirket adı ile ara... (Örn: THYAO, Türk Hava, SASA)'}
+          placeholder={placeholder || t('stocks.search')}
           className="h-12 pl-12 pr-4 text-base rounded-xl border-2 focus-visible:ring-2"
           value={query}
           onChange={(e) => handleChange(e.target.value)}
@@ -145,7 +147,7 @@ export function StockSearch({ onSelect, placeholder, className, autoFocus }: Sto
           {visible.length === 0 && debouncedQuery && (
             <div className="flex items-center gap-3 px-4 py-3 text-sm text-muted-foreground">
               <Building2 className="h-4 w-4" />
-              Sonuç bulunamadı
+              {t('common.noData')}
             </div>
           )}
         </div>
