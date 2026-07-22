@@ -1,3 +1,9 @@
+export interface UserPreferences {
+  layout: 'default' | import('./widget').WidgetLayout[]
+  theme: 'default' | string
+  language: 'default' | string
+}
+
 export interface RateEntry {
   Buying: string
   Selling: string

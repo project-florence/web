@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@import "react-grid-layout/css/styles.css";
+@import "react-resizable/css/styles.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -137,3 +139,25 @@
 .animate-delay-300 { animation-delay: 0.3s; }
 .animate-delay-400 { animation-delay: 0.4s; }
 .animate-delay-500 { animation-delay: 0.5s; }
+
+/* react-grid-layout dark theme */
+.react-grid-item.react-grid-placeholder {
+  background: rgba(37, 99, 235, 0.2) !important;
+  border-radius: 0.5rem;
+  z-index: 1;
+}
+.react-grid-item > .react-resizable-handle {
+  z-index: 10;
+}
+.react-grid-item > .react-resizable-handle::after {
+  border-color: var(--primary) !important;
+}
+.react-grid-item.react-draggable-dragging {
+  z-index: 100;
+  transition: none;
+  opacity: 0.85;
+}
+.react-grid-item.resizing {
+  z-index: 100;
+  opacity: 0.9;
+}
