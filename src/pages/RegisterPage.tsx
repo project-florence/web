@@ -103,10 +103,14 @@ export default function RegisterPage() {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<RegisterForm>({
     resolver: zodResolver(registerSchema),
   })
+
+  const formValues = watch()
+  const formFilled = formValues.username?.trim() && formValues.email?.trim() && formValues.password?.trim()
 
   const onSubmit = async (data: RegisterForm) => {
     if (!allAccepted) {
@@ -198,7 +202,7 @@ export default function RegisterPage() {
                 ))}
               </div>
 
-              <Button type="submit" variant="gradient" className="w-full" disabled={loading || !allAccepted}>
+              <Button type="submit" variant="gradient" className="w-full" disabled={loading || !allAccepted || !formFilled}>
                 {loading ? t('common.loading') : t('auth.register')}
               </Button>
             </form>
