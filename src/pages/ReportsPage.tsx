@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
 import ReactMarkdown from 'react-markdown'
-import { FileText, Search, Sparkles, TrendingUp, ExternalLink, ChevronDown, ChevronUp, Coins, Clock } from 'lucide-react'
+import { FileText, Search, Sparkles, TrendingUp, ExternalLink, ChevronRight, Coins, Clock } from 'lucide-react'
 import { StockSearch } from '@/components/shared/StockSearch'
 import { CreditCostTooltip } from '@/components/shared/CreditCostTooltip'
 import api from '@/lib/api'
@@ -38,7 +38,6 @@ export default function ReportsPage() {
   const [tab, setTab] = useState<Tab>('new')
   const [ticker, setTicker] = useState(searchParams.get('ticker') || '')
   const [reportType, setReportType] = useState('quick_report')
-  const [expandedId, setExpandedId] = useState<number | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [debouncedSearch, setDebouncedSearch] = useState('')
 
@@ -394,59 +393,34 @@ export default function ReportsPage() {
             </div>
           ) : history && history.length > 0 ? (
             <div className="space-y-2">
-              {history.map((item) => {
-                const isExpanded = expandedId === item.id
-                return (
-                  <div key={item.id}>
-                    <Card
-                      className={cn(
-                        'transition-all duration-200 cursor-pointer',
-                        isExpanded && 'border-primary/30',
-                      )}
-                      onClick={() => setExpandedId(isExpanded ? null : item.id)}
-                    >
-                      <CardContent className="p-3.5">
-                        <div className="flex items-start justify-between gap-2">
-                          <div className="min-w-0 flex-1">
-                            <div className="flex items-center gap-1.5">
-                              <Badge variant="outline" className="text-[10px] px-1.5 py-0 font-mono">
-                                {item.ticker}
-                              </Badge>
-                              <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
-                                {item.type === 'quick_report' ? t('reports.quickReport') : t('reports.deepReport')}
-                              </Badge>
-                            </div>
-                            <p className="text-sm font-medium mt-1 leading-snug line-clamp-1">{item.title}</p>
-                            <p className="text-xs text-muted-foreground mt-0.5 flex items-center gap-1">
-                              <Clock className="h-3 w-3" />
-                              {formatDate(item.created_at)}
-                            </p>
-                          </div>
-                          {isExpanded ? (
-                            <ChevronUp className="h-4 w-4 text-primary shrink-0 mt-1" />
-                          ) : (
-                            <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0 mt-1" />
-                          )}
+              {history.map((item) => (
+                <Card
+                  key={item.id}
+                  className="transition-all duration-200 cursor-pointer hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/5"
+                  onClick={() => navigate(`/reports/${item.id}`)}
+                >
+                  <CardContent className="p-3.5">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-1.5">
+                          <Badge variant="outline" className="text-[10px] px-1.5 py-0 font-mono">
+                            {item.ticker}
+                          </Badge>
+                          <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+                            {item.type === 'quick_report' ? t('reports.quickReport') : t('reports.deepReport')}
+                          </Badge>
                         </div>
-                      </CardContent>
-                    </Card>
-
-                    {isExpanded && (
-                      <div className="animate-slideUp px-3.5 pb-3.5 -mt-px">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="w-full"
-                          onClick={() => navigate(`/reports/${item.id}`)}
-                        >
-                          <FileText className="h-3.5 w-3.5 mr-1.5" />
-                          Detayı Görüntüle
-                        </Button>
+                        <p className="text-sm font-medium mt-1 leading-snug line-clamp-1">{item.title}</p>
+                        <p className="text-xs text-muted-foreground mt-0.5 flex items-center gap-1">
+                          <Clock className="h-3 w-3" />
+                          {formatDate(item.created_at)}
+                        </p>
                       </div>
-                    )}
-                  </div>
-                )
-              })}
+                      <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0 mt-1" />
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
           ) : (
             <Card>

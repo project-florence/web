@@ -38,11 +38,20 @@ export default function ReportDetailPage() {
     staleTime: 5 * 60_000,
   })
 
-  const download = (ftype: 'md' | 'pdf' | 'docx') => {
-    const a = document.createElement('a')
-    a.href = `/api/v1/reports/download?report_id=${id}&ftype=${ftype}`
-    a.download = `${detail?.about ?? 'report'}.${ftype}`
-    a.click()
+  const download = async (ftype: 'md' | 'pdf' | 'docx') => {
+    try {
+      const res = await api.post(`/api/v1/reports/download?report_id=${id}&ftype=${ftype}`, undefined, {
+        responseType: 'blob',
+      })
+      const url = URL.createObjectURL(res.data as Blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `${detail?.about ?? 'report'}.${ftype}`
+      a.click()
+      URL.revokeObjectURL(url)
+    } catch {
+      // ignore download error
+    }
   }
 
   const lang = i18n.language === 'tr' ? 'tr' : 'en'
@@ -217,15 +226,16 @@ export default function ReportDetailPage() {
           </Card>
 
           <Card>
-            <CardContent className="p-4 space-y-2">
-              <div className="flex items-center gap-2 text-xs font-medium">
+            <CardContent className="p-4 space-y-1 text-xs text-muted-foreground">
+              <div className="flex items-center gap-1.5">
                 <FileText className="h-3.5 w-3.5 text-primary" />
-                {t('reports.detail')}
+                <span className="font-medium text-foreground">{detail.about}</span>
               </div>
-              <div className="text-xs text-muted-foreground space-y-1">
-                <p>{t('reports.type')}: {detail.type === 'quick_report' ? t('reports.quickReport') : t('reports.deepReport')}</p>
-                <p>{t('reports.days')}: {detail.about}</p>
-              </div>
+              <p className="pt-1">{detail.type === 'quick_report' ? t('reports.quickReport') : t('reports.deepReport')}</p>
+              <p className="flex items-center gap-1">
+                <Clock className="h-3 w-3" />
+                {formatDate(detail.created_at)}
+              </p>
             </CardContent>
           </Card>
         </div>
