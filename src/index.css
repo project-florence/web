@@ -141,6 +141,9 @@
 .animate-delay-500 { animation-delay: 0.5s; }
 
 /* react-grid-layout dark theme */
+.react-grid-item {
+  transition: none !important;
+}
 .react-grid-item.react-grid-placeholder {
   background: rgba(37, 99, 235, 0.2) !important;
   border-radius: 0.5rem;
