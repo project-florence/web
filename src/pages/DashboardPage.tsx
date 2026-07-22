@@ -134,8 +134,8 @@ export default function DashboardPage() {
         <h2 className="text-3xl font-bold tracking-tight">{t('dashboard.title')}</h2>
       </div>
 
-      <div className="flex gap-4 flex-col lg:flex-row">
-        <Card className="flex-1 bg-gradient-to-br from-primary/5 to-transparent border-primary/10">
+      <div className="relative">
+        <Card className="bg-gradient-to-br from-primary/5 to-transparent border-primary/10">
           <CardContent className="p-6 flex items-center justify-between flex-wrap gap-4">
             <div>
               <div className="flex items-center gap-2 mb-1">
@@ -160,7 +160,9 @@ export default function DashboardPage() {
             </div>
           </CardContent>
         </Card>
-        <DateTimeWidget />
+        <div className="absolute -right-2 -top-2 z-10">
+          <DateTimeWidget />
+        </div>
       </div>
 
       <Card>
