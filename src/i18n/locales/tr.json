@@ -41,7 +41,20 @@
     "macroeconomy": "Makroekonomi",
     "inflation": "Enflasyon",
     "interest": "Faiz Oranı",
-    "unemployment": "İşsizlik"
+    "unemployment": "İşsizlik",
+    "usaGdp": "ABD GSYİH",
+    "usaRealGdp": "ABD Reel GSYİH",
+    "usaFedFundsRate": "ABD Fed Faizi",
+    "usaUnemployment": "ABD İşsizlik",
+    "usaCpi": "ABD TÜFE",
+    "usaTenYearTreasury": "ABD 10 Yıllık Tahvil",
+    "usaSp500": "S&P 500",
+    "usaNasdaq": "NASDAQ",
+    "brentOil": "Brent Petrol",
+    "wtiOil": "WTI Petrol",
+    "dxy": "Dolar Endeksi",
+    "vix": "VIX",
+    "bitcoin": "Bitcoin"
   },
   "stocks": {
     "title": "Hisseler",

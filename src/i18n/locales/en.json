@@ -41,7 +41,20 @@
     "macroeconomy": "Macroeconomy",
     "inflation": "Inflation",
     "interest": "Interest Rate",
-    "unemployment": "Unemployment"
+    "unemployment": "Unemployment",
+    "usaGdp": "US GDP",
+    "usaRealGdp": "US Real GDP",
+    "usaFedFundsRate": "US Fed Funds Rate",
+    "usaUnemployment": "US Unemployment",
+    "usaCpi": "US CPI",
+    "usaTenYearTreasury": "US 10Y Treasury",
+    "usaSp500": "S&P 500",
+    "usaNasdaq": "NASDAQ",
+    "brentOil": "Brent Crude",
+    "wtiOil": "WTI Crude",
+    "dxy": "DXY",
+    "vix": "VIX",
+    "bitcoin": "Bitcoin"
   },
   "stocks": {
     "title": "Stocks",
