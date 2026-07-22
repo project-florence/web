@@ -29,7 +29,8 @@
     "loginSuccess": "Login successful",
     "registerSuccess": "Registration successful",
     "networkError": "Cannot connect to server. Please check your internet connection.",
-    "serverError": "Server error. Please try again later."
+    "serverError": "Server error. Please try again later.",
+    "acceptPolicies": "You must accept all policies to continue"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -194,6 +195,14 @@
     "search": "Search",
     "filter": "Filter",
     "disclaimer": "This is not investment advice and does not take into account your personal circumstances. It is not a recommendation to buy, sell or hold any asset."
+  },
+  "legal": {
+    "terms": "Terms of Service",
+    "privacyPolicy": "Privacy Policy",
+    "cookiePolicy": "Cookie Policy",
+    "disclaimer": "Disclaimer",
+    "accept": "I have read and agree",
+    "lastUpdated": "Last Updated"
   },
   "time": {
     "today": "Today",

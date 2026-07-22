@@ -5,13 +5,78 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { toast } from 'sonner'
+import { useQuery } from '@tanstack/react-query'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
+import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Globe, ExternalLink } from 'lucide-react'
 import api from '@/lib/api'
 import type { AxiosError } from 'axios'
 import bgImage from '@/assets/background/login_background.png'
 import florenceLogo from '@/assets/florence_logo.svg'
+
+const POLICIES = ['terms', 'privacy_policy', 'cookie_policy', 'disclaimer'] as const
+type Policy = (typeof POLICIES)[number]
+
+const POLICY_LABEL_KEY: Record<Policy, string> = {
+  terms: 'legal.terms',
+  privacy_policy: 'legal.privacyPolicy',
+  cookie_policy: 'legal.cookiePolicy',
+  disclaimer: 'legal.disclaimer',
+}
+
+interface LegalResponse {
+  policy: string
+  lang: string
+  last_updated: string
+  content: string
+}
+
+function PolicyViewer({ policy, onClose }: { policy: Policy | null; onClose: () => void }) {
+  const { t, i18n } = useTranslation()
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['legal', policy, i18n.language],
+    queryFn: async () => {
+      const res = await api.get('/api/v1/legal', { params: { policy, lang: i18n.language } })
+      return res.data as LegalResponse
+    },
+    enabled: !!policy,
+  })
+
+  return (
+    <Dialog open={!!policy} onOpenChange={(open) => { if (!open) onClose() }}>
+      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>{policy ? t(POLICY_LABEL_KEY[policy]) : ''}</DialogTitle>
+          {data?.last_updated && (
+            <DialogDescription>
+              {t('legal.lastUpdated')}: {data.last_updated}
+            </DialogDescription>
+          )}
+        </DialogHeader>
+        {isLoading ? (
+          <div className="space-y-3">
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-5/6" />
+            <Skeleton className="h-4 w-4/6" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-3/6" />
+          </div>
+        ) : error ? (
+          <p className="text-sm text-destructive">{t('common.error')}</p>
+        ) : (
+          <div className="text-sm whitespace-pre-wrap leading-relaxed">
+            {data?.content}
+          </div>
+        )}
+      </DialogContent>
+    </Dialog>
+  )
+}
 
 const registerSchema = z.object({
   username: z.string().min(3, 'En az 3 karakter'),
@@ -22,9 +87,18 @@ const registerSchema = z.object({
 type RegisterForm = z.infer<typeof registerSchema>
 
 export default function RegisterPage() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
+  const [accepted, setAccepted] = useState<Record<Policy, boolean>>({
+    terms: false,
+    privacy_policy: false,
+    cookie_policy: false,
+    disclaimer: false,
+  })
+  const [viewingPolicy, setViewingPolicy] = useState<Policy | null>(null)
+
+  const allAccepted = Object.values(accepted).every(Boolean)
 
   const {
     register,
@@ -35,6 +109,10 @@ export default function RegisterPage() {
   })
 
   const onSubmit = async (data: RegisterForm) => {
+    if (!allAccepted) {
+      toast.error(t('auth.acceptPolicies'))
+      return
+    }
     setLoading(true)
     try {
       await api.post('/api/v1/auth/register', data)
@@ -95,19 +173,60 @@ export default function RegisterPage() {
                   <p className="text-sm text-destructive mt-1">{errors.password.message}</p>
                 )}
               </div>
-              <Button type="submit" variant="gradient" className="w-full" disabled={loading}>
+
+              <div className="border-t border-border/40 pt-4 space-y-3">
+                {POLICIES.map((policy) => (
+                  <label key={policy} className="flex items-start gap-2 cursor-pointer group">
+                    <input
+                      type="checkbox"
+                      checked={accepted[policy]}
+                      onChange={() => setAccepted((prev) => ({ ...prev, [policy]: !prev[policy] }))}
+                      className="mt-0.5 h-4 w-4 accent-primary shrink-0"
+                    />
+                    <span className="text-xs text-muted-foreground group-hover:text-foreground transition-colors">
+                      <button
+                        type="button"
+                        onClick={() => setViewingPolicy(policy)}
+                        className="text-primary hover:underline inline-flex items-center gap-1"
+                      >
+                        {t(POLICY_LABEL_KEY[policy])}
+                        <ExternalLink className="h-3 w-3" />
+                      </button>{' '}
+                      {t('legal.accept')}
+                    </span>
+                  </label>
+                ))}
+              </div>
+
+              <Button type="submit" variant="gradient" className="w-full" disabled={loading || !allAccepted}>
                 {loading ? t('common.loading') : t('auth.register')}
               </Button>
             </form>
+
             <p className="text-center text-sm text-muted-foreground mt-4">
               {t('auth.hasAccount')}{' '}
               <Link to="/login" className="text-primary hover:underline">
                 {t('auth.login')}
               </Link>
             </p>
+
+            <div className="mt-6 pt-4 border-t border-border/40 flex items-center justify-center gap-2">
+              <Globe className="h-4 w-4 text-muted-foreground" />
+              <Select value={i18n.language} onValueChange={(v) => v && i18n.changeLanguage(v)}>
+                <SelectTrigger className="w-32">
+                  <span>{i18n.language === 'tr' ? 'Türkçe' : 'English'}</span>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="tr">Türkçe</SelectItem>
+                  <SelectItem value="en">English</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </CardContent>
         </Card>
       </div>
+
+      <PolicyViewer policy={viewingPolicy} onClose={() => setViewingPolicy(null)} />
     </div>
   )
 }

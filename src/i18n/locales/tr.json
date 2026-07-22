@@ -29,7 +29,8 @@
     "loginSuccess": "Giriş başarılı",
     "registerSuccess": "Kayıt başarılı",
     "networkError": "Sunucuya bağlanılamıyor. İnternet bağlantınızı kontrol edin.",
-    "serverError": "Sunucu hatası. Lütfen daha sonra tekrar deneyin."
+    "serverError": "Sunucu hatası. Lütfen daha sonra tekrar deneyin.",
+    "acceptPolicies": "Devam etmek için tüm politikaları kabul etmelisiniz"
   },
   "dashboard": {
     "title": "Genel Bakış",
@@ -194,6 +195,14 @@
     "search": "Ara",
     "filter": "Filtrele",
     "disclaimer": "Bu bir yatırım tavsiyesi değildir. Kişisel durumunuzu dikkate almaz. Herhangi bir varlığı almak, satmak veya elde tutmak için bir tavsiye niteliği taşımaz."
+  },
+  "legal": {
+    "terms": "Kullanım Koşulları",
+    "privacyPolicy": "Gizlilik Politikası",
+    "cookiePolicy": "Çerez Politikası",
+    "disclaimer": "Yasal Uyarı",
+    "accept": "Okudum ve kabul ediyorum",
+    "lastUpdated": "Son Güncelleme"
   },
   "time": {
     "today": "Bugün",
