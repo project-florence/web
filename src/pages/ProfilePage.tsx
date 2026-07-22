@@ -8,7 +8,6 @@ import { Input } from '@/components/ui/input'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { Separator } from '@/components/ui/separator'
 import { toast } from 'sonner'
 import { LogOut, User, Key, Download, Trash2, ArrowLeft, Settings, Palette, Globe } from 'lucide-react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -220,6 +219,20 @@ export default function ProfilePage() {
               </Button>
             </CardContent>
           </Card>
+          <div className="pt-2">
+            <Button
+              variant="outline"
+              size="sm"
+              className="text-muted-foreground hover:text-destructive hover:border-destructive/30 hover:bg-destructive/5 transition-all duration-200"
+              onClick={() => {
+                logout()
+                navigate('/login', { replace: true })
+              }}
+            >
+              <LogOut className="h-4 w-4 mr-1.5" />
+              {t('nav.logout')}
+            </Button>
+          </div>
         </TabsContent>
 
         <TabsContent value="security" className="mt-4">
@@ -382,20 +395,6 @@ export default function ProfilePage() {
           </Card>
         </TabsContent>
       </Tabs>
-
-      <Separator />
-
-      <Button
-        variant="outline"
-        className="w-full text-muted-foreground hover:text-destructive hover:border-destructive/30 hover:bg-destructive/5 transition-all duration-200"
-        onClick={() => {
-          logout()
-          navigate('/login', { replace: true })
-        }}
-      >
-        <LogOut className="h-4 w-4 mr-2" />
-        {t('nav.logout')}
-      </Button>
     </div>
   )
 }
