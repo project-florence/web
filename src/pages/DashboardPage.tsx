@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -6,8 +7,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Badge } from '@/components/ui/badge'
 import { useQuery } from '@tanstack/react-query'
 import { cn } from '@/lib/utils'
-import { TrendingUp, TrendingDown, Search, BarChart3, Sparkles, Star, ChevronRight } from 'lucide-react'
-import { DateTimeWidget } from '@/components/shared/DateTimeWidget'
+import { TrendingUp, TrendingDown, Search, BarChart3, Sparkles, Star, ChevronRight, Clock } from 'lucide-react'
 import api from '@/lib/api'
 import type { CompanySummary, FavoritesResponse } from '@/types/api'
 
@@ -74,6 +74,12 @@ function StatCard({ title, value, change, loading }: {
 export default function DashboardPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const [now, setNow] = useState(new Date())
+
+  useEffect(() => {
+    const timer = setInterval(() => setNow(new Date()), 30_000)
+    return () => clearInterval(timer)
+  }, [])
 
   const { data: rates, isLoading: ratesLoading } = useQuery({
     queryKey: ['rates'],
@@ -134,8 +140,8 @@ export default function DashboardPage() {
         <h2 className="text-3xl font-bold tracking-tight">{t('dashboard.title')}</h2>
       </div>
 
-      <div className="relative pb-[280px]">
-        <Card className="bg-gradient-to-br from-primary/5 to-transparent border-primary/10">
+      <div className="flex gap-4 items-start flex-col sm:flex-row">
+        <Card className="flex-1 bg-gradient-to-br from-primary/5 to-transparent border-primary/10">
           <CardContent className="p-6 flex items-center justify-between flex-wrap gap-4">
             <div>
               <div className="flex items-center gap-2 mb-1">
@@ -160,8 +166,14 @@ export default function DashboardPage() {
             </div>
           </CardContent>
         </Card>
-        <div className="absolute -right-2 -top-2 z-10">
-          <DateTimeWidget />
+        <div className="flex items-center gap-2 text-muted-foreground shrink-0 pt-2 sm:pt-6">
+          <Clock className="h-4 w-4" />
+          <span className="text-sm tabular-nums">
+            {now.toLocaleDateString('tr-TR', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })}
+          </span>
+          <span className="text-sm font-semibold tabular-nums">
+            {now.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}
+          </span>
         </div>
       </div>
 
