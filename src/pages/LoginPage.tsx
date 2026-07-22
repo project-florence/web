@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select'
+import { Globe } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -22,7 +24,7 @@ const loginSchema = z.object({
 type LoginForm = z.infer<typeof loginSchema>
 
 export default function LoginPage() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const navigate = useNavigate()
   const setToken = useAuthStore((s) => s.setToken)
   const [loading, setLoading] = useState(false)
@@ -110,6 +112,18 @@ export default function LoginPage() {
                 {t('auth.register')}
               </Link>
             </p>
+            <div className="mt-6 pt-4 border-t border-border/40 flex items-center justify-center gap-2">
+              <Globe className="h-4 w-4 text-muted-foreground" />
+              <Select value={i18n.language} onValueChange={(v) => v && i18n.changeLanguage(v)}>
+                <SelectTrigger className="w-32">
+                  <span>{i18n.language === 'tr' ? 'Türkçe' : 'English'}</span>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="tr">Türkçe</SelectItem>
+                  <SelectItem value="en">English</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </CardContent>
         </Card>
       </div>
