@@ -11,7 +11,7 @@ import { CreditCostTooltip } from '@/components/shared/CreditCostTooltip'
 import { cn } from '@/lib/utils'
 import { Target, FlaskConical, BarChart3, Coins, TrendingUp } from 'lucide-react'
 import api from '@/lib/api'
-import type { CompanyInfo, SimulationResponse, PerDayCostResponse, Credits } from '@/types/api'
+import type { CompanyInfo, SimulationResponse, PerDayCostResponse, Credits, SimulationHistoryItem, SimulationHistoryDetail } from '@/types/api'
 
 export default function SimulationPage() {
   const { t } = useTranslation()
@@ -24,6 +24,8 @@ export default function SimulationPage() {
   const [target, setTarget] = useState('')
   const [bounds, setBounds] = useState('0.05')
   const [run, setRun] = useState(false)
+  const [tab, setTab] = useState<'simulate' | 'history'>('simulate')
+  const [expandedId, setExpandedId] = useState<number | null>(null)
 
   const { data: info } = useQuery({
     queryKey: ['company-info', ticker],
@@ -82,12 +84,44 @@ export default function SimulationPage() {
 
   const insufficientCredits = credits !== undefined && simulationCost > credits.credits
 
+  const { data: historyList, isLoading: historyLoading } = useQuery({
+    queryKey: ['simulation-history'],
+    queryFn: async () => {
+      const res = await api.get('/api/v1/simulations/history', { params: { limit: 50, offset: 0 } })
+      return res.data as SimulationHistoryItem[]
+    },
+    staleTime: 30_000,
+  })
+
+  const { data: historyDetail, isLoading: detailLoading } = useQuery({
+    queryKey: ['simulation-history-detail', expandedId],
+    queryFn: async () => {
+      const res = await api.get(`/api/v1/simulations/history/${expandedId}`)
+      return res.data as SimulationHistoryDetail
+    },
+    enabled: !!expandedId,
+    staleTime: 5 * 60_000,
+  })
+
   const currentPrice = info?.market.currentPrice
 
   return (
     <div className="max-w-lg mx-auto space-y-6">
       <h2 className="text-3xl font-bold tracking-tight">{t('simulation.title')}</h2>
 
+      <div className="flex gap-2">
+        <Button variant={tab === 'simulate' ? 'gradient' : 'outline'} size="sm" onClick={() => setTab('simulate')}>
+          <FlaskConical className="h-4 w-4 mr-1.5" />
+          Simülasyon
+        </Button>
+        <Button variant={tab === 'history' ? 'gradient' : 'outline'} size="sm" onClick={() => setTab('history')}>
+          <BarChart3 className="h-4 w-4 mr-1.5" />
+          Geçmiş
+        </Button>
+      </div>
+
+      {tab === 'simulate' && (
+      <>
       <StockSearch
         onSelect={(t) => { setTicker(t); setRun(false) }}
         placeholder="Hisse seçin..."
@@ -329,6 +363,132 @@ export default function SimulationPage() {
             {result.ticker} Hisse Detayı
           </Button>
         </div>
+      )}
+      </>
+      )}
+
+      {tab === 'history' && (
+        <>
+          {historyLoading ? (
+            <div className="space-y-3">
+              {Array.from({ length: 2 }).map((_, i) => (
+                <Skeleton key={i} className="h-16 w-full rounded-xl" />
+              ))}
+            </div>
+          ) : historyList && historyList.length > 0 ? (
+            <div className="space-y-2">
+              {historyList.map((item) => {
+                const isExpanded = expandedId === item.id
+                return (
+                  <div key={item.id}>
+                    <Card
+                      className={cn(
+                        'transition-all duration-200 cursor-pointer',
+                        isExpanded && 'border-primary/30',
+                      )}
+                      onClick={() => setExpandedId(isExpanded ? null : item.id)}
+                    >
+                      <CardContent className="p-3.5">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-1.5">
+                              <span className="font-mono font-bold text-primary text-sm">{item.ticker}</span>
+                              <span className="text-xs text-muted-foreground">{item.days} gün · bounds: {item.bounds}</span>
+                            </div>
+                            <p className="text-xs text-muted-foreground mt-0.5">
+                              {new Date(item.created_at).toLocaleDateString('tr-TR', {
+                                day: 'numeric', month: 'short', year: 'numeric',
+                                hour: '2-digit', minute: '2-digit',
+                              })}
+                            </p>
+                          </div>
+                          <div className="text-right shrink-0">
+                            <span className="text-xs text-amber-500 font-mono">{item.cost.toFixed(2)} 🪙</span>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {isExpanded && (
+                      <div className="animate-slideUp">
+                        {detailLoading ? (
+                          <Card className="border-t-0 rounded-t-none">
+                            <CardContent className="p-4 space-y-3">
+                              <Skeleton className="h-5 w-32" />
+                              <Skeleton className="h-4 w-full" />
+                              <Skeleton className="h-16 w-full" />
+                            </CardContent>
+                          </Card>
+                        ) : historyDetail && historyDetail.id === item.id ? (
+                          <Card className="border-t-0 rounded-t-none border-primary/20">
+                            <CardContent className="p-4 space-y-3">
+                              <div className="flex items-center justify-between">
+                                <span className="text-sm font-medium">Sonuçlar</span>
+                                <Button variant="ghost" size="sm" onClick={() => navigate(`/stocks/${historyDetail.ticker}`)}>
+                                  <TrendingUp className="h-3.5 w-3.5" />
+                                </Button>
+                              </div>
+
+                              {(() => {
+                                const targetNum = historyDetail.target && historyDetail.target !== 'auto' ? Number(historyDetail.target) : null
+                                const isAbove = !targetNum
+                                const dp = isAbove ? historyDetail.result.prob_above : historyDetail.result.prob_below
+                                const pct = dp * 100
+                                const good = isAbove ? dp >= 0.7 : dp <= 0.3
+                                const bad = isAbove ? dp <= 0.3 : dp >= 0.7
+                                const color = good ? 'text-success' : bad ? 'text-destructive' : 'text-amber-500'
+                                const bar = good ? 'bg-success' : bad ? 'bg-destructive' : 'bg-amber-500'
+                                return (
+                                  <>
+                                    <div className="text-center">
+                                      <span className={cn('text-2xl font-bold', color)}>%{pct.toFixed(2)}</span>
+                                      <p className="text-xs text-muted-foreground mt-0.5">
+                                        {isAbove ? 'yukarı yönlü' : 'aşağı yönlü'} olasılık · {historyDetail.days} gün
+                                      </p>
+                                    </div>
+                                    <div className="h-1.5 rounded-full bg-muted overflow-hidden">
+                                      <div className={cn('h-full rounded-full', bar)} style={{ width: `${pct}%` }} />
+                                    </div>
+                                  </>
+                                )
+                              })()}
+
+                              <div className="flex items-center justify-center gap-4 text-center text-xs pt-2 border-t border-border">
+                                <div>
+                                  <p className="text-muted-foreground">Alt</p>
+                                  <p className="font-bold text-destructive">₺{historyDetail.result.confidence.min.toFixed(2)}</p>
+                                </div>
+                                <div className="h-8 w-px bg-border" />
+                                <div>
+                                  <p className="text-muted-foreground">Üst</p>
+                                  <p className="font-bold text-success">₺{historyDetail.result.confidence.max.toFixed(2)}</p>
+                                </div>
+                              </div>
+
+                              <div className="flex items-center justify-between text-xs border-t border-border pt-2 text-muted-foreground">
+                                <span className="flex items-center gap-1">
+                                  <Coins className="h-3 w-3 text-amber-500" />
+                                  {historyDetail.cost.toFixed(2)} 🪙
+                                </span>
+                                <span>{new Date(historyDetail.created_at).toLocaleDateString('tr-TR')}</span>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ) : null}
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          ) : (
+            <Card>
+              <CardContent className="p-12 text-center text-muted-foreground text-sm">
+                Henüz simülasyon geçmişiniz bulunmuyor.
+              </CardContent>
+            </Card>
+          )}
+        </>
       )}
     </div>
   )

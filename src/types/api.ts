@@ -239,6 +239,37 @@ export interface PerDayCostResponse {
   round: number
 }
 
+export interface SimulationHistoryItem {
+  id: number
+  ticker: string
+  days: number
+  bounds: string
+  target: string | null
+  cost: number
+  created_at: string
+}
+
+export interface SimulationHistoryDetail {
+  id: number
+  ticker: string
+  days: number
+  bounds: string
+  target: string | null
+  result: {
+    prob_above: number
+    prob_below: number
+    confidence: {
+      min: number
+      max: number
+      percent: number
+      days: number
+      bounds: string
+    }
+  }
+  cost: number
+  created_at: string
+}
+
 export interface SimulationResponse {
   prob_above: number
   prob_below: number
