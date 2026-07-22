@@ -18,6 +18,7 @@ import { cn } from '@/lib/utils'
 import { useNavStore } from '@/stores/navStore'
 import { CreditDisplay } from '@/components/shared/CreditDisplay'
 import type { MouseEvent } from 'react'
+import florenceLogo from '@/assets/florence_logo.svg'
 
 const navItems = [
   { to: '/', icon: LayoutDashboard, labelKey: 'nav.dashboard', end: true, activeCheck: (p: string) => p === '/' },
@@ -66,9 +67,7 @@ export function Sidebar() {
         }}
       >
         <div className={cn('flex items-center gap-2 px-2 py-4 mb-4', collapsed && 'justify-center px-0')}>
-          <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center shrink-0">
-            <span className="text-primary-foreground font-bold text-sm">F</span>
-          </div>
+          <img src={florenceLogo} alt="Florence" className="h-8 w-8 shrink-0" />
           {!collapsed && (
             <>
               <span className="font-semibold text-lg">{t('app.name')}</span>

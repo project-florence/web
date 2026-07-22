@@ -11,6 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import api from '@/lib/api'
 import type { AxiosError } from 'axios'
 import bgImage from '@/assets/background/login_background.png'
+import florenceLogo from '@/assets/florence_logo.svg'
 
 const registerSchema = z.object({
   username: z.string().min(3, 'En az 3 karakter'),
@@ -56,9 +57,7 @@ export default function RegisterPage() {
       <div className="relative z-10 w-full max-w-md animate-fadeIn">
         <Card className="w-full bg-card/60 backdrop-blur-xl border border-white/5 shadow-2xl animate-slideUp">
           <CardHeader className="text-center">
-            <div className="mx-auto h-14 w-14 rounded-xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center mb-4 shadow-lg shadow-primary/20 animate-pulse-glow">
-              <span className="text-primary-foreground font-bold text-xl">F</span>
-            </div>
+            <img src={florenceLogo} alt="Florence" className="mx-auto h-14 w-14 mb-4" />
             <CardTitle className="text-2xl">{t('auth.register')}</CardTitle>
             <CardDescription>{t('app.tagline')}</CardDescription>
           </CardHeader>
