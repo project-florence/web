@@ -11,6 +11,7 @@ import { ArrowLeft, TrendingUp, TrendingDown, FlaskConical, FileText, Download }
 import { cn } from '@/lib/utils'
 import { StockSearch } from '@/components/shared/StockSearch'
 import { StockChart } from '@/components/shared/StockChart'
+import { StatCard } from '@/components/shared/StatCard'
 import { RecommendationsGauge } from '@/components/shared/RecommendationsGauge'
 import { FavoriteButton } from '@/components/shared/FavoriteButton'
 import { useNavStore } from '@/stores/navStore'
@@ -47,37 +48,6 @@ function fmtCurrency(n: number | null | undefined): string {
 function fmtPct(n: number | null | undefined): string {
   if (n === null || n === undefined) return '—'
   return `%${n.toFixed(2)}`
-}
-
-function StatCard({ label, value, sub, positive }: {
-  label: string
-  value: string
-  sub?: string
-  positive?: boolean | null
-}) {
-  return (
-    <Card className={cn(
-      'border-l-2 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/5',
-      positive === true && 'border-l-success',
-      positive === false && 'border-l-destructive',
-      positive === undefined && 'border-l-border',
-    )}>
-      <CardContent className="p-4">
-        <p className="text-xs text-muted-foreground mb-1">{label}</p>
-        <p className={cn(
-          'text-lg font-bold',
-          positive === true && 'text-success',
-          positive === false && 'text-destructive',
-        )}>{value}</p>
-        {sub && <p className={cn(
-          'text-xs mt-0.5',
-          positive === true && 'text-success/80',
-          positive === false && 'text-destructive/80',
-          positive === undefined && 'text-muted-foreground',
-        )}>{sub}</p>}
-      </CardContent>
-    </Card>
-  )
 }
 
 function pctChange(a: number | undefined, b: number | undefined): number | undefined {
@@ -245,12 +215,12 @@ export default function StockDetailPage() {
 
       {m && (
         <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
-          <StatCard label="Fiyat" value={fmtCurrency(m.currentPrice)} positive={dailyChange !== undefined ? dailyChange >= 0 : undefined} />
-          <StatCard label="Piyasa Değeri" value={fmt(m.marketCap)} />
-          <StatCard label="Gün Aralığı" value={fmtCurrency(m.dayLow)} sub={`— ${fmtCurrency(m.dayHigh)}`} />
-          <StatCard label="Hacim" value={fmt(m.regularMarketVolume)} />
-          <StatCard label="52H Yüksek" value={fmtCurrency(m.fiftyTwoWeekHigh)} positive />
-          <StatCard label="52H Düşük" value={fmtCurrency(m.fiftyTwoWeekLow)} positive={false} />
+          <StatCard title="Fiyat" value={fmtCurrency(m.currentPrice)} positive={dailyChange !== undefined ? dailyChange >= 0 : undefined} />
+          <StatCard title="Piyasa Değeri" value={fmt(m.marketCap)} />
+          <StatCard title="Gün Aralığı" value={fmtCurrency(m.dayLow)} sub={`— ${fmtCurrency(m.dayHigh)}`} />
+          <StatCard title="Hacim" value={fmt(m.regularMarketVolume)} />
+          <StatCard title="52H Yüksek" value={fmtCurrency(m.fiftyTwoWeekHigh)} positive />
+          <StatCard title="52H Düşük" value={fmtCurrency(m.fiftyTwoWeekLow)} positive={false} />
         </div>
       )}
 
@@ -262,29 +232,29 @@ export default function StockDetailPage() {
 
       {v && (
         <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
-          <StatCard label="F/K (Trailing)" value={safeFixed(v.trailingPE, 2)} />
-          <StatCard label="F/K (Forward)" value={safeFixed(v.forwardPE, 2)} />
-          <StatCard label="PD/DD" value={safeFixed(v.priceToBook, 2)} />
-          <StatCard label="PEG Oranı" value={safeFixed(v.pegRatio, 2)} />
-          <StatCard label="F/S (TTM)" value={safeFixed(v.priceToSalesTrailing12Months, 2)} />
-          <StatCard label="Enterprise Değer" value={fmt(v.enterpriseValue)} />
-          <StatCard label="Temettü Verimi" value={v.dividendYield ? `%${safeFixed(v.dividendYield, 2)}` : '—'} />
-          <StatCard label="Hedef Fiyat (Ort)" value={fmtCurrency(v.targetMeanPrice)} />
+          <StatCard title="F/K (Trailing)" value={safeFixed(v.trailingPE, 2)} />
+          <StatCard title="F/K (Forward)" value={safeFixed(v.forwardPE, 2)} />
+          <StatCard title="PD/DD" value={safeFixed(v.priceToBook, 2)} />
+          <StatCard title="PEG Oranı" value={safeFixed(v.pegRatio, 2)} />
+          <StatCard title="F/S (TTM)" value={safeFixed(v.priceToSalesTrailing12Months, 2)} />
+          <StatCard title="Enterprise Değer" value={fmt(v.enterpriseValue)} />
+          <StatCard title="Temettü Verimi" value={v.dividendYield ? `%${safeFixed(v.dividendYield, 2)}` : '—'} />
+          <StatCard title="Hedef Fiyat (Ort)" value={fmtCurrency(v.targetMeanPrice)} />
         </div>
       )}
 
       {tData && (
         <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-          <StatCard label="Beta" value={safeFixed(tData.beta, 2)} positive={tData.beta < 1 ? true : tData.beta > 1 ? false : undefined} />
-          <StatCard label="Ort. Hacim" value={fmt(tData.averageVolume)} />
-          <StatCard label="Ort. Hacim (10g)" value={fmt(tData.averageVolume10days)} />
-          <StatCard label="50g Ort." value={fmtCurrency(tData.fiftyDayAverage)} />
-          <StatCard label="200g Ort." value={fmtCurrency(tData.twoHundredDayAverage)} />
-          <StatCard label="Dolaşımdaki Hisse" value={fmt(tData.sharesOutstanding)} />
-          <StatCard label="Float" value={fmt(tData.floatShares)} />
-          <StatCard label="İçeriden Oran" value={`%${(tData.heldPercentInsiders * 100).toFixed(1)}`} />
-          <StatCard label="Kurumsal Oran" value={`%${(tData.heldPercentInstitutions * 100).toFixed(1)}`} />
-          <StatCard label="Short Oran" value={tData.shortRatio !== null ? safeFixed(tData.shortRatio, 1) : '—'} />
+          <StatCard title="Beta" value={safeFixed(tData.beta, 2)} positive={tData.beta < 1 ? true : tData.beta > 1 ? false : undefined} />
+          <StatCard title="Ort. Hacim" value={fmt(tData.averageVolume)} />
+          <StatCard title="Ort. Hacim (10g)" value={fmt(tData.averageVolume10days)} />
+          <StatCard title="50g Ort." value={fmtCurrency(tData.fiftyDayAverage)} />
+          <StatCard title="200g Ort." value={fmtCurrency(tData.twoHundredDayAverage)} />
+          <StatCard title="Dolaşımdaki Hisse" value={fmt(tData.sharesOutstanding)} />
+          <StatCard title="Float" value={fmt(tData.floatShares)} />
+          <StatCard title="İçeriden Oran" value={`%${(tData.heldPercentInsiders * 100).toFixed(1)}`} />
+          <StatCard title="Kurumsal Oran" value={`%${(tData.heldPercentInstitutions * 100).toFixed(1)}`} />
+          <StatCard title="Short Oran" value={tData.shortRatio !== null ? safeFixed(tData.shortRatio, 1) : '—'} />
         </div>
       )}
 
@@ -354,16 +324,16 @@ export default function StockDetailPage() {
         {f && (
           <TabsContent value="financials" className="mt-4">
             <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
-              <StatCard label="Gelir" value={fmt(f.totalRevenue)} />
-              <StatCard label="Net Kar" value={fmt(f.netIncomeToCommon)} />
-              <StatCard label="Kar Marjı" value={fmtPct(f.profitMargins * 100)} />
-              <StatCard label="Brüt Marj" value={fmtPct(f.grossMargins * 100)} />
-              <StatCard label="EBITDA" value={fmt(f.ebitda)} />
-              <StatCard label="EBITDA Marj" value={fmtPct(f.ebitdaMargins * 100)} />
-              <StatCard label="Ciro Büyüme" value={f.revenueGrowth ? fmtPct(f.revenueGrowth * 100) : '—'} />
-              <StatCard label="Öz Sermaye Kârlılığı" value={fmtPct(f.returnOnEquity * 100)} />
-              <StatCard label="Aktif Kârlılığı" value={fmtPct(f.returnOnAssets * 100)} />
-              <StatCard label="Serbest Nakit Akışı" value={fmt(f.freeCashflow)} />
+              <StatCard title="Gelir" value={fmt(f.totalRevenue)} />
+              <StatCard title="Net Kar" value={fmt(f.netIncomeToCommon)} />
+              <StatCard title="Kar Marjı" value={fmtPct(f.profitMargins * 100)} />
+              <StatCard title="Brüt Marj" value={fmtPct(f.grossMargins * 100)} />
+              <StatCard title="EBITDA" value={fmt(f.ebitda)} />
+              <StatCard title="EBITDA Marj" value={fmtPct(f.ebitdaMargins * 100)} />
+              <StatCard title="Ciro Büyüme" value={f.revenueGrowth ? fmtPct(f.revenueGrowth * 100) : '—'} />
+              <StatCard title="Öz Sermaye Kârlılığı" value={fmtPct(f.returnOnEquity * 100)} />
+              <StatCard title="Aktif Kârlılığı" value={fmtPct(f.returnOnAssets * 100)} />
+              <StatCard title="Serbest Nakit Akışı" value={fmt(f.freeCashflow)} />
             </div>
           </TabsContent>
         )}
@@ -371,14 +341,14 @@ export default function StockDetailPage() {
         {bs && (
           <TabsContent value="balance" className="mt-4">
             <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
-              <StatCard label="Nakit" value={fmt(bs.totalCash)} />
-              <StatCard label="Hisse Başı Nakit" value={fmtCurrency(bs.totalCashPerShare)} />
-              <StatCard label="Borç" value={fmt(bs.totalDebt)} />
-              <StatCard label="Borç/Öz Sermaye" value={safeFixed(bs.debtToEquity, 1)} />
-              <StatCard label="Cari Oran" value={safeFixed(bs.currentRatio, 2)} positive={bs.currentRatio >= 1 ? true : false} />
-              <StatCard label="Likidite Oranı" value={safeFixed(bs.quickRatio, 2)} positive={bs.quickRatio >= 1 ? true : false} />
-              <StatCard label="F/K Değer" value={m && f?.netIncomeToCommon ? safeFixed(m.marketCap / f.netIncomeToCommon, 2) : '—'} />
-              <StatCard label="Hisse Başı Kâr" value={fmtCurrency(f?.netIncomeToCommon ? v?.trailingEps : null)} />
+              <StatCard title="Nakit" value={fmt(bs.totalCash)} />
+              <StatCard title="Hisse Başı Nakit" value={fmtCurrency(bs.totalCashPerShare)} />
+              <StatCard title="Borç" value={fmt(bs.totalDebt)} />
+              <StatCard title="Borç/Öz Sermaye" value={safeFixed(bs.debtToEquity, 1)} />
+              <StatCard title="Cari Oran" value={safeFixed(bs.currentRatio, 2)} positive={bs.currentRatio >= 1 ? true : false} />
+              <StatCard title="Likidite Oranı" value={safeFixed(bs.quickRatio, 2)} positive={bs.quickRatio >= 1 ? true : false} />
+              <StatCard title="F/K Değer" value={m && f?.netIncomeToCommon ? safeFixed(m.marketCap / f.netIncomeToCommon, 2) : '—'} />
+              <StatCard title="Hisse Başı Kâr" value={fmtCurrency(f?.netIncomeToCommon ? v?.trailingEps : null)} />
             </div>
           </TabsContent>
         )}

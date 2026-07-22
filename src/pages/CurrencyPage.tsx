@@ -4,28 +4,9 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
 import { TrendingUp, TrendingDown } from 'lucide-react'
+import { parsePrice, parseChange } from '@/lib/parse'
 import api from '@/lib/api'
-
-interface RateEntry {
-  Buying: string
-  Selling: string
-  Type: string
-  Change: string
-}
-
-function parsePrice(s: string | undefined): number | null {
-  if (!s) return null
-  const cleaned = s.replace(/[^0-9,.-]/g, '').replace(/\./g, '').replace(',', '.')
-  const n = parseFloat(cleaned)
-  return isNaN(n) ? null : n
-}
-
-function parseChange(s: string | undefined): number | null {
-  if (!s) return null
-  const cleaned = s.replace('%', '').replace(',', '.')
-  const n = parseFloat(cleaned)
-  return isNaN(n) ? null : n
-}
+import type { RateEntry } from '@/types/api'
 
 const CURRENCY_FLAGS: Record<string, string> = {
   USD: '🇺🇸', EUR: '🇪🇺', GBP: '🇬🇧', CHF: '🇨🇭', JPY: '🇯🇵',

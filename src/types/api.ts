@@ -1,3 +1,10 @@
+export interface RateEntry {
+  Buying: string
+  Selling: string
+  Type: string
+  Change: string
+}
+
 export interface UserRegister {
   username: string
   email: string

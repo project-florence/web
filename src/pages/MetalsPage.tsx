@@ -4,21 +4,9 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
 import { TrendingUp, TrendingDown, Gem } from 'lucide-react'
+import { parseChange } from '@/lib/parse'
 import api from '@/lib/api'
-
-interface RateEntry {
-  Buying: string
-  Selling: string
-  Type: string
-  Change: string
-}
-
-function parseChange(s: string | undefined): number | null {
-  if (!s) return null
-  const cleaned = s.replace('%', '').replace(',', '.')
-  const n = parseFloat(cleaned)
-  return isNaN(n) ? null : n
-}
+import type { RateEntry } from '@/types/api'
 
 const METAL_NAMES: Record<string, string> = {
   ons: 'Ons Altın',
