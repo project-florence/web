@@ -134,7 +134,7 @@ export default function DashboardPage() {
         <h2 className="text-3xl font-bold tracking-tight">{t('dashboard.title')}</h2>
       </div>
 
-      <div className="relative">
+      <div className="relative pb-[280px]">
         <Card className="bg-gradient-to-br from-primary/5 to-transparent border-primary/10">
           <CardContent className="p-6 flex items-center justify-between flex-wrap gap-4">
             <div>
