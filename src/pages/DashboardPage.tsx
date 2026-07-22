@@ -77,7 +77,7 @@ export default function DashboardPage() {
   const { data: rates, isLoading: ratesLoading } = useQuery({
     queryKey: ['rates'],
     queryFn: async () => {
-      const res = await api.get('/api/v1/economy/exchange-rates')
+      const res = await api.get('/api/v1/economy/currency')
       return res.data as Record<string, RateEntry>
     },
     staleTime: 60_000,
@@ -180,7 +180,7 @@ export default function DashboardPage() {
                 return (
                   <Card
                     key={company.ticker}
-                    className="flex-1 min-w-[140px] cursor-pointer hover:-translate-y-0.5 hover:shadow-lg transition-all duration-200"
+                    className="flex-1 min-w-[140px] max-w-[200px] cursor-pointer hover:-translate-y-0.5 hover:shadow-lg transition-all duration-200"
                     onClick={() => navigate(`/stocks/${company.ticker}`)}
                   >
                     <CardContent className="p-3">
