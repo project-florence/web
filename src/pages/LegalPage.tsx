@@ -1,7 +1,9 @@
 import { useTranslation } from 'react-i18next'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Button } from '@/components/ui/button'
+import { ArrowLeft } from 'lucide-react'
 import api from '@/lib/api'
 
 const POLICY_NAMES: Record<string, string> = {
@@ -21,6 +23,7 @@ interface LegalResponse {
 export default function LegalPage() {
   const { t, i18n } = useTranslation()
   const { policy } = useParams<{ policy: string }>()
+  const navigate = useNavigate()
 
   const apiPolicy = policy ?? ''
   const titleKey = POLICY_NAMES[apiPolicy] || 'legal.terms'
@@ -36,6 +39,10 @@ export default function LegalPage() {
 
   return (
     <div className="max-w-3xl mx-auto">
+      <Button variant="ghost" size="sm" onClick={() => navigate(-1)} className="mb-4 -ml-2">
+        <ArrowLeft className="h-4 w-4 mr-1" />
+        {t('common.back')}
+      </Button>
       <h1 className="text-2xl font-bold mb-2">{t(titleKey)}</h1>
       {data?.last_updated && (
         <p className="text-xs text-muted-foreground mb-6">

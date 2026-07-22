@@ -1,8 +1,10 @@
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { Mail, Code2 } from 'lucide-react'
+import { Mail, Code2, ArrowLeft } from 'lucide-react'
 import api from '@/lib/api'
 
 interface ContactResponse {
@@ -12,6 +14,7 @@ interface ContactResponse {
 
 export default function ContactPage() {
   const { t } = useTranslation()
+  const navigate = useNavigate()
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['contact'],
@@ -23,6 +26,10 @@ export default function ContactPage() {
 
   return (
     <div className="max-w-xl mx-auto">
+      <Button variant="ghost" size="sm" onClick={() => navigate(-1)} className="mb-4 -ml-2">
+        <ArrowLeft className="h-4 w-4 mr-1" />
+        {t('common.back')}
+      </Button>
       <h1 className="text-2xl font-bold mb-6">{t('footer.contact')}</h1>
       {isLoading ? (
         <div className="space-y-3">

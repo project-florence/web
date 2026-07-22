@@ -1,6 +1,9 @@
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Button } from '@/components/ui/button'
+import { ArrowLeft } from 'lucide-react'
 import api from '@/lib/api'
 
 interface AboutResponse {
@@ -10,6 +13,7 @@ interface AboutResponse {
 
 export default function AboutPage() {
   const { t, i18n } = useTranslation()
+  const navigate = useNavigate()
 
   const { data, isLoading, error } = useQuery({
     queryKey: ['about', i18n.language],
@@ -21,6 +25,10 @@ export default function AboutPage() {
 
   return (
     <div className="max-w-3xl mx-auto">
+      <Button variant="ghost" size="sm" onClick={() => navigate(-1)} className="mb-4 -ml-2">
+        <ArrowLeft className="h-4 w-4 mr-1" />
+        {t('common.back')}
+      </Button>
       <h1 className="text-2xl font-bold mb-6">{t('footer.about')}</h1>
       {isLoading ? (
         <div className="space-y-3">
