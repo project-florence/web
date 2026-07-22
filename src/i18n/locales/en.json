@@ -204,6 +204,15 @@
     "accept": "I have read and agree",
     "lastUpdated": "Last Updated"
   },
+  "footer": {
+    "about": "About",
+    "contact": "Contact",
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy",
+    "cookies": "Cookie Policy",
+    "disclaimer": "Disclaimer",
+    "allRightsReserved": "All rights reserved."
+  },
   "time": {
     "today": "Today",
     "thisWeek": "This Week",

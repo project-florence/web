@@ -20,6 +20,9 @@ const IposPage = lazy(() => import('@/pages/IposPage'))
 const CurrencyPage = lazy(() => import('@/pages/CurrencyPage'))
 const MetalsPage = lazy(() => import('@/pages/MetalsPage'))
 const ProfilePage = lazy(() => import('@/pages/ProfilePage'))
+const AboutPage = lazy(() => import('@/pages/AboutPage'))
+const ContactPage = lazy(() => import('@/pages/ContactPage'))
+const LegalPage = lazy(() => import('@/pages/LegalPage'))
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -67,6 +70,9 @@ export default function App() {
                 <Route path="currency" element={<CurrencyPage />} />
                 <Route path="metals" element={<MetalsPage />} />
                 <Route path="profile" element={<ProfilePage />} />
+                <Route path="about" element={<AboutPage />} />
+                <Route path="contact" element={<ContactPage />} />
+                <Route path="legal/:policy" element={<LegalPage />} />
               </Route>
             </Routes>
           </Suspense>

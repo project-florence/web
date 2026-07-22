@@ -204,6 +204,15 @@
     "accept": "Okudum ve kabul ediyorum",
     "lastUpdated": "Son Güncelleme"
   },
+  "footer": {
+    "about": "Hakkımızda",
+    "contact": "İletişim",
+    "terms": "Kullanım Koşulları",
+    "privacy": "Gizlilik Politikası",
+    "cookies": "Çerez Politikası",
+    "disclaimer": "Yasal Uyarı",
+    "allRightsReserved": "Tüm hakları saklıdır."
+  },
   "time": {
     "today": "Bugün",
     "thisWeek": "Bu Hafta",
