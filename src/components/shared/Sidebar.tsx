@@ -56,15 +56,7 @@ export function Sidebar() {
   }
 
   return (
-    <>
-      {collapsed && (
-        <div
-          className="fixed inset-0 z-30 bg-black/40"
-          onClick={toggleSidebar}
-        />
-      )}
-
-      <aside
+    <aside
         className={cn(
           'fixed left-0 top-0 z-40 h-screen border-r border-border bg-sidebar p-3 flex flex-col transition-all duration-300',
           collapsed ? 'w-16' : 'w-64',
@@ -131,7 +123,6 @@ export function Sidebar() {
             {!collapsed && t('nav.profile')}
           </NavLink>
         </div>
-      </aside>
-    </>
+    </aside>
   )
 }
