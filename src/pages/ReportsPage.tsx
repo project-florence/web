@@ -13,7 +13,7 @@ import { FileText, Search, Sparkles, TrendingUp, ExternalLink, ChevronDown, Chev
 import { StockSearch } from '@/components/shared/StockSearch'
 import { CreditCostTooltip } from '@/components/shared/CreditCostTooltip'
 import api from '@/lib/api'
-import type { ReportInfo, ReportHistoryItem, ReportDetail, ReportTypeInfo } from '@/types/api'
+import type { ReportInfo, ReportHistoryItem, ReportDetail, ReportSentiment, ReportTypeInfo } from '@/types/api'
 
 type Tab = 'new' | 'history'
 
@@ -71,16 +71,6 @@ export default function ReportsPage() {
       return res.data as ReportHistoryItem[]
     },
     staleTime: 30_000,
-  })
-
-  const { data: reportDetail, isLoading: detailLoading } = useQuery({
-    queryKey: ['report-detail', expandedId],
-    queryFn: async () => {
-      const res = await api.get(`/api/v1/reports/${expandedId}`)
-      return res.data as ReportDetail
-    },
-    enabled: !!expandedId,
-    staleTime: 5 * 60_000,
   })
 
   const generateMutation = useMutation({
@@ -328,7 +318,7 @@ export default function ReportsPage() {
                       <ExternalLink className="h-4 w-4 text-primary" />
                       <span className="text-sm font-medium">{t('reports.sentiments')}</span>
                     </div>
-                    {generateMutation.data.sentiments.map((s, i) => (
+                    {generateMutation.data.sentiments.map((s: ReportSentiment, i: number) => (
                       <div
                         key={i}
                         className={cn(
@@ -442,81 +432,16 @@ export default function ReportsPage() {
                     </Card>
 
                     {isExpanded && (
-                      <div className="animate-slideUp">
-                        {detailLoading ? (
-                          <Card className="border-t-0 rounded-t-none">
-                            <CardContent className="p-4 space-y-3">
-                              <Skeleton className="h-5 w-48" />
-                              <Skeleton className="h-4 w-full" />
-                              <Skeleton className="h-4 w-3/4" />
-                              <Skeleton className="h-20 w-full" />
-                            </CardContent>
-                          </Card>
-                        ) : reportDetail && reportDetail.report_id === item.id ? (
-                          <Card className="border-t-0 rounded-t-none border-primary/20">
-                            <CardContent className="p-4 space-y-3">
-                              <div className="flex items-start justify-between gap-2">
-                                <p className="text-sm font-medium">{reportDetail.title}</p>
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  className="shrink-0 -mr-2 -mt-1"
-                                  onClick={() => navigate(`/stocks/${reportDetail.about}`)}
-                                >
-                                  <TrendingUp className="h-3.5 w-3.5" />
-                                </Button>
-                              </div>
-
-                              <Markdown content={reportDetail.report} />
-
-                              {reportDetail.sentiments?.length > 0 && (
-                                <div className="space-y-2 pt-2 border-t border-border">
-                                  <p className="text-xs font-medium flex items-center gap-1.5">
-                                    <ExternalLink className="h-3.5 w-3.5 text-primary" />
-                                    {t('reports.sentiments')}
-                                  </p>
-                                  {reportDetail.sentiments.map((s, i) => (
-                                    <div
-                                      key={i}
-                                      className={cn(
-                                        'p-2.5 rounded-lg border text-xs space-y-1',
-                                        sentimentColors[s.sentiment] || sentimentColors.neutral,
-                                      )}
-                                    >
-                                      <div className="flex items-center gap-2">
-                                        <Badge
-                                          variant="outline"
-                                          className={cn('text-[10px] px-1.5 py-0', sentimentBadge[s.sentiment])}
-                                        >
-                                          {s.sentiment === 'positive'
-                                            ? t('reports.sentimentPositive')
-                                            : s.sentiment === 'negative'
-                                              ? t('reports.sentimentNegative')
-                                              : t('reports.sentimentNeutral')}
-                                        </Badge>
-                                        <a href={s.url} target="_blank" rel="noopener noreferrer" className="ml-auto">
-                                          <ExternalLink className="h-3 w-3 text-muted-foreground hover:text-foreground" />
-                                        </a>
-                                      </div>
-                                      <p className="text-muted-foreground">{s.reasoning}</p>
-                                    </div>
-                                  ))}
-                                </div>
-                              )}
-
-                              <div className="flex items-center justify-between text-xs pt-2 border-t border-border text-muted-foreground">
-                                <span className="flex items-center gap-1">
-                                  <Coins className="h-3 w-3 text-amber-500" />
-                                  {reportDetail.credits_spend?.toFixed(2) ?? '—'} 🪙
-                                </span>
-                                <span className="flex items-center gap-1">
-                                  <Sparkles className="h-3 w-3" />
-                                  {reportDetail.token_usage.total.toLocaleString()} {t('reports.tokens')}
-                                </span>
-                              </div>
-                            </CardContent>
-                          </Card>
-                        ) : null}
+                      <div className="animate-slideUp px-3.5 pb-3.5 -mt-px">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="w-full"
+                          onClick={() => navigate(`/reports/${item.id}`)}
+                        >
+                          <FileText className="h-3.5 w-3.5 mr-1.5" />
+                          Detayı Görüntüle
+                        </Button>
                       </div>
                     )}
                   </div>

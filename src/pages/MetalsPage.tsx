@@ -37,6 +37,9 @@ const METAL_NAMES: Record<string, string> = {
   'resat-altin': 'Reşat Altın',
   'besli-altin': 'Beşli Altın',
   'hamit-altin': 'Hamit Altın',
+  'gumus': 'Gümüş',
+  'gram-palatin': 'Gram Palatin',
+  'gram-paladyum': 'Gram Paladyum',
 }
 
 function MetalCard({ id, entry, index = 0 }: { id: string; entry: RateEntry; index?: number }) {

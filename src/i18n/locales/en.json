@@ -115,6 +115,12 @@
     "date": "Date",
     "status": "Status"
   },
+  "metals": {
+    "title": "Precious Metals",
+    "gumus": "Silver",
+    "gramPalatin": "Platinum Gram",
+    "gramPaladyum": "Palladium Gram"
+  },
   "profile": {
     "title": "Profile",
     "credits": "Credit Balance",
@@ -126,6 +132,7 @@
     "currentPassword": "Current Password",
     "newPassword": "New Password",
     "language": "Language",
+    "settings": "Settings",
     "changePassword": "Change Password",
     "saveUsername": "Save Username",
     "saveEmail": "Save Email",
@@ -157,7 +164,11 @@
     "sentimentPositive": "Positive",
     "sentimentNegative": "Negative",
     "sentimentNeutral": "Neutral",
-    "createReport": "Report"
+    "createReport": "Report",
+    "downloadMd": "Markdown",
+    "downloadPdf": "PDF",
+    "downloadDocx": "DOCX",
+    "backToReports": "Reports"
   },
   "common": {
     "loading": "Loading...",

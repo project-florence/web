@@ -162,7 +162,7 @@ export default function ProfilePage() {
           </TabsTrigger>
           <TabsTrigger value="settings" className="flex-1">
             <Settings className="h-4 w-4 mr-2" />
-            Ayarlar
+            {t('profile.settings')}
           </TabsTrigger>
         </TabsList>
 
