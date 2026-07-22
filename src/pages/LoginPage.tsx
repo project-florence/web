@@ -32,10 +32,14 @@ export default function LoginPage() {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
   })
+
+  const formValues = watch()
+  const formFilled = formValues.username?.trim() && formValues.password?.trim()
 
   const onSubmit = async (data: LoginForm) => {
     setLoading(true)
@@ -102,7 +106,7 @@ export default function LoginPage() {
                   <p className="text-sm text-destructive mt-1">{errors.password.message}</p>
                 )}
               </div>
-              <Button type="submit" variant="gradient" className="w-full" disabled={loading}>
+              <Button type="submit" variant="gradient" className="w-full" disabled={loading || !formFilled}>
                 {loading ? t('common.loading') : t('auth.login')}
               </Button>
             </form>
