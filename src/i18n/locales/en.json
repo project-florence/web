@@ -179,7 +179,8 @@
     "cancel": "Cancel",
     "delete": "Delete",
     "search": "Search",
-    "filter": "Filter"
+    "filter": "Filter",
+    "disclaimer": "This is not investment advice and does not take into account your personal circumstances. It is not a recommendation to buy, sell or hold any asset."
   },
   "time": {
     "today": "Today",

@@ -179,7 +179,8 @@
     "cancel": "İptal",
     "delete": "Sil",
     "search": "Ara",
-    "filter": "Filtrele"
+    "filter": "Filtrele",
+    "disclaimer": "Bu bir yatırım tavsiyesi değildir. Kişisel durumunuzu dikkate almaz. Herhangi bir varlığı almak, satmak veya elde tutmak için bir tavsiye niteliği taşımaz."
   },
   "time": {
     "today": "Bugün",

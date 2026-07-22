@@ -11,6 +11,7 @@ import { ArrowLeft, TrendingUp, TrendingDown, FlaskConical, FileText } from 'luc
 import { cn } from '@/lib/utils'
 import { StockSearch } from '@/components/shared/StockSearch'
 import { StockChart } from '@/components/shared/StockChart'
+import { RecommendationsGauge } from '@/components/shared/RecommendationsGauge'
 import { FavoriteButton } from '@/components/shared/FavoriteButton'
 import { useNavStore } from '@/stores/navStore'
 import api from '@/lib/api'
@@ -236,6 +237,12 @@ export default function StockDetailPage() {
           <StatCard label="Hacim" value={fmt(m.regularMarketVolume)} />
           <StatCard label="52H Yüksek" value={fmtCurrency(m.fiftyTwoWeekHigh)} positive />
           <StatCard label="52H Düşük" value={fmtCurrency(m.fiftyTwoWeekLow)} positive={false} />
+        </div>
+      )}
+
+      {info?.recommendations?.[0] && (
+        <div className="max-w-sm">
+          <RecommendationsGauge data={info.recommendations[0]} />
         </div>
       )}
 

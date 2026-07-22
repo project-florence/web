@@ -43,6 +43,15 @@ export interface SearchResult {
   company_id: string
 }
 
+export interface Recommendation {
+  period: string
+  strongBuy: number
+  buy: number
+  hold: number
+  sell: number
+  strongSell: number
+}
+
 export interface CompanyInfo {
   symbol: string
   name: string
@@ -118,6 +127,7 @@ export interface CompanyInfo {
     quickRatio: number
   }
   description?: string
+  recommendations?: Recommendation[]
 }
 
 export interface PriceHistory {
