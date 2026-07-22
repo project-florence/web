@@ -8,6 +8,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
+import ReactMarkdown from 'react-markdown'
 import { FileText, Search, Sparkles, TrendingUp, ExternalLink, ChevronDown, ChevronUp, Coins, Clock } from 'lucide-react'
 import { StockSearch } from '@/components/shared/StockSearch'
 import { CreditCostTooltip } from '@/components/shared/CreditCostTooltip'
@@ -151,21 +152,24 @@ export default function ReportsPage() {
     }
   }
 
-  const renderMarkdown = (text: string | null | undefined) => {
-    if (!text) return null
-    const lines = text.split('\n')
-    return lines.map((line, i) => {
-      if (line.startsWith('### ')) return <h3 key={i} className="text-sm font-semibold mt-3 mb-1">{line.slice(4)}</h3>
-      if (line.startsWith('## ')) return <h2 key={i} className="text-base font-bold mt-4 mb-1.5">{line.slice(3)}</h2>
-      if (line.startsWith('# ')) return <h1 key={i} className="text-lg font-bold mt-4 mb-2">{line.slice(2)}</h1>
-      if (line.startsWith('* ') || line.startsWith('- ')) {
-        const content = line.slice(2).replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-        return <li key={i} className="text-xs text-muted-foreground ml-3 list-disc" dangerouslySetInnerHTML={{ __html: content }} />
-      }
-      const rendered = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      if (!line.trim()) return <div key={i} className="h-1" />
-      return <p key={i} className="text-xs text-muted-foreground leading-relaxed" dangerouslySetInnerHTML={{ __html: rendered }} />
-    })
+  const Markdown = ({ content }: { content: string | null | undefined }) => {
+    if (!content) return null
+    return (
+      <div className="text-xs leading-relaxed space-y-0.5">
+        <ReactMarkdown
+          components={{
+            h1: ({ children }) => <h1 className="text-base font-bold mt-3 mb-1.5">{children}</h1>,
+            h2: ({ children }) => <h2 className="text-sm font-bold mt-3 mb-1">{children}</h2>,
+            h3: ({ children }) => <h3 className="text-sm font-semibold mt-2 mb-0.5">{children}</h3>,
+            p: ({ children }) => <p className="text-xs text-muted-foreground leading-relaxed mb-1">{children}</p>,
+            li: ({ children }) => <li className="text-xs text-muted-foreground ml-4 list-disc">{children}</li>,
+            strong: ({ children }) => <strong className="font-semibold text-foreground">{children}</strong>,
+          }}
+        >
+          {content}
+        </ReactMarkdown>
+      </div>
+    )
   }
 
   const tabs: { key: Tab; label: string }[] = [
@@ -313,9 +317,7 @@ export default function ReportsPage() {
                     </Button>
                   </div>
 
-                  <div className="text-xs leading-relaxed space-y-1">
-                    {renderMarkdown(generateMutation.data.report)}
-                  </div>
+                  <Markdown content={generateMutation.data.report} />
                 </CardContent>
               </Card>
 
@@ -368,7 +370,7 @@ export default function ReportsPage() {
                       <Coins className="h-3 w-3 text-amber-500" />
                       {t('reports.cost')}
                     </span>
-                    <span className="font-mono">{generateMutation.data.credits_spend.toFixed(2)} 🪙</span>
+                    <span className="font-mono">{generateMutation.data.credits_spend?.toFixed(2) ?? '—'} 🪙</span>
                   </div>
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-muted-foreground flex items-center gap-1">
@@ -465,9 +467,7 @@ export default function ReportsPage() {
                                 </Button>
                               </div>
 
-                              <div className="text-xs leading-relaxed space-y-1">
-                                {renderMarkdown(reportDetail.report)}
-                              </div>
+                              <Markdown content={reportDetail.report} />
 
                               {reportDetail.sentiments?.length > 0 && (
                                 <div className="space-y-2 pt-2 border-t border-border">
@@ -507,7 +507,7 @@ export default function ReportsPage() {
                               <div className="flex items-center justify-between text-xs pt-2 border-t border-border text-muted-foreground">
                                 <span className="flex items-center gap-1">
                                   <Coins className="h-3 w-3 text-amber-500" />
-                                  {reportDetail.credits_spend.toFixed(2)} 🪙
+                                  {reportDetail.credits_spend?.toFixed(2) ?? '—'} 🪙
                                 </span>
                                 <span className="flex items-center gap-1">
                                   <Sparkles className="h-3 w-3" />
