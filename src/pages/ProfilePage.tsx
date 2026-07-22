@@ -15,6 +15,7 @@ import { useAuthStore } from '@/stores/authStore'
 import { useThemeStore } from '@/stores/themeStore'
 import { themes } from '@/config/themes'
 import type { ThemeName } from '@/config/themes'
+import { usePreferences } from '@/hooks/usePreferences'
 import api from '@/lib/api'
 import type { Profile } from '@/types/api'
 import { CreditDisplay } from '@/components/shared/CreditDisplay'
@@ -25,6 +26,7 @@ export default function ProfilePage() {
   const logout = useAuthStore((s) => s.logout)
   const themeName = useThemeStore((s) => s.themeName)
   const applyTheme = useThemeStore((s) => s.applyTheme)
+  const { save: savePrefs } = usePreferences()
 
   const { data: profile, isLoading: profileLoading } = useQuery({
     queryKey: ['profile'],
@@ -350,7 +352,10 @@ export default function ProfilePage() {
                   return (
                     <Card
                       key={key}
-                      onClick={() => applyTheme(key as ThemeName)}
+                      onClick={() => {
+                        applyTheme(key as ThemeName)
+                        savePrefs({ theme: key } as Record<string, unknown>)
+                      }}
                       className={`cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg ${
                         isActive ? 'ring-2 ring-primary' : ''
                       }`}
@@ -382,7 +387,11 @@ export default function ProfilePage() {
               </div>
             </CardHeader>
             <CardContent>
-              <Select value={i18n.language} onValueChange={(v) => v && i18n.changeLanguage(v)}>
+              <Select value={i18n.language} onValueChange={(v) => {
+                if (!v) return
+                i18n.changeLanguage(v)
+                savePrefs({ language: v } as Record<string, unknown>)
+              }}>
                 <SelectTrigger className="w-full sm:w-48">
                   <SelectValue />
                 </SelectTrigger>
