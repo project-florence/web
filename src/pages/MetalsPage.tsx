@@ -39,7 +39,7 @@ const METAL_NAMES: Record<string, string> = {
   'hamit-altin': 'Hamit Altın',
   'gumus': 'Gümüş',
   'gram-palatin': 'Gram Palatin',
-  'gram-platin': 'Gram Palatin',
+  'gram-platin': 'Gram Platin',
   'gram-paladyum': 'Gram Paladyum',
 }
 
