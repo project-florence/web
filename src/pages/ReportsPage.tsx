@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
@@ -84,14 +84,50 @@ export default function ReportsPage() {
 
   const generateMutation = useMutation({
     mutationFn: async () => {
-      const res = await api.post(`/api/v1/reports/generate?ticker=${ticker}&type=${reportType}`)
+      const res = await api.post(`/api/v1/reports/generate?ticker=${ticker}&type=${reportType}`, undefined, {
+        timeout: 300_000,
+      })
       return res.data as ReportDetail
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['credits'] })
       queryClient.invalidateQueries({ queryKey: ['report-history'] })
+      if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+        new Notification('Rapor Hazır', { body: `${data.about} — ${data.title}` })
+      } else if (typeof Notification !== 'undefined' && Notification.permission !== 'denied') {
+        Notification.requestPermission().then((p) => {
+          if (p === 'granted') new Notification('Rapor Hazır', { body: `${data.about} — ${data.title}` })
+        })
+      }
     },
   })
+
+  const startTimeRef = useRef<number | null>(null)
+  const [elapsed, setElapsed] = useState(0)
+  const [statusIndex, setStatusIndex] = useState(0)
+  const statuses = [
+    'Haberler taranıyor...',
+    'Finansallar analiz ediliyor...',
+    'Duyarlılık hesaplanıyor...',
+    'Rapor yazılıyor...',
+    'Son rötuşlar...',
+  ]
+
+  useEffect(() => {
+    if (!generateMutation.isPending) {
+      startTimeRef.current = null
+      setElapsed(0)
+      setStatusIndex(0)
+      return
+    }
+    startTimeRef.current = Date.now()
+    const statusTimer = setInterval(() => setStatusIndex((p) => (p + 1) % statuses.length), 8000)
+    const elapsedTimer = setInterval(() => setElapsed(Math.floor((Date.now() - startTimeRef.current!) / 1000)), 1000)
+    return () => {
+      clearInterval(statusTimer)
+      clearInterval(elapsedTimer)
+    }
+  }, [generateMutation.isPending])
 
   const types = reportInfo ? [reportInfo.quick_report, reportInfo.deep_report].filter(Boolean) : []
   const selectedType = types.find((t) => t?.type === reportType) ?? null
@@ -115,7 +151,8 @@ export default function ReportsPage() {
     }
   }
 
-  const renderMarkdown = (text: string) => {
+  const renderMarkdown = (text: string | null | undefined) => {
+    if (!text) return null
     const lines = text.split('\n')
     return lines.map((line, i) => {
       if (line.startsWith('### ')) return <h3 key={i} className="text-sm font-semibold mt-3 mb-1">{line.slice(4)}</h3>
@@ -213,10 +250,32 @@ export default function ReportsPage() {
           )}
 
           {generateMutation.isPending && (
-            <div className="space-y-3">
-              <Skeleton className="h-32 w-full rounded-xl" />
-              <Skeleton className="h-20 w-full rounded-xl" />
-            </div>
+            <Card className="border-primary/20 bg-gradient-to-br from-primary/[0.02] to-transparent">
+              <CardContent className="p-8 space-y-4">
+                <div className="flex flex-col items-center gap-3 text-center">
+                  <div className="h-12 w-12 rounded-full bg-amber-500/10 flex items-center justify-center animate-spin">
+                    <Coins className="h-6 w-6 text-amber-500" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium">Rapor Oluşturuluyor</p>
+                    <p className="text-xs text-muted-foreground mt-1 animate-pulse">
+                      {statuses[statusIndex]}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="h-1.5 rounded-full bg-muted overflow-hidden">
+                  <div
+                    className="h-full rounded-full bg-gradient-to-r from-amber-500 to-primary transition-all duration-1000"
+                    style={{ width: `${Math.min(95, (elapsed / 120) * 100)}%` }}
+                  />
+                </div>
+
+                <p className="text-xs text-muted-foreground text-center tabular-nums">
+                  ⏱ {Math.floor(elapsed / 60)}:{(elapsed % 60).toString().padStart(2, '0')} / ~3:00 dk
+                </p>
+              </CardContent>
+            </Card>
           )}
 
           {generateMutation.error && (
