@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
@@ -15,15 +15,22 @@ import { StatCard } from '@/components/shared/StatCard'
 import { RecommendationsGauge } from '@/components/shared/RecommendationsGauge'
 import { FavoriteButton } from '@/components/shared/FavoriteButton'
 import { useNavStore } from '@/stores/navStore'
+import { processPriceData, computeDailyChange } from '@/lib/price'
 import api from '@/lib/api'
 import type { CompanyInfo, PriceHistory, NewsItem } from '@/types/api'
 
 const PERIODS = [
-  { label: '1ay', value: '1mo', interval: '1d' },
-  { label: '3ay', value: '3mo', interval: '1d' },
-  { label: '6ay', value: '6mo', interval: '1wk' },
-  { label: '1y', value: '1y', interval: '1wk' },
-  { label: '5y', value: '5y', interval: '1mo' },
+  { label: '1ay', value: '1mo' },
+  { label: '3ay', value: '3mo' },
+  { label: '6ay', value: '6mo' },
+  { label: '1y', value: '1y' },
+  { label: '5y', value: '5y' },
+] as const
+
+const INTERVALS = [
+  { label: '1gün', value: '1d' },
+  { label: '1hafta', value: '1wk' },
+  { label: '1ay', value: '1mo' },
 ] as const
 
 function safeFixed(n: number | null | undefined, digits: number, fallback = '—'): string {
@@ -61,6 +68,7 @@ export default function StockDetailPage() {
   const navigate = useNavigate()
   const setLastStockTicker = useNavStore((s) => s.setLastStockTicker)
   const [period, setPeriod] = useState<(typeof PERIODS)[number]>(PERIODS[0])
+  const [interval, setInterval] = useState<string>('1d')
 
   useEffect(() => {
     if (ticker) setLastStockTicker(ticker)
@@ -76,29 +84,27 @@ export default function StockDetailPage() {
     staleTime: 5 * 60_000,
   })
 
-  const { data: history, isLoading: historyLoading } = useQuery({
-    queryKey: ['price-history', ticker, period.value],
+  const { data: fullHistory, isLoading: historyLoading } = useQuery({
+    queryKey: ['price-history-full', ticker],
     queryFn: async () => {
       const res = await api.get(`/api/v1/price/history/${ticker}`, {
-        params: { period: period.value, interval: period.interval },
+        params: { period: '5y', interval: '1d' },
       })
       return res.data as PriceHistory[]
     },
     enabled: !!ticker,
-    staleTime: 2 * 60_000,
+    staleTime: 5 * 60_000,
   })
 
-  const { data: dailyHistory } = useQuery({
-    queryKey: ['daily-change', ticker],
-    queryFn: async () => {
-      const res = await api.get(`/api/v1/price/history/${ticker}`, {
-        params: { period: '5d', interval: '1d' },
-      })
-      return res.data as PriceHistory[]
-    },
-    enabled: !!ticker,
-    staleTime: 60_000,
-  })
+  const processed = useMemo(() => {
+    if (!fullHistory) return { data: [] as PriceHistory[], from: 0, to: 0 }
+    return processPriceData(fullHistory, period.value, interval)
+  }, [fullHistory, period.value, interval])
+
+  const dailyChangeInfo = useMemo(() => {
+    if (!fullHistory) return null
+    return computeDailyChange(fullHistory)
+  }, [fullHistory])
 
   const { data: news, isLoading: newsLoading } = useQuery({
     queryKey: ['news', ticker],
@@ -133,16 +139,14 @@ export default function StockDetailPage() {
   const bs = info?.balanceSheet
   const companyName = info?.name || ticker
 
-  const dh = dailyHistory
-  const dailyClose = dh?.[dh.length - 1]?.close
-  const dailyPrevClose = dh?.[dh.length - 2]?.close
-  const dailyChange = pctChange(dailyClose, dailyPrevClose)
+  const dailyChange = dailyChangeInfo?.change
 
-  const periodLatest = history?.[history.length - 1]?.close
-  const periodPrev = history?.[history.length - 2]?.close
+  const sliced = processed.data
+  const periodLatest = sliced[sliced.length - 1]?.close
+  const periodPrev = sliced[sliced.length - 2]?.close
   const periodChange = pctChange(periodLatest, periodPrev)
 
-  const isDailyPeriod = period.interval === '1d'
+  const isDailyInterval = interval === '1d'
 
   return (
     <div className="space-y-6">
@@ -268,14 +272,29 @@ export default function StockDetailPage() {
                   key={p.value}
                   variant={period.value === p.value ? 'gradient' : 'outline'}
                   size="sm"
-                  onClick={() => setPeriod(p)}
+                  onClick={() => { setPeriod(p); if (p.value === '1mo' && interval !== '1d') setInterval('1d') }}
                   className="text-xs"
                 >
                   {p.label}
                 </Button>
               ))}
             </div>
-            {!isDailyPeriod && periodChange !== undefined && (
+            <span className="text-sm text-muted-foreground mx-1">|</span>
+            <span className="text-sm font-medium">Aralık:</span>
+            <div className="flex gap-1">
+              {INTERVALS.map((i) => (
+                <Button
+                  key={i.value}
+                  variant={interval === i.value ? 'gradient' : 'outline'}
+                  size="sm"
+                  onClick={() => setInterval(i.value)}
+                  className="text-xs"
+                >
+                  {i.label}
+                </Button>
+              ))}
+            </div>
+            {!isDailyInterval && periodChange !== undefined && (
               <span className={cn(
                 'text-xs font-medium ml-2',
                 periodChange >= 0 ? 'text-success' : 'text-destructive',
@@ -284,7 +303,7 @@ export default function StockDetailPage() {
               </span>
             )}
           </div>
-          <StockChart data={history ?? []} loading={historyLoading} />
+          <StockChart data={sliced} loading={historyLoading} visibleRange={{ from: processed.from, to: processed.to }} />
         </CardContent>
       </Card>
 

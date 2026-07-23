@@ -8,9 +8,10 @@ import { AlertCircle } from 'lucide-react'
 interface StockChartProps {
   data: PriceHistory[]
   loading?: boolean
+  visibleRange?: { from: number; to: number }
 }
 
-export function StockChart({ data, loading }: StockChartProps) {
+export function StockChart({ data, loading, visibleRange }: StockChartProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const chartRef = useRef<IChartApi | null>(null)
   const seriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null)
@@ -84,13 +85,10 @@ export function StockChart({ data, loading }: StockChartProps) {
 
     if (data.length > 0) {
       const valid = data.filter((d) => {
-        const o = d.open
-        const h = d.high
-        const l = d.low
-        const c = d.close
+        const { open, high, low, close } = d
         return (
-          o != null && h != null && l != null && c != null &&
-          isFinite(o) && isFinite(h) && isFinite(l) && isFinite(c)
+          open != null && high != null && low != null && close != null &&
+          isFinite(open) && isFinite(high) && isFinite(low) && isFinite(close)
         )
       })
 
@@ -105,21 +103,25 @@ export function StockChart({ data, loading }: StockChartProps) {
         }))
         try {
           seriesRef.current.setData(candleData)
-          chartRef.current?.timeScale().fitContent()
+          if (visibleRange) {
+            chartRef.current?.timeScale().setVisibleRange({
+              from: (visibleRange.from / 1000) as Time,
+              to: (visibleRange.to / 1000) as Time,
+            })
+          } else {
+            chartRef.current?.timeScale().fitContent()
+          }
         } catch {
           console.warn('StockChart: setData failed')
         }
       }
     }
-  }, [data])
+  }, [data, visibleRange])
 
   const hasValidData = data.some((d) => {
-    const o = d.open
-    const h = d.high
-    const l = d.low
-    const c = d.close
-    return o != null && h != null && l != null && c != null &&
-      isFinite(o) && isFinite(h) && isFinite(l) && isFinite(c)
+    const { open, high, low, close } = d
+    return open != null && high != null && low != null && close != null &&
+      isFinite(open) && isFinite(high) && isFinite(low) && isFinite(close)
   })
   const isEmpty = !hasValidData
   const neverHadData = !hasDataRef.current
