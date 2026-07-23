@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
 import ReactMarkdown from 'react-markdown'
+import { toast } from 'sonner'
 import { FileText, Search, Sparkles, TrendingUp, ExternalLink, ChevronRight, Coins, Clock } from 'lucide-react'
 import { StockSearch } from '@/components/shared/StockSearch'
 import { CreditCostTooltip } from '@/components/shared/CreditCostTooltip'
@@ -89,6 +90,10 @@ export default function ReportsPage() {
           if (p === 'granted') new Notification('Rapor Hazır', { body: `${data.about} — ${data.title}` })
         })
       }
+    },
+    onError: (err) => {
+      const detail = (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail
+      toast.error(detail || t('reports.error'))
     },
   })
 
@@ -274,7 +279,9 @@ export default function ReportsPage() {
           {generateMutation.error && (
             <Card>
               <CardContent className="p-4">
-                <p className="text-sm text-destructive">Rapor oluşturulurken bir hata oluştu.</p>
+                <p className="text-sm text-destructive">
+                  {(generateMutation.error as { response?: { data?: { detail?: string } } })?.response?.data?.detail || t('reports.error')}
+                </p>
               </CardContent>
             </Card>
           )}
