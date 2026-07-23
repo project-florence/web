@@ -1,8 +1,27 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useQuery } from '@tanstack/react-query'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { TrendingUp, BarChart3, Search, Sparkles, Clock } from 'lucide-react'
+import { StockSearch } from '@/components/shared/StockSearch'
+import { BarChart3, Search, FlaskConical, TrendingUp } from 'lucide-react'
+import api from '@/lib/api'
+
+function getGreeting(h: number): string {
+  if (h < 6) return 'İyi geceler'
+  if (h < 12) return 'Günaydın'
+  if (h < 18) return 'İyi günler'
+  if (h < 22) return 'İyi akşamlar'
+  return 'İyi geceler'
+}
+
+function getGreetingEmoji(h: number): string {
+  if (h < 6) return '🌙'
+  if (h < 12) return '☀️'
+  if (h < 18) return '🌤️'
+  if (h < 22) return '🌅'
+  return '🌙'
+}
 
 export default function WelcomeHero() {
   const navigate = useNavigate()
@@ -13,42 +32,72 @@ export default function WelcomeHero() {
     return () => clearInterval(timer)
   }, [])
 
+  const { data: profile } = useQuery({
+    queryKey: ['profile'],
+    queryFn: async () => {
+      const res = await api.get('/api/v1/profile')
+      return res.data as { username: string; email: string; credits: number }
+    },
+    staleTime: 5 * 60_000,
+  })
+
+  const hour = now.getHours()
+  const greeting = getGreeting(hour)
+  const emoji = getGreetingEmoji(hour)
+  const username = profile?.username ?? ''
+
   return (
     <div className="flex gap-4 items-start flex-col sm:flex-row">
-      <Card className="flex-1 bg-gradient-to-br from-primary/5 to-transparent border-primary/10">
-        <CardContent className="p-6 flex items-center justify-between flex-wrap gap-4">
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <Sparkles className="h-5 w-5 text-primary" />
-              <h3 className="text-lg font-semibold">Hoş Geldiniz</h3>
+      <Card className="flex-1 bg-gradient-to-br from-primary/5 via-primary/[0.02] to-transparent border-primary/10 overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3 pointer-events-none" />
+        <CardContent className="p-6 relative">
+          <div className="flex items-start justify-between mb-5">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-xl">{emoji}</span>
+                <h3 className="text-lg font-semibold">
+                  {greeting}{username ? `, ${username}!` : '!'}
+                </h3>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Piyasaları takip et, akıllı yatırım kararları al.
+              </p>
             </div>
-            <p className="text-sm text-muted-foreground">Piyasaları takip et, akıllı yatırım kararları al.</p>
+            <div className="flex items-center gap-2 text-muted-foreground shrink-0 pt-1">
+              <span className="text-sm tabular-nums">
+                {now.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' })}
+              </span>
+            </div>
           </div>
-          <div className="flex gap-2">
-            <Button variant="gradient" size="sm" onClick={() => navigate('/stocks')}>
-              <TrendingUp className="h-4 w-4 mr-1" />
-              Hisse Ara
+
+          <div className="mb-5">
+            <StockSearch
+              onSelect={(ticker) => navigate(`/stocks/${ticker}`)}
+              placeholder="Hisse senedi ara (örn. THYAO, GARAN...)"
+              autoFocus={false}
+            />
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            <Button variant="gradient" size="sm" onClick={() => navigate('/simulation')}>
+              <FlaskConical className="h-4 w-4 mr-1.5" />
+              Simülasyon
             </Button>
-            <Button variant="outline" size="sm" onClick={() => navigate('/simulation')}>
-              <BarChart3 className="h-4 w-4 mr-1" />
-              Analiz Yap
-            </Button>
-            <Button variant="outline" size="sm" onClick={() => navigate('/advisor')}>
-              <Search className="h-4 w-4 mr-1" />
+            <Button variant="gradient" size="sm" onClick={() => navigate('/advisor')}>
+              <Search className="h-4 w-4 mr-1.5" />
               Danışman
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => navigate('/stocks')}>
+              <TrendingUp className="h-4 w-4 mr-1.5" />
+              Piyasalar
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => navigate('/reports')}>
+              <BarChart3 className="h-4 w-4 mr-1.5" />
+              Raporlar
             </Button>
           </div>
         </CardContent>
       </Card>
-      <div className="flex items-center gap-2 text-muted-foreground shrink-0 pt-2 sm:pt-6">
-        <Clock className="h-4 w-4" />
-        <span className="text-sm tabular-nums">
-          {now.toLocaleDateString('tr-TR', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })}
-        </span>
-        <span className="text-sm font-semibold tabular-nums">
-          {now.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}
-        </span>
-      </div>
     </div>
   )
 }
