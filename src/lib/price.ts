@@ -45,12 +45,11 @@ export function processPriceData(
   period: string,
   interval: string,
 ): { data: PriceHistory[]; from: number; to: number } {
-  let sliced = filterByPeriod(data, period)
-  if (interval !== '1d') sliced = aggregateToInterval(sliced, interval)
+  const result = aggregateToInterval(data, interval)
 
   const days = PERIOD_DAYS[period] || 1825
   const now = Date.now()
-  return { data: sliced, from: now - days * 86_400_000, to: now }
+  return { data: result, from: now - days * 86_400_000, to: now }
 }
 
 export function computeDailyChange(data: PriceHistory[]): { close: number; prevClose: number; change: number } | null {
