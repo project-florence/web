@@ -27,7 +27,7 @@ export function WidgetWrapper({ editing, onDelete, children }: WidgetWrapperProp
           <GripVertical className="h-4 w-4 text-muted-foreground" />
         </div>
       )}
-      <div className={cn('h-full', editing && 'pl-5')}>
+      <div className={cn('h-full', editing && 'pl-5 pointer-events-none')}>
         {children}
       </div>
     </div>
