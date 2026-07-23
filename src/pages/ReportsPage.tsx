@@ -76,7 +76,7 @@ export default function ReportsPage() {
   const generateMutation = useMutation({
     mutationFn: async () => {
       const res = await api.post(`/api/v1/reports/generate?ticker=${ticker}&type=${reportType}`, undefined, {
-        timeout: 300_000,
+        timeout: 600_000,
       })
       return res.data as ReportDetail
     },
