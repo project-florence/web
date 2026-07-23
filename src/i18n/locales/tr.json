@@ -182,7 +182,8 @@
     "downloadMd": "Markdown",
     "downloadPdf": "PDF",
     "downloadDocx": "DOCX",
-    "backToReports": "Raporlar"
+    "backToReports": "Raporlar",
+    "error": "Rapor oluşturulurken bir hata oluştu"
   },
   "common": {
     "loading": "Yükleniyor...",

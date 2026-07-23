@@ -182,7 +182,8 @@
     "downloadMd": "Markdown",
     "downloadPdf": "PDF",
     "downloadDocx": "DOCX",
-    "backToReports": "Reports"
+    "backToReports": "Reports",
+    "error": "An error occurred while generating the report"
   },
   "common": {
     "loading": "Loading...",

@@ -92,7 +92,8 @@ export default function ReportsPage() {
       }
     },
     onError: (err) => {
-      const detail = (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail
+      const axiosErr = err as { response?: { data?: { detail?: string } }; message?: string }
+      const detail = axiosErr.response?.data?.detail || (axiosErr.message && !axiosErr.response ? axiosErr.message : undefined)
       toast.error(detail || t('reports.error'))
     },
   })
@@ -280,7 +281,10 @@ export default function ReportsPage() {
             <Card>
               <CardContent className="p-4">
                 <p className="text-sm text-destructive">
-                  {(generateMutation.error as { response?: { data?: { detail?: string } } })?.response?.data?.detail || t('reports.error')}
+                  {(() => {
+                    const axiosErr = generateMutation.error as { response?: { data?: { detail?: string } }; message?: string }
+                    return axiosErr.response?.data?.detail || (axiosErr.message && !axiosErr.response ? axiosErr.message : t('reports.error'))
+                  })()}
                 </p>
               </CardContent>
             </Card>
