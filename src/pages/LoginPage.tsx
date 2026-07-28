@@ -52,7 +52,7 @@ export default function LoginPage() {
       })
 
       toast.success(t('auth.loginSuccess'))
-      navigate('/', { replace: true })
+      navigate('/dashboard', { replace: true })
     } catch (err) {
       const error = err as AxiosError<{ detail: string }>
       if (!error.response) {

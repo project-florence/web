@@ -24,7 +24,7 @@ import type { MouseEvent } from 'react'
 import florenceLogo from '@/assets/florence_logo.svg'
 
 const navItems = [
-  { to: '/', icon: LayoutDashboard, labelKey: 'nav.dashboard', end: true, activeCheck: (p: string) => p === '/' },
+  { to: '/dashboard', icon: LayoutDashboard, labelKey: 'nav.dashboard', end: true, activeCheck: (p: string) => p === '/dashboard' },
   { to: '/stocks', icon: TrendingUp, labelKey: 'nav.stocks', stocks: true, activeCheck: (p: string) => p.startsWith('/stocks') },
   { to: '/watchlist', icon: Star, labelKey: 'nav.watchlist', activeCheck: (p: string) => p === '/watchlist' },
   { to: '/simulation', icon: BarChart3, labelKey: 'nav.simulation', feature: 'simulation', activeCheck: (p: string) => p === '/simulation' },

@@ -250,5 +250,10 @@
     "1y": "1 Yıl",
     "5y": "5 Yıl",
     "max": "Maks"
+  },
+  "landing": {
+    "heading": "Yeni Nesil Agentic Finance.",
+    "subheading": "Daha akıllı risk yönetimi, otomatik iş akışları ve tam portföy kontrolü. Florence, yapay zeka destekli simülasyonlar ile karmaşık BIST piyasa verilerini doğrudan aksiyon alınabilir içgörülere dönüştürür.",
+    "getStarted": "Hemen Başla"
   }
 }

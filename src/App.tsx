@@ -10,6 +10,7 @@ import { usePageTracking } from '@/hooks/usePageTracking'
 import { track } from '@/lib/telemetry'
 import { useTranslation } from 'react-i18next'
 
+const LandingPage = lazy(() => import('@/pages/LandingPage'))
 const LoginPage = lazy(() => import('@/pages/LoginPage'))
 const RegisterPage = lazy(() => import('@/pages/RegisterPage'))
 const DashboardPage = lazy(() => import('@/pages/DashboardPage'))
@@ -75,8 +76,12 @@ export default function App() {
           <TelemetryProvider />
           <Suspense fallback={<PageLoader />}>
             <Routes>
+              <Route path="/" element={<LandingPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/legal/:policy" element={<LegalPage />} />
               <Route
                 element={
                   <ProtectedRoute>
@@ -84,7 +89,7 @@ export default function App() {
                   </ProtectedRoute>
                 }
               >
-                <Route index element={<DashboardPage />} />
+                <Route path="dashboard" element={<DashboardPage />} />
                 <Route path="stocks" element={<StocksPage />} />
                 <Route path="stocks/:ticker" element={<StockDetailPage />} />
                 <Route path="watchlist" element={<WatchlistPage />} />
@@ -96,9 +101,6 @@ export default function App() {
                 <Route path="currency" element={<CurrencyPage />} />
                 <Route path="metals" element={<MetalsPage />} />
                 <Route path="profile" element={<ProfilePage />} />
-                <Route path="about" element={<AboutPage />} />
-                <Route path="contact" element={<ContactPage />} />
-                <Route path="legal/:policy" element={<LegalPage />} />
               </Route>
             </Routes>
           </Suspense>
