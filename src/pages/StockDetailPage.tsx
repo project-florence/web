@@ -189,7 +189,7 @@ export default function StockDetailPage() {
           {info?.sector && <p className="text-xs text-muted-foreground">{info.sector} · {info.industry}</p>}
         </div>
         {ticker && (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <FavoriteButton ticker={ticker} />
               <Button variant="outline" size="sm" onClick={() => navigate(`/simulation?ticker=${ticker}`)}>
                 <FlaskConical className="h-4 w-4 mr-1" />
@@ -218,7 +218,7 @@ export default function StockDetailPage() {
       </div>
 
       {m && (
-        <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
           <StatCard title="Fiyat" value={fmtCurrency(m.currentPrice)} positive={dailyChange !== undefined ? dailyChange >= 0 : undefined} />
           <StatCard title="Piyasa Değeri" value={fmt(m.marketCap)} />
           <StatCard title="Gün Aralığı" value={fmtCurrency(m.dayLow)} sub={`— ${fmtCurrency(m.dayHigh)}`} />
@@ -235,7 +235,7 @@ export default function StockDetailPage() {
       )}
 
       {v && (
-        <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           <StatCard title="F/K (Trailing)" value={safeFixed(v.trailingPE, 2)} />
           <StatCard title="F/K (Forward)" value={safeFixed(v.forwardPE, 2)} />
           <StatCard title="PD/DD" value={safeFixed(v.priceToBook, 2)} />
@@ -248,7 +248,7 @@ export default function StockDetailPage() {
       )}
 
       {tData && (
-        <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
           <StatCard title="Beta" value={safeFixed(tData.beta, 2)} positive={tData.beta < 1 ? true : tData.beta > 1 ? false : undefined} />
           <StatCard title="Ort. Hacim" value={fmt(tData.averageVolume)} />
           <StatCard title="Ort. Hacim (10g)" value={fmt(tData.averageVolume10days)} />
@@ -308,7 +308,7 @@ export default function StockDetailPage() {
       </Card>
 
       <Tabs defaultValue="news">
-        <TabsList>
+        <TabsList className="overflow-x-auto flex-nowrap">
           <TabsTrigger value="news">{t('stockDetail.news')}</TabsTrigger>
           {f && <TabsTrigger value="financials">Finansallar</TabsTrigger>}
           {bs && <TabsTrigger value="balance">Bilanço</TabsTrigger>}

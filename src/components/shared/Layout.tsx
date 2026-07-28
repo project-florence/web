@@ -1,5 +1,6 @@
 import { Outlet } from 'react-router-dom'
 import { Sidebar } from './Sidebar'
+import { Navbar } from './Navbar'
 import { Footer } from './Footer'
 import { useNavStore } from '@/stores/navStore'
 import { cn } from '@/lib/utils'
@@ -11,8 +12,12 @@ export function Layout() {
     <div className="flex min-h-screen relative">
       <div className="fixed inset-0 bg-gradient-to-br from-background via-background to-primary/[0.03] -z-10" />
       <Sidebar />
-      <div className={cn('flex-1 transition-all duration-300 flex flex-col', collapsed ? 'ml-16' : 'ml-64')}>
-        <main className="p-6 flex-1">
+      <div className={cn(
+        'flex-1 transition-all duration-300 flex flex-col ml-0',
+        collapsed ? 'md:ml-16' : 'md:ml-64',
+      )}>
+        <Navbar />
+        <main className="flex-1 p-4 md:p-6">
           <Outlet />
         </main>
         <Footer />

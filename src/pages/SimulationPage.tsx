@@ -108,7 +108,7 @@ export default function SimulationPage() {
   const simulationDisabled = useMaintenanceStore((s) => s.isDisabled('simulation'))
 
   return (
-    <div className="max-w-lg mx-auto space-y-6">
+    <div className="max-w-full md:max-w-lg mx-auto space-y-6">
       <h2 className="text-3xl font-bold tracking-tight">{t('simulation.title')}</h2>
 
       {simulationDisabled && (

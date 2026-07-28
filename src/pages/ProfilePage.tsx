@@ -128,7 +128,7 @@ export default function ProfilePage() {
         <h2 className="text-3xl font-bold tracking-tight">{t('profile.title')}</h2>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
         <Card className="transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-primary/5">
           <CardContent className="p-5 flex items-center gap-4">
             <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
@@ -346,7 +346,7 @@ export default function ProfilePage() {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                 {Object.entries(themes).map(([key, theme]) => {
                   const isActive = themeName === key
                   return (

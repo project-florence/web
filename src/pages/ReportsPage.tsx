@@ -173,7 +173,7 @@ export default function ReportsPage() {
   ]
 
   return (
-    <div className="max-w-lg mx-auto space-y-6">
+    <div className="max-w-full md:max-w-lg mx-auto space-y-6">
       <h2 className="text-3xl font-bold tracking-tight">{t('reports.title')}</h2>
 
       <div className="flex gap-2">

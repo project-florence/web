@@ -76,7 +76,7 @@ export default function CurrencyPage() {
       <h2 className="text-3xl font-bold tracking-tight">{t('nav.currency')}</h2>
 
       {isLoading ? (
-        <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
           {Array.from({ length: 10 }).map((_, i) => (
             <Card key={i}><CardContent className="p-4"><Skeleton className="h-24 w-full" /></CardContent></Card>
           ))}
@@ -85,7 +85,7 @@ export default function CurrencyPage() {
         <>
           <div>
             <h3 className="text-sm font-medium text-muted-foreground mb-3">Başlıca Kurlar</h3>
-            <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
               {pinnedRates.map(([code, entry], i) => (
                 <CurrencyCard key={code} code={code} entry={entry} index={i} />
               ))}
@@ -93,7 +93,7 @@ export default function CurrencyPage() {
           </div>
           <div>
             <h3 className="text-sm font-medium text-muted-foreground mb-3">Diğer Kurlar</h3>
-            <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
               {otherRates.map(([code, entry], i) => (
                 <CurrencyCard key={code} code={code} entry={entry} index={i + 5} />
               ))}

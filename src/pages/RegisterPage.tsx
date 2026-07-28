@@ -136,7 +136,7 @@ export default function RegisterPage() {
       style={{ backgroundImage: `url(${bgImage})` }}
     >
       <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background/80 backdrop-blur-[2px]" />
-      <div className="relative z-10 w-full max-w-md animate-fadeIn">
+      <div className="relative z-10 w-full max-w-full md:max-w-md animate-fadeIn">
         <Card className="w-full bg-card/60 backdrop-blur-xl border border-white/5 shadow-2xl animate-slideUp">
           <CardHeader className="text-center">
             <img src={florenceLogo} alt="Florence" className="mx-auto h-14 w-14 mb-4" />

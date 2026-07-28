@@ -50,7 +50,7 @@ export default function WatchlistPage() {
     return (
       <div className="space-y-6">
         <Skeleton className="h-8 w-48" />
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {Array.from({ length: 4 }).map((_, i) => (
             <Card key={i}>
               <CardContent className="p-4">
@@ -82,7 +82,7 @@ export default function WatchlistPage() {
   return (
     <div className="space-y-6">
       <h2 className="text-3xl font-bold tracking-tight">{t('watchlist.title')}</h2>
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {summaries?.map((company) => (
           <CompanyCard
             key={company.ticker}

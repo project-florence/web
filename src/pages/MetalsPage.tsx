@@ -116,7 +116,7 @@ export default function MetalsPage() {
       <h2 className="text-3xl font-bold tracking-tight">{t('nav.metals')}</h2>
 
       {goldLoading ? (
-        <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
           {Array.from({ length: 8 }).map((_, i) => (
             <Card key={i}><CardContent className="p-4"><Skeleton className="h-24 w-full" /></CardContent></Card>
           ))}
@@ -128,7 +128,7 @@ export default function MetalsPage() {
               <h3 className="text-sm font-medium text-muted-foreground mb-3 flex items-center gap-2">
                 <Gem className="h-4 w-4" /> Altın
               </h3>
-              <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+              <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                 {Object.entries(gold).map(([id, entry], i) => (
                   <MetalCard key={id} id={id} entry={entry} index={i} />
                 ))}
@@ -138,7 +138,7 @@ export default function MetalsPage() {
           {Object.keys(otherMetals).length > 0 && (
             <div>
               <h3 className="text-sm font-medium text-muted-foreground mb-3">Diğer Değerli Metaller</h3>
-              <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
+              <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                 {Object.entries(otherMetals).map(([id, entry], i) => (
                   <MetalCard key={id} id={id} entry={entry} index={i + 14} />
                 ))}

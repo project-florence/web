@@ -155,7 +155,7 @@ export default function AdvisorPage() {
   const advisorDisabled = useMaintenanceStore((s) => s.isDisabled('advisor'))
 
   return (
-    <div className="max-w-lg mx-auto space-y-6">
+    <div className="max-w-full md:max-w-lg mx-auto space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-3xl font-bold tracking-tight">{t('scout.title')}</h2>
       </div>

@@ -186,7 +186,7 @@ export default function IposPage() {
                             </div>
                           )}
 
-                          <div className="grid grid-cols-2 gap-2">
+                          <div className="grid grid-cols-2 gap-2 overflow-x-auto">
                             {infoFields.map((field) => {
                               const val = detail.info[field.key]
                               if (!val) return null

@@ -80,7 +80,7 @@ export default function ReportDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="max-w-4xl mx-auto space-y-6 p-6">
+      <div className="max-w-4xl mx-auto space-y-6 p-4 md:p-6">
         <Skeleton className="h-6 w-32" />
         <div className="flex gap-6">
           <div className="flex-1 space-y-3">
@@ -96,7 +96,7 @@ export default function ReportDetailPage() {
 
   if (error || !detail) {
     return (
-      <div className="max-w-4xl mx-auto space-y-6 p-6">
+      <div className="max-w-4xl mx-auto space-y-6 p-4 md:p-6">
         <Button variant="ghost" size="sm" onClick={() => navigate('/reports')}>
           <ArrowLeft className="h-4 w-4 mr-1" />
           {t('reports.backToReports')}
@@ -111,7 +111,7 @@ export default function ReportDetailPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-4 p-6">
+    <div className="max-w-4xl mx-auto space-y-4 p-4 md:p-6">
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="sm" onClick={() => navigate('/reports')}>
           <ArrowLeft className="h-4 w-4 mr-1" />

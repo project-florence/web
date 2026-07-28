@@ -40,8 +40,14 @@ export function Sidebar() {
   const location = useLocation()
   const lastStockTicker = useNavStore((s) => s.lastStockTicker)
   const collapsed = useNavStore((s) => s.sidebarCollapsed)
+  const mobileSidebarOpen = useNavStore((s) => s.mobileSidebarOpen)
   const toggleSidebar = useNavStore((s) => s.toggleSidebar)
+  const closeMobileSidebar = useNavStore((s) => s.closeMobileSidebar)
   const isDisabled = useMaintenanceStore((s) => s.isDisabled)
+
+  const handleNavClick = () => {
+    closeMobileSidebar()
+  }
 
   const linkClass = (active: boolean) =>
     cn(
@@ -53,83 +59,100 @@ export function Sidebar() {
     )
 
   const handleStocksClick = (e: MouseEvent) => {
+    closeMobileSidebar()
     if (lastStockTicker) {
       e.preventDefault()
       navigate(`/stocks/${lastStockTicker}`)
     }
   }
 
-  return (
-    <aside
-        className={cn(
-          'fixed left-0 top-0 z-40 h-screen border-r border-border bg-sidebar p-3 flex flex-col transition-all duration-300',
-          collapsed ? 'w-16' : 'w-64',
-        )}
-        onMouseEnter={() => {
-          if (!collapsed) return
-        }}
-      >
-        <div className={cn('flex items-center gap-2 px-2 py-4 mb-4', collapsed && 'justify-center px-0')}>
-          <img src={florenceLogo} alt="Florence" className="h-8 w-8 shrink-0" />
-          {!collapsed && (
-            <>
-              <span className="font-semibold text-lg">{t('app.name')}</span>
-              <button
-                type="button"
-                onClick={toggleSidebar}
-                className="ml-auto p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-              >
-                <PanelLeftClose className="h-4 w-4" />
-              </button>
-            </>
-          )}
-          {collapsed && (
+  const sidebarContent = (
+    <>
+      <div className={cn('flex items-center gap-2 px-2 py-4 mb-4', collapsed && 'justify-center px-0', 'md:block')}>
+        <img src={florenceLogo} alt="Florence" className="h-8 w-8 shrink-0" />
+        {!collapsed && (
+          <>
+            <span className="font-semibold text-lg">{t('app.name')}</span>
             <button
               type="button"
               onClick={toggleSidebar}
-              className="p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors absolute -right-3 top-5 bg-sidebar border border-border rounded-full shadow-sm"
+              className="ml-auto p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors hidden md:inline-flex"
             >
-              <PanelLeft className="h-3.5 w-3.5" />
+              <PanelLeftClose className="h-4 w-4" />
             </button>
-          )}
-        </div>
-
-        <nav className={cn('flex-1 space-y-1', collapsed && 'space-y-2')}>
-          {navItems.map((item) => {
-            const active = item.activeCheck(location.pathname)
-            const disabled = item.feature ? isDisabled(item.feature) : false
-            return (
-              <NavLink
-                key={item.to}
-                to={disabled ? '#' : item.to}
-                onClick={(e) => { if (disabled) e.preventDefault(); if (item.stocks && !disabled) handleStocksClick(e) }}
-                className={cn(linkClass(active), disabled && 'opacity-40 cursor-not-allowed')}
-                aria-current={active ? 'page' : undefined}
-              >
-                <item.icon className="h-4 w-4 transition-transform duration-200 group-hover:scale-110 shrink-0" />
-                {!collapsed && (
-                  <span className="flex items-center gap-2">
-                    {t(item.labelKey)}
-                    {disabled && <Wrench className="h-3 w-3 text-amber-500" />}
-                  </span>
-                )}
-              </NavLink>
-            )
-          })}
-        </nav>
-
-        <div className={cn('border-t border-border pt-3 space-y-2', collapsed && 'flex flex-col items-center pt-2')}>
-          <div className={cn(collapsed && 'flex justify-center')}>
-            <CreditDisplay size="sm" />
-          </div>
-          <NavLink
-            to="/profile"
-            className={linkClass(location.pathname === '/profile')}
+          </>
+        )}
+        {collapsed && (
+          <button
+            type="button"
+            onClick={toggleSidebar}
+            className="p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors absolute -right-3 top-5 bg-sidebar border border-border rounded-full shadow-sm hidden md:block"
           >
-            <User className="h-4 w-4 transition-transform duration-200 group-hover:scale-110 shrink-0" />
-            {!collapsed && t('nav.profile')}
-          </NavLink>
+            <PanelLeft className="h-3.5 w-3.5" />
+          </button>
+        )}
+      </div>
+
+      <nav className={cn('flex-1 space-y-1', collapsed && 'space-y-2')}>
+        {navItems.map((item) => {
+          const active = item.activeCheck(location.pathname)
+          const disabled = item.feature ? isDisabled(item.feature) : false
+          return (
+            <NavLink
+              key={item.to}
+              to={disabled ? '#' : item.to}
+              onClick={(e) => { if (disabled) e.preventDefault(); handleNavClick(); if (item.stocks && !disabled) handleStocksClick(e) }}
+              className={cn(linkClass(active), disabled && 'opacity-40 cursor-not-allowed')}
+              aria-current={active ? 'page' : undefined}
+            >
+              <item.icon className="h-4 w-4 transition-transform duration-200 group-hover:scale-110 shrink-0" />
+              {!collapsed && (
+                <span className="flex items-center gap-2">
+                  {t(item.labelKey)}
+                  {disabled && <Wrench className="h-3 w-3 text-amber-500" />}
+                </span>
+              )}
+            </NavLink>
+          )
+        })}
+      </nav>
+
+      <div className={cn('border-t border-border pt-3 space-y-2', collapsed && 'flex flex-col items-center pt-2')}>
+        <div className={cn(collapsed && 'flex justify-center')}>
+          <CreditDisplay size="sm" />
         </div>
-    </aside>
+        <NavLink
+          to="/profile"
+          onClick={handleNavClick}
+          className={linkClass(location.pathname === '/profile')}
+        >
+          <User className="h-4 w-4 transition-transform duration-200 group-hover:scale-110 shrink-0" />
+          {!collapsed && t('nav.profile')}
+        </NavLink>
+      </div>
+    </>
+  )
+
+  return (
+    <>
+      <div
+        className={cn(
+          'fixed inset-0 z-30 bg-black/50 md:hidden transition-opacity duration-300',
+          mobileSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none',
+        )}
+        onClick={closeMobileSidebar}
+      />
+
+      <aside
+        className={cn(
+          'fixed left-0 top-0 z-40 h-screen border-r border-border bg-sidebar p-3 flex flex-col transition-all duration-300',
+          'md:translate-x-0',
+          collapsed ? 'w-16' : 'w-64',
+          mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full',
+        )}
+      >
+        {sidebarContent}
+      </aside>
+    </>
   )
 }
