@@ -59,9 +59,6 @@ export default function WelcomeHero() {
                   {greeting}{username ? `, ${username}!` : '!'}
                 </h3>
               </div>
-              <p className="text-sm text-muted-foreground">
-                Piyasaları takip et, akıllı yatırım kararları al.
-              </p>
             </div>
             <div className="flex items-center gap-2 text-muted-foreground shrink-0 pt-1">
               <span className="text-sm tabular-nums">
@@ -73,7 +70,7 @@ export default function WelcomeHero() {
           <div className="mb-5">
             <StockSearch
               onSelect={(ticker) => navigate(`/stocks/${ticker}`)}
-              placeholder="Hisse senedi ara (örn. THYAO, GARAN...)"
+              placeholder="Hisse senedi ara"
               autoFocus={false}
             />
           </div>

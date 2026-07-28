@@ -74,12 +74,14 @@ export interface CompanyInfo {
   exchange: string
   market: {
     currentPrice: number
+    previousClose: number | null
     marketCap: number
     dayHigh: number
     dayLow: number
     regularMarketVolume: number
     fiftyTwoWeekHigh: number
     fiftyTwoWeekLow: number
+    regularMarketTime: number | null
   }
   trading: {
     beta: number

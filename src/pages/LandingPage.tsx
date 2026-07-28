@@ -2,8 +2,10 @@ import { useNavigate, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
 import { Globe } from 'lucide-react'
 import florenceLogo from '@/assets/florence_logo.svg'
+import bgImage from '@/assets/background/login_background.png'
 
 const footerLinks = [
   { to: '/about', key: 'footer.about' },
@@ -20,10 +22,16 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      {/* Background image - fixed, scrolls away as user scrolls down */}
+      <div
+        className="fixed inset-0 bg-cover bg-center -z-10"
+        style={{ backgroundImage: `url(${bgImage})` }}
+      />
+      <div className="fixed inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background/80 backdrop-blur-[2px] -z-10" />
       <div className="fixed inset-0 bg-gradient-to-br from-background via-background to-primary/[0.03] -z-10" />
 
       {/* Top navbar */}
-      <header className="flex items-center justify-between px-4 md:px-8 h-16">
+      <header className="flex items-center justify-between px-4 md:px-8 h-16 relative z-10">
         <div className="flex items-center gap-2">
           <img src={florenceLogo} alt="Florence" className="h-8 w-8" />
           <span className="font-semibold text-lg">{t('app.name')}</span>
@@ -49,33 +57,35 @@ export default function LandingPage() {
       </header>
 
       {/* Hero */}
-      <section className="flex-1 flex items-center justify-center px-4 py-20">
-        <div className="max-w-3xl mx-auto text-center space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-          <img src={florenceLogo} alt="Florence" className="h-16 w-16 mx-auto" />
+      <section className="flex-1 flex items-center justify-center px-4 py-20 relative z-10">
+        <Card className="w-full max-w-2xl bg-card/60 backdrop-blur-xl border border-white/5 shadow-2xl">
+          <CardContent className="p-8 md:p-12 text-center space-y-8">
+            <img src={florenceLogo} alt="Florence" className="h-16 w-16 mx-auto" />
 
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tight leading-tight">
-            {t('landing.heading')}
-          </h1>
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-tight">
+              {t('landing.heading')}
+            </h1>
 
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            {t('landing.subheading')}
-          </p>
+            <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
+              {t('landing.subheading')}
+            </p>
 
-          <div className="flex items-center justify-center gap-4 pt-4">
-            <Button
-              variant="gradient"
-              size="lg"
-              onClick={() => navigate('/register')}
-              className="text-base px-8 py-6 h-auto rounded-xl shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all duration-300"
-            >
-              {t('landing.getStarted')}
-            </Button>
-          </div>
-        </div>
+            <div className="flex items-center justify-center gap-4 pt-2">
+              <Button
+                variant="gradient"
+                size="lg"
+                onClick={() => navigate('/register')}
+                className="text-base px-8 py-6 h-auto rounded-xl shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all duration-300"
+              >
+                {t('landing.getStarted')}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border/40 py-6 px-4 md:px-8">
+      <footer className="border-t border-border/40 py-6 px-4 md:px-8 relative z-10">
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-wrap justify-center gap-x-5 gap-y-1 text-xs text-muted-foreground">
             {footerLinks.map((link) => (

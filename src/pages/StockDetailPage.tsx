@@ -15,7 +15,7 @@ import { StatCard } from '@/components/shared/StatCard'
 import { RecommendationsGauge } from '@/components/shared/RecommendationsGauge'
 import { FavoriteButton } from '@/components/shared/FavoriteButton'
 import { useNavStore } from '@/stores/navStore'
-import { processPriceData, computeDailyChange } from '@/lib/price'
+import { processPriceData } from '@/lib/price'
 import api from '@/lib/api'
 import { trackWithTicker } from '@/lib/telemetry'
 import type { CompanyInfo, PriceHistory, NewsItem } from '@/types/api'
@@ -102,10 +102,10 @@ export default function StockDetailPage() {
     return processPriceData(fullHistory, period.value, interval)
   }, [fullHistory, period.value, interval])
 
-  const dailyChangeInfo = useMemo(() => {
-    if (!fullHistory) return null
-    return computeDailyChange(fullHistory)
-  }, [fullHistory])
+  const dailyChangeFromMarket = useMemo(() => {
+    if (!m?.currentPrice || !m?.previousClose) return null
+    return ((m.currentPrice - m.previousClose) / m.previousClose) * 100
+  }, [m?.currentPrice, m?.previousClose])
 
   const { data: news, isLoading: newsLoading } = useQuery({
     queryKey: ['news', ticker],
@@ -140,7 +140,11 @@ export default function StockDetailPage() {
   const bs = info?.balanceSheet
   const companyName = info?.name || ticker
 
-  const dailyChange = dailyChangeInfo?.change
+  const dailyChange = dailyChangeFromMarket
+
+  const priceTime = m?.regularMarketTime
+    ? new Date(m.regularMarketTime * 1000).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })
+    : null
 
   const sliced = processed.data
   const periodLatest = sliced[sliced.length - 1]?.close
@@ -168,7 +172,7 @@ export default function StockDetailPage() {
         <div>
           <div className="flex items-center gap-3">
             <h2 className="text-3xl font-bold tracking-tight">{ticker}</h2>
-            {dailyChange !== undefined && (
+            {dailyChange !== null && (
               <Badge
                 variant="outline"
                 className={cn(
@@ -182,10 +186,13 @@ export default function StockDetailPage() {
                 {dailyChange >= 0 ? '+' : ''}{dailyChange.toFixed(2)}%
               </Badge>
             )}
+            {priceTime && (
+              <span className="text-xs text-muted-foreground">{priceTime}</span>
+            )}
           </div>
           <p className={cn(
             'mt-1 font-medium',
-            dailyChange !== undefined && (dailyChange >= 0 ? 'text-success' : 'text-destructive'),
+            dailyChange !== null && (dailyChange >= 0 ? 'text-success' : 'text-destructive'),
           )}>{companyName}</p>
           {info?.sector && <p className="text-xs text-muted-foreground">{info.sector} · {info.industry}</p>}
         </div>
@@ -220,7 +227,7 @@ export default function StockDetailPage() {
 
       {m && (
         <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
-          <StatCard title="Fiyat" value={fmtCurrency(m.currentPrice)} positive={dailyChange !== undefined ? dailyChange >= 0 : undefined} />
+          <StatCard title="Fiyat" value={fmtCurrency(m.currentPrice)} positive={dailyChange !== null ? dailyChange >= 0 : undefined} />
           <StatCard title="Piyasa Değeri" value={fmt(m.marketCap)} />
           <StatCard title="Gün Aralığı" value={fmtCurrency(m.dayLow)} sub={`— ${fmtCurrency(m.dayHigh)}`} />
           <StatCard title="Hacim" value={fmt(m.regularMarketVolume)} />
