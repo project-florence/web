@@ -43,7 +43,7 @@ export default function LandingPage() {
             {t('auth.login')}
           </Button>
           <Button variant="gradient" onClick={() => navigate('/register')} className="hidden sm:inline-flex">
-            {t('auth.register')}
+            {t('landing.signUp')}
           </Button>
         </div>
       </header>
