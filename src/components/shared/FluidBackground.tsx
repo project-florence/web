@@ -121,23 +121,22 @@ export function FluidBackground() {
     const mouseLoc = gl.getUniformLocation(program, 'u_mouse')
 
     function updateMouse(e: MouseEvent | TouchEvent) {
-      const rect = canvas.getBoundingClientRect()
       let x: number, y: number
       if ('touches' in e && e.touches.length > 0) {
-        x = e.touches[0].clientX - rect.left
-        y = e.touches[0].clientY - rect.top
+        x = e.touches[0].clientX
+        y = e.touches[0].clientY
       } else if ('clientX' in e) {
-        x = e.clientX - rect.left
-        y = e.clientY - rect.top
+        x = e.clientX
+        y = e.clientY
       } else {
         return
       }
-      targetMouseX = x / rect.width
-      targetMouseY = 1.0 - (y / rect.height)
+      targetMouseX = x / window.innerWidth
+      targetMouseY = 1.0 - (y / window.innerHeight)
     }
 
-    canvas.addEventListener('mousemove', updateMouse)
-    canvas.addEventListener('touchmove', updateMouse)
+    window.addEventListener('mousemove', updateMouse)
+    window.addEventListener('touchmove', updateMouse)
 
     function resize() {
       canvas.width = window.innerWidth
@@ -161,8 +160,8 @@ export function FluidBackground() {
 
     return () => {
       cancelAnimationFrame(animRef.current)
-      canvas.removeEventListener('mousemove', updateMouse)
-      canvas.removeEventListener('touchmove', updateMouse)
+      window.removeEventListener('mousemove', updateMouse)
+      window.removeEventListener('touchmove', updateMouse)
       window.removeEventListener('resize', resize)
     }
   }, [])
@@ -170,8 +169,7 @@ export function FluidBackground() {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 w-full h-full -z-10 pointer-events-none"
-      style={{ cursor: 'default' }}
+      className="fixed inset-0 w-full h-full z-0 pointer-events-none"
     />
   )
 }

@@ -69,7 +69,7 @@ export default function LandingPage() {
                 variant="gradient"
                 size="lg"
                 onClick={() => navigate('/register')}
-                className="text-base px-8 py-6 h-auto rounded-xl shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all duration-300"
+                className="text-base px-10 py-6 h-auto rounded-xl shadow-lg shadow-amber-500/20 hover:shadow-xl hover:shadow-amber-500/30 transition-all duration-300 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white font-bold"
               >
                 {t('landing.getStarted')}
               </Button>
