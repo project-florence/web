@@ -27,13 +27,19 @@ export default function LoginPage() {
   const { t, i18n } = useTranslation()
   const navigate = useNavigate()
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
+  const checkAuth = useAuthStore((s) => s.checkAuth)
   const [loading, setLoading] = useState(false)
+  const [authChecked, setAuthChecked] = useState(false)
 
   useEffect(() => {
-    if (isAuthenticated) {
+    checkAuth().finally(() => setAuthChecked(true))
+  }, [checkAuth])
+
+  useEffect(() => {
+    if (authChecked && isAuthenticated) {
       navigate('/dashboard', { replace: true })
     }
-  }, [isAuthenticated, navigate])
+  }, [authChecked, isAuthenticated, navigate])
 
   const {
     register,

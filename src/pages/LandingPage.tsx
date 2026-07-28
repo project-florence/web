@@ -78,7 +78,7 @@ export default function LandingPage() {
       </section>
 
       {/* Spacer */}
-      <div className="h-12 md:h-20 relative z-10" />
+      <div className="h-20 md:h-36 relative z-10" />
 
       {/* Feature sections */}
       {[
@@ -88,27 +88,27 @@ export default function LandingPage() {
         { key: 'feature4', img: '/assets/report.png', right: true },
         { key: 'feature5', img: '/assets/simulation.png', right: false },
       ].map((f) => (
-        <section key={f.key} className="py-20 md:py-32 relative z-10">
+        <section key={f.key} className="py-24 md:py-40 relative z-10">
           <div className="max-w-6xl mx-auto px-4 md:px-8">
-            <div className="grid md:grid-cols-2 gap-12 md:gap-20 items-center">
+            <div className="grid md:grid-cols-2 gap-16 md:gap-24 items-center">
               {f.right ? (
                 <>
                   <div className="md:order-1">
-                    <h2 className="text-2xl md:text-3xl font-bold mb-4">{t(`landing.${f.key}.heading`)}</h2>
+                    <h2 className="text-2xl md:text-4xl font-bold mb-6">{t(`landing.${f.key}.heading`)}</h2>
                     <p className="text-muted-foreground text-base md:text-lg leading-relaxed">{t(`landing.${f.key}.desc`)}</p>
                   </div>
                   <div className="md:order-2">
-                    <img src={f.img} alt="" className="w-full rounded-xl shadow-2xl border border-border/50" loading="lazy" />
+                    <img src={f.img} alt="" className="w-full max-h-[400px] md:max-h-[500px] object-cover rounded-xl shadow-2xl border border-border/50" loading="lazy" />
                   </div>
                 </>
               ) : (
                 <>
                   <div className="md:order-2">
-                    <h2 className="text-2xl md:text-3xl font-bold mb-4">{t(`landing.${f.key}.heading`)}</h2>
+                    <h2 className="text-2xl md:text-4xl font-bold mb-6">{t(`landing.${f.key}.heading`)}</h2>
                     <p className="text-muted-foreground text-base md:text-lg leading-relaxed">{t(`landing.${f.key}.desc`)}</p>
                   </div>
                   <div className="md:order-1">
-                    <img src={f.img} alt="" className="w-full rounded-xl shadow-2xl border border-border/50" loading="lazy" />
+                    <img src={f.img} alt="" className="w-full max-h-[400px] md:max-h-[500px] object-cover rounded-xl shadow-2xl border border-border/50" loading="lazy" />
                   </div>
                 </>
               )}
