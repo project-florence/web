@@ -26,19 +26,7 @@ type LoginForm = z.infer<typeof loginSchema>
 export default function LoginPage() {
   const { t, i18n } = useTranslation()
   const navigate = useNavigate()
-  const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
   const [loading, setLoading] = useState(false)
-  const [authChecked, setAuthChecked] = useState(false)
-
-  useEffect(() => {
-    useAuthStore.getState().checkAuth().finally(() => setAuthChecked(true))
-  }, [])
-
-  useEffect(() => {
-    if (authChecked && isAuthenticated) {
-      navigate('/dashboard', { replace: true })
-    }
-  }, [authChecked, isAuthenticated, navigate])
 
   const {
     register,
