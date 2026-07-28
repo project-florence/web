@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Globe } from 'lucide-react'
 import florenceLogo from '@/assets/florence_logo.svg'
-import bgImage from '@/assets/background/login_background.png'
+import { FluidBackground } from '@/components/shared/FluidBackground'
 
 const footerLinks = [
   { to: '/about', key: 'footer.about' },
@@ -22,13 +22,7 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      {/* Background image - fixed, scrolls away as user scrolls down */}
-      <div
-        className="fixed inset-0 bg-cover bg-center -z-10"
-        style={{ backgroundImage: `url(${bgImage})` }}
-      />
-      <div className="fixed inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background/80 backdrop-blur-[2px] -z-10" />
-      <div className="fixed inset-0 bg-gradient-to-br from-background via-background to-primary/[0.03] -z-10" />
+      <FluidBackground />
 
       {/* Top navbar */}
       <header className="flex items-center justify-between px-4 md:px-8 h-16 relative z-10">
