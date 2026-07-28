@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { themes, type ThemeName, type ThemeDefinition } from '@/config/themes'
+import { track } from '@/lib/telemetry'
 
 const STORAGE_KEY = 'florence-theme'
 
@@ -62,8 +63,10 @@ export const useThemeStore = create<ThemeState>()(
       applyTheme: (name: ThemeName) => {
         const theme = themes[name]
         if (theme) {
+          const prev = document.documentElement.getAttribute('data-theme')
           setCSSVariables(theme)
           set({ themeName: name })
+          track('theme_change', { from: prev, to: name })
         }
       },
     }),

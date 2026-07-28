@@ -1,11 +1,14 @@
 import { Suspense, lazy, useEffect } from 'react'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Toaster } from 'sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { Layout } from '@/components/shared/Layout'
 import { ProtectedRoute } from '@/components/shared/ProtectedRoute'
 import { useMaintenanceStore } from '@/stores/maintenanceStore'
+import { usePageTracking } from '@/hooks/usePageTracking'
+import { track } from '@/lib/telemetry'
+import { useTranslation } from 'react-i18next'
 
 const LoginPage = lazy(() => import('@/pages/LoginPage'))
 const RegisterPage = lazy(() => import('@/pages/RegisterPage'))
@@ -43,6 +46,21 @@ function PageLoader() {
   )
 }
 
+function TelemetryProvider() {
+  usePageTracking()
+  const { i18n } = useTranslation()
+
+  useEffect(() => {
+    const handler = (lng: string) => {
+      track('language_change', { language: lng })
+    }
+    i18n.on('languageChanged', handler)
+    return () => { i18n.off('languageChanged', handler) }
+  }, [i18n])
+
+  return null
+}
+
 export default function App() {
   const fetchDisabled = useMaintenanceStore((s) => s.fetchDisabled)
 
@@ -54,6 +72,7 @@ export default function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <BrowserRouter>
+          <TelemetryProvider />
           <Suspense fallback={<PageLoader />}>
             <Routes>
               <Route path="/login" element={<LoginPage />} />

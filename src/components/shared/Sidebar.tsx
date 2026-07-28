@@ -19,6 +19,7 @@ import { cn } from '@/lib/utils'
 import { useNavStore } from '@/stores/navStore'
 import { useMaintenanceStore } from '@/stores/maintenanceStore'
 import { CreditDisplay } from '@/components/shared/CreditDisplay'
+import { track } from '@/lib/telemetry'
 import type { MouseEvent } from 'react'
 import florenceLogo from '@/assets/florence_logo.svg'
 
@@ -45,7 +46,8 @@ export function Sidebar() {
   const closeMobileSidebar = useNavStore((s) => s.closeMobileSidebar)
   const isDisabled = useMaintenanceStore((s) => s.isDisabled)
 
-  const handleNavClick = () => {
+  const handleNavClick = (label: string) => {
+    track('nav_click', { from: location.pathname, to: label })
     closeMobileSidebar()
   }
 
@@ -101,7 +103,7 @@ export function Sidebar() {
             <NavLink
               key={item.to}
               to={disabled ? '#' : item.to}
-              onClick={(e) => { if (disabled) e.preventDefault(); handleNavClick(); if (item.stocks && !disabled) handleStocksClick(e) }}
+              onClick={(e) => { if (disabled) e.preventDefault(); handleNavClick(item.labelKey); if (item.stocks && !disabled) handleStocksClick(e) }}
               className={cn(linkClass(active), disabled && 'opacity-40 cursor-not-allowed')}
               aria-current={active ? 'page' : undefined}
             >

@@ -17,6 +17,7 @@ import { FavoriteButton } from '@/components/shared/FavoriteButton'
 import { useNavStore } from '@/stores/navStore'
 import { processPriceData, computeDailyChange } from '@/lib/price'
 import api from '@/lib/api'
+import { trackWithTicker } from '@/lib/telemetry'
 import type { CompanyInfo, PriceHistory, NewsItem } from '@/types/api'
 
 const PERIODS = [
@@ -191,11 +192,11 @@ export default function StockDetailPage() {
         {ticker && (
             <div className="flex items-center gap-2 flex-wrap">
               <FavoriteButton ticker={ticker} />
-              <Button variant="outline" size="sm" onClick={() => navigate(`/simulation?ticker=${ticker}`)}>
+              <Button variant="outline" size="sm" onClick={() => { trackWithTicker('feature_click', ticker, { feature: 'simulation_button' }); navigate(`/simulation?ticker=${ticker}`) }}>
                 <FlaskConical className="h-4 w-4 mr-1" />
                 Simülasyon
               </Button>
-              <Button variant="outline" size="sm" onClick={() => navigate(`/reports?ticker=${ticker}`)}>
+              <Button variant="outline" size="sm" onClick={() => { trackWithTicker('feature_click', ticker, { feature: 'report_button' }); navigate(`/reports?ticker=${ticker}`) }}>
                 <FileText className="h-4 w-4 mr-1" />
                 Rapor
               </Button>
