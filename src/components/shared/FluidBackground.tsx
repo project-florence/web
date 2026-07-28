@@ -67,9 +67,12 @@ const fsSource = `
 
 export function FluidBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const animRef = useRef<number>(0)
+  const mountedRef = useRef(false)
 
   useEffect(() => {
+    if (mountedRef.current) return
+    mountedRef.current = true
+
     const canvas = canvasRef.current
     if (!canvas) return
 
@@ -83,6 +86,7 @@ export function FluidBackground() {
     let mouseY = 0.5
     let targetMouseX = 0.5
     let targetMouseY = 0.5
+    let animId = 0
 
     function createShader(gl: WebGLRenderingContext, type: number, source: string) {
       const shader = gl.createShader(type)
@@ -99,10 +103,10 @@ export function FluidBackground() {
 
     const vs = createShader(gl, gl.VERTEX_SHADER, vsSource)
     const fs = createShader(gl, gl.FRAGMENT_SHADER, fsSource)
-    if (!vs || !fs) return
+    if (!vs || !fs) { mountedRef.current = false; return }
 
     const program = gl.createProgram()
-    if (!program) return
+    if (!program) { mountedRef.current = false; return }
     gl.attachShader(program, vs)
     gl.attachShader(program, fs)
     gl.linkProgram(program)
@@ -154,15 +158,16 @@ export function FluidBackground() {
       gl.uniform1f(timeLoc, time * 0.001)
       gl.uniform2f(mouseLoc, mouseX, mouseY)
       gl.drawArrays(gl.TRIANGLES, 0, 6)
-      animRef.current = requestAnimationFrame(render)
+      animId = requestAnimationFrame(render)
     }
-    animRef.current = requestAnimationFrame(render)
+    animId = requestAnimationFrame(render)
 
     return () => {
-      cancelAnimationFrame(animRef.current)
+      cancelAnimationFrame(animId)
       window.removeEventListener('mousemove', updateMouse)
       window.removeEventListener('touchmove', updateMouse)
       window.removeEventListener('resize', resize)
+      mountedRef.current = false
     }
   }, [])
 

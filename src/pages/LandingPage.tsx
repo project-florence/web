@@ -32,8 +32,7 @@ export default function LandingPage() {
         </div>
         <div className="flex items-center gap-3">
           <Select value={i18n.language} onValueChange={(v) => v && i18n.changeLanguage(v)}>
-            <SelectTrigger className="w-28 h-9">
-              <Globe className="h-3.5 w-3.5 mr-1.5" />
+            <SelectTrigger className="w-[105px] h-9">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -41,10 +40,10 @@ export default function LandingPage() {
               <SelectItem value="en">English</SelectItem>
             </SelectContent>
           </Select>
-          <Button variant="outline" onClick={() => navigate('/login')}>
+          <Button variant="outline" onClick={() => navigate('/login')} className="bg-white/10 hover:bg-white/20">
             {t('auth.login')}
           </Button>
-          <Button variant="gradient" onClick={() => navigate('/register')} className="hidden sm:inline-flex">
+          <Button onClick={() => navigate('/register')} className="hidden sm:inline-flex bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white font-semibold shadow-md">
             {t('landing.signUp')}
           </Button>
         </div>
