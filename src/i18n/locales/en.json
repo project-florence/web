@@ -255,6 +255,26 @@
     "heading": "Next-Gen Agentic Finance.",
     "subheading": "AI-powered portfolio analysis, simulations and autonomous financial workflows.",
     "getStarted": "Get Started",
-    "signUp": "Sign Up"
+    "signUp": "Sign Up",
+    "feature1": {
+      "heading": "Command the Market.",
+      "desc": "Track top-performing assets, monitor real-time changes, and build your custom watchlist. Get a bird's-eye view of critical market metrics at a glance."
+    },
+    "feature2": {
+      "heading": "Never Miss an Opportunity.",
+      "desc": "Stay ahead of the curve. Monitor upcoming and drafted Initial Public Offerings (IPOs) to catch early investment opportunities before they hit the broader market."
+    },
+    "feature3": {
+      "heading": "Meet Your AI Advisor.",
+      "desc": "Tailor your portfolio to your exact risk tolerance and time horizon. Let intelligent algorithms analyze the market and match you with the highest-suitability assets."
+    },
+    "feature4": {
+      "heading": "Deep-Dive Actionable Reports.",
+      "desc": "Generate comprehensive fundamental analyses, news sentiment scores, and strategic evaluations in seconds. Export your insights directly to PDF or DOCX."
+    },
+    "feature5": {
+      "heading": "Advanced Market Simulations.",
+      "desc": "Stress-test your strategy before making a move. Calculate probabilities, forecast price movements, and determine confidence intervals with advanced simulation models."
+    }
   }
 }

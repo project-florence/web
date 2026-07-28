@@ -38,7 +38,7 @@ export default function LegalPage() {
   })
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <div className="max-w-3xl mx-auto pt-6 md:pt-8 pb-6 md:pb-8">
       <Button variant="ghost" size="sm" onClick={() => navigate(-1)} className="mb-4 -ml-2">
         <ArrowLeft className="h-4 w-4 mr-1" />
         {t('common.back')}

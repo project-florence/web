@@ -255,6 +255,26 @@
     "heading": "Yeni Nesil Agentic Finance.",
     "subheading": "Yapay zeka destekli portföy analizi, simülasyonlar ve otomatik finansal iş akışları.",
     "getStarted": "Hemen Başla",
-    "signUp": "Kaydol"
+    "signUp": "Kaydol",
+    "feature1": {
+      "heading": "Piyasaya Hükmedin.",
+      "desc": "En iyi performans gösteren varlıkları takip edin, anlık değişimleri izleyin ve kendi özel takip listenizi oluşturun. Kritik piyasa verilerine tek bir bakışla hakim olun."
+    },
+    "feature2": {
+      "heading": "Hiçbir Fırsatı Kaçırmayın.",
+      "desc": "Piyasada her zaman bir adım önde olun. Yaklaşan ve taslak halindeki Halka Arzları (Bilanço) yakından izleyerek erken yatırım fırsatlarını erkenden yakalayın."
+    },
+    "feature3": {
+      "heading": "Yapay Zeka Danışmanınızla Tanışın.",
+      "desc": "Portföyünüzü risk toleransınıza ve yatırım vadenize göre şekillendirin. Bırakın akıllı algoritmalar piyasayı analiz etsin ve sizi en uygun varlıklarla eşleştirsin."
+    },
+    "feature4": {
+      "heading": "Derinlemesine ve Aksiyon Odaklı Raporlar.",
+      "desc": "Kapsamlı temel analizleri, haber duyarlılık skorlarını ve stratejik değerlendirmeleri saniyeler içinde üretin. Elde ettiğiniz içgörüleri doğrudan PDF veya DOCX olarak dışa aktarın."
+    },
+    "feature5": {
+      "heading": "Gelişmiş Piyasa Simülasyonları.",
+      "desc": "Hamle yapmadan önce stratejinizi test edin. Gelişmiş simülasyon modelleriyle olasılıkları hesaplayın, fiyat hareketlerini öngörün ve güven aralıklarını belirleyin."
+    }
   }
 }

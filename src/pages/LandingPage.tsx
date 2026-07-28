@@ -77,6 +77,43 @@ export default function LandingPage() {
         </Card>
       </section>
 
+      {/* Feature sections */}
+      {[
+        { key: 'feature1', img: '/assets/stocks.png', right: false },
+        { key: 'feature2', img: '/assets/ipo.png', right: true },
+        { key: 'feature3', img: '/assets/advisor.png', right: false },
+        { key: 'feature4', img: '/assets/report.png', right: true },
+        { key: 'feature5', img: '/assets/simulation.png', right: false },
+      ].map((f) => (
+        <section key={f.key} className="py-16 md:py-24 relative z-10">
+          <div className="max-w-6xl mx-auto px-4 md:px-8">
+            <div className="grid md:grid-cols-2 gap-8 md:gap-16 items-center">
+              {f.right ? (
+                <>
+                  <div className="md:order-1">
+                    <h2 className="text-2xl md:text-3xl font-bold mb-4">{t(`landing.${f.key}.heading`)}</h2>
+                    <p className="text-muted-foreground text-base md:text-lg leading-relaxed">{t(`landing.${f.key}.desc`)}</p>
+                  </div>
+                  <div className="md:order-2">
+                    <img src={f.img} alt="" className="w-full rounded-xl shadow-2xl border border-border/50" loading="lazy" />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="md:order-2">
+                    <h2 className="text-2xl md:text-3xl font-bold mb-4">{t(`landing.${f.key}.heading`)}</h2>
+                    <p className="text-muted-foreground text-base md:text-lg leading-relaxed">{t(`landing.${f.key}.desc`)}</p>
+                  </div>
+                  <div className="md:order-1">
+                    <img src={f.img} alt="" className="w-full rounded-xl shadow-2xl border border-border/50" loading="lazy" />
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </section>
+      ))}
+
       {/* Footer */}
       <footer className="border-t border-border/40 py-6 px-4 md:px-8 relative z-10">
         <div className="max-w-6xl mx-auto">

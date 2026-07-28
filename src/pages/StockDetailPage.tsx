@@ -75,7 +75,7 @@ export default function StockDetailPage() {
     if (ticker) setLastStockTicker(ticker)
   }, [ticker, setLastStockTicker])
 
-  const { data: info, isLoading: infoLoading } = useQuery({
+  const { data: info, isLoading: infoLoading, isError: infoError } = useQuery({
     queryKey: ['company-info', ticker],
     queryFn: async () => {
       const res = await api.get(`/api/v1/companies/info/${ticker}`)
@@ -83,6 +83,7 @@ export default function StockDetailPage() {
     },
     enabled: !!ticker,
     staleTime: 5 * 60_000,
+    retry: 1,
   })
 
   const { data: fullHistory, isLoading: historyLoading } = useQuery({
@@ -116,6 +117,24 @@ export default function StockDetailPage() {
     enabled: !!ticker,
     staleTime: 5 * 60_000,
   })
+
+  if (infoError && !info) {
+    return (
+      <div className="space-y-6 pt-8 md:pt-12">
+        <Button variant="ghost" size="sm" onClick={() => navigate('/stocks')}>
+          <ArrowLeft className="h-4 w-4 mr-1" />
+          Geri
+        </Button>
+        <div className="text-center py-20">
+          <h2 className="text-xl font-semibold mb-2">Hisse bilgisi yuklenemedi</h2>
+          <p className="text-muted-foreground mb-4">{ticker} icin veri alinamadi.</p>
+          <Button variant="outline" onClick={() => window.location.reload()}>
+            Tekrar Dene
+          </Button>
+        </div>
+      </div>
+    )
+  }
 
   if (infoLoading && !info) {
     return (
