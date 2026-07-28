@@ -90,25 +90,25 @@ export default function LandingPage() {
       ].map((f) => (
         <section key={f.key} className="py-24 md:py-40 relative z-10">
           <div className="max-w-6xl mx-auto px-4 md:px-8">
-            <div className="grid md:grid-cols-2 gap-16 md:gap-24 items-center">
+            <div className="grid md:grid-cols-2 gap-12 md:gap-16 items-start">
               {f.right ? (
                 <>
                   <div className="md:order-1">
-                    <h2 className="text-2xl md:text-4xl font-bold mb-6">{t(`landing.${f.key}.heading`)}</h2>
-                    <p className="text-muted-foreground text-base md:text-lg leading-relaxed">{t(`landing.${f.key}.desc`)}</p>
+                    <h2 className="text-3xl md:text-5xl font-bold mb-6">{t(`landing.${f.key}.heading`)}</h2>
+                    <p className="text-muted-foreground text-lg md:text-xl leading-relaxed">{t(`landing.${f.key}.desc`)}</p>
                   </div>
                   <div className="md:order-2">
-                    <img src={f.img} alt="" className="w-full rounded-xl shadow-2xl border border-border/50" loading="lazy" />
+                    <img src={f.img} alt="" className="w-full aspect-video object-cover rounded-xl shadow-2xl border border-border/50" loading="lazy" />
                   </div>
                 </>
               ) : (
                 <>
                   <div className="md:order-2">
-                    <h2 className="text-2xl md:text-4xl font-bold mb-6">{t(`landing.${f.key}.heading`)}</h2>
-                    <p className="text-muted-foreground text-base md:text-lg leading-relaxed">{t(`landing.${f.key}.desc`)}</p>
+                    <h2 className="text-3xl md:text-5xl font-bold mb-6">{t(`landing.${f.key}.heading`)}</h2>
+                    <p className="text-muted-foreground text-lg md:text-xl leading-relaxed">{t(`landing.${f.key}.desc`)}</p>
                   </div>
                   <div className="md:order-1">
-                    <img src={f.img} alt="" className="w-full rounded-xl shadow-2xl border border-border/50" loading="lazy" />
+                    <img src={f.img} alt="" className="w-full aspect-video object-cover rounded-xl shadow-2xl border border-border/50" loading="lazy" />
                   </div>
                 </>
               )}
