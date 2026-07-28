@@ -1,22 +1,25 @@
 import { create } from 'zustand'
-import { apiConfig } from '@/config/api'
+import api from '@/lib/api'
 
 interface AuthState {
-  token: string | null
   isAuthenticated: boolean
-  setToken: (token: string) => void
+  loading: boolean
+  checkAuth: () => Promise<void>
+  setAuthenticated: (value: boolean) => void
   logout: () => void
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
-  token: localStorage.getItem(apiConfig.tokenKey),
-  isAuthenticated: !!localStorage.getItem(apiConfig.tokenKey),
-  setToken: (token) => {
-    localStorage.setItem(apiConfig.tokenKey, token)
-    set({ token, isAuthenticated: true })
+  isAuthenticated: false,
+  loading: true,
+  checkAuth: async () => {
+    try {
+      await api.get('/api/v1/profile')
+      set({ isAuthenticated: true, loading: false })
+    } catch {
+      set({ isAuthenticated: false, loading: false })
+    }
   },
-  logout: () => {
-    localStorage.removeItem(apiConfig.tokenKey)
-    set({ token: null, isAuthenticated: false })
-  },
+  setAuthenticated: (value) => set({ isAuthenticated: value }),
+  logout: () => set({ isAuthenticated: false }),
 }))

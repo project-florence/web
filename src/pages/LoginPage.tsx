@@ -11,7 +11,6 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import api from '@/lib/api'
-import { useAuthStore } from '@/stores/authStore'
 import type { AxiosError } from 'axios'
 import bgImage from '@/assets/background/login_background.png'
 import florenceLogo from '@/assets/florence_logo.svg'
@@ -26,7 +25,6 @@ type LoginForm = z.infer<typeof loginSchema>
 export default function LoginPage() {
   const { t, i18n } = useTranslation()
   const navigate = useNavigate()
-  const setToken = useAuthStore((s) => s.setToken)
   const [loading, setLoading] = useState(false)
 
   const {
@@ -49,11 +47,10 @@ export default function LoginPage() {
       formData.append('username', data.username)
       formData.append('password', data.password)
 
-      const res = await api.post('/api/v1/auth/login', formData, {
+      await api.post('/api/v1/auth/login', formData, {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       })
 
-      setToken(res.data.access_token)
       toast.success(t('auth.loginSuccess'))
       navigate('/', { replace: true })
     } catch (err) {

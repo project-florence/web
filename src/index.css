@@ -3,11 +3,12 @@
 @import "shadcn/tailwind.css";
 @import "react-grid-layout/css/styles.css";
 @import "react-resizable/css/styles.css";
+@import "@fontsource-variable/geist";
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-sans: 'Geist Variable', system-ui, -apple-system, sans-serif;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
