@@ -98,7 +98,7 @@ export default function LandingPage() {
                     <p className="text-muted-foreground text-base md:text-lg leading-relaxed">{t(`landing.${f.key}.desc`)}</p>
                   </div>
                   <div className="md:order-2">
-                    <img src={f.img} alt="" className="w-full max-h-[400px] md:max-h-[500px] object-cover rounded-xl shadow-2xl border border-border/50" loading="lazy" />
+                    <img src={f.img} alt="" className="w-full rounded-xl shadow-2xl border border-border/50" loading="lazy" />
                   </div>
                 </>
               ) : (
@@ -108,7 +108,7 @@ export default function LandingPage() {
                     <p className="text-muted-foreground text-base md:text-lg leading-relaxed">{t(`landing.${f.key}.desc`)}</p>
                   </div>
                   <div className="md:order-1">
-                    <img src={f.img} alt="" className="w-full max-h-[400px] md:max-h-[500px] object-cover rounded-xl shadow-2xl border border-border/50" loading="lazy" />
+                    <img src={f.img} alt="" className="w-full rounded-xl shadow-2xl border border-border/50" loading="lazy" />
                   </div>
                 </>
               )}
