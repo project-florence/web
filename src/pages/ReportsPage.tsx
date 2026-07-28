@@ -84,10 +84,10 @@ export default function ReportsPage() {
       queryClient.invalidateQueries({ queryKey: ['credits'] })
       queryClient.invalidateQueries({ queryKey: ['report-history'] })
       if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
-        new Notification('Rapor Hazır', { body: `${data.about} — ${data.title}` })
+        new Notification(t('reportGen.reportReady'), { body: `${data.about} — ${data.title}` })
       } else if (typeof Notification !== 'undefined' && Notification.permission !== 'denied') {
         Notification.requestPermission().then((p) => {
-          if (p === 'granted') new Notification('Rapor Hazır', { body: `${data.about} — ${data.title}` })
+          if (p === 'granted') new Notification(t('reportGen.reportReady'), { body: `${data.about} — ${data.title}` })
         })
       }
     },
@@ -102,11 +102,11 @@ export default function ReportsPage() {
   const [elapsed, setElapsed] = useState(0)
   const [statusIndex, setStatusIndex] = useState(0)
   const statuses = [
-    'Haberler taranıyor...',
-    'Finansallar analiz ediliyor...',
-    'Duyarlılık hesaplanıyor...',
-    'Rapor yazılıyor...',
-    'Son rötuşlar...',
+    t('reportGen.scanningNews'),
+    t('reportGen.analyzingFinancials'),
+    t('reportGen.calculatingSentiment'),
+    t('reportGen.writingReport'),
+    t('reportGen.finalizing'),
   ]
 
   useEffect(() => {
@@ -256,7 +256,7 @@ export default function ReportsPage() {
                     <Coins className="h-6 w-6 text-amber-500" />
                   </div>
                   <div>
-                    <p className="text-sm font-medium">Rapor Oluşturuluyor</p>
+                    <p className="text-sm font-medium">{t('reportGen.creating')}</p>
                     <p className="text-xs text-muted-foreground mt-1 animate-pulse">
                       {statuses[statusIndex]}
                     </p>

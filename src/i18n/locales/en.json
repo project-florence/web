@@ -68,7 +68,8 @@
     "sector": "Sector",
     "details": "Details",
     "addToWatchlist": "Add to Watchlist",
-    "removeFromWatchlist": "Remove from Watchlist"
+    "removeFromWatchlist": "Remove from Watchlist",
+    "page": "Page"
   },
   "stockDetail": {
     "title": "Stock Detail",
@@ -82,7 +83,45 @@
     "probability": "Probability",
     "confidenceInterval": "Confidence Interval",
     "period": "Period",
-    "interval": "Interval"
+    "interval": "Interval",
+    "price": "Price",
+    "marketCap": "Market Cap",
+    "dayRange": "Day Range",
+    "volume": "Volume",
+    "high52": "52W High",
+    "low52": "52W Low",
+    "beta": "Beta",
+    "avgVolume": "Avg. Volume",
+    "avgVolume10d": "Avg. Volume (10d)",
+    "ma50": "50d MA",
+    "ma200": "200d MA",
+    "sharesOutstanding": "Shares Outstanding",
+    "sharesFloat": "Float",
+    "insiderRatio": "Insider Ratio",
+    "institutionalRatio": "Institutional Ratio",
+    "shortRatio": "Short Ratio",
+    "financialsTitle": "Financials",
+    "balanceTitle": "Balance Sheet",
+    "grossMargin": "Gross Margin",
+    "revenueGrowth": "Revenue Growth",
+    "netProfitMargin": "Profit Margin",
+    "roe": "Return on Equity",
+    "roa": "Return on Assets",
+    "freeCashFlow": "Free Cash Flow",
+    "cashPerShare": "Cash per Share",
+    "debt": "Debt",
+    "debtToEquity": "Debt/Equity",
+    "currentRatio": "Current Ratio",
+    "eps": "Earnings per Share",
+    "pe": "P/E (Trailing)",
+    "peForward": "P/E (Forward)",
+    "pb": "P/B",
+    "peg": "PEG Ratio",
+    "ps": "P/S (TTM)",
+    "enterpriseValue": "Enterprise Value",
+    "dividendYield": "Dividend Yield",
+    "targetPrice": "Target Price (Avg)",
+    "peValue": "P/E Value"
   },
   "watchlist": {
     "title": "Watchlist",
@@ -133,7 +172,26 @@
     "title": "Precious Metals",
     "gumus": "Silver",
     "gramPalatin": "Platinum Gram",
-    "gramPaladyum": "Palladium Gram"
+    "gramPaladyum": "Palladium Gram",
+    "goldOz": "Gold (oz)",
+    "goldGram": "Gold (gram)",
+    "goldPure": "Pure Gold (gram)",
+    "goldQuarter": "Quarter Gold",
+    "goldHalf": "Half Gold",
+    "goldFull": "Full Gold",
+    "goldRepublic": "Republic Gold",
+    "goldAta": "Ata Gold",
+    "gold14k": "14k Gold",
+    "gold18k": "18k Gold",
+    "gold22k": "22k Bracelet",
+    "gold25": "2.5 Gold",
+    "goldGremse": "Gremse Gold",
+    "goldResat": "Resat Gold",
+    "gold5": "5-Lira Gold",
+    "goldHamit": "Hamit Gold",
+    "silver": "Silver",
+    "platinum": "Platinum (gram)",
+    "palladium": "Palladium (gram)"
   },
   "profile": {
     "title": "Profile",
@@ -158,7 +216,8 @@
     "deleteAccount": "Delete My Account",
     "deleteDesc": "Permanently delete your account. This action cannot be undone.",
     "passwordRequired": "Your current password is required for this action",
-    "confirmDelete": "Are you sure you want to delete your account? This action cannot be undone."
+    "confirmDelete": "Are you sure you want to delete your account? This action cannot be undone.",
+    "accountDeleted": "Account deleted"
   },
   "reports": {
     "title": "Reports",
@@ -276,5 +335,86 @@
       "heading": "Advanced Market Simulations.",
       "desc": "Stress-test your strategy before making a move. Calculate probabilities, forecast price movements, and determine confidence intervals with advanced simulation models."
     }
+  },
+  "maintenance": {
+    "advisor": "Stock advisor is temporarily under maintenance.",
+    "simulation": "Simulation is temporarily under maintenance."
+  },
+  "welcome": {
+    "morning": "Good morning",
+    "afternoon": "Good afternoon",
+    "evening": "Good evening",
+    "night": "Good night",
+    "simulation": "Simulation",
+    "advisor": "Advisor",
+    "markets": "Markets",
+    "reports": "Reports"
+  },
+  "validation": {
+    "usernameRequired": "Username is required",
+    "passwordRequired": "Password is required",
+    "usernameMin": "At least 3 characters",
+    "emailInvalid": "Enter a valid email",
+    "passwordMin": "At least 6 characters"
+  },
+  "ipo": {
+    "active": "Active",
+    "draft": "Draft",
+    "price": "IPO Price/Range",
+    "shareAmount": "Share Amount",
+    "market": "Market",
+    "firstTradeDate": "BIST First Trade Date",
+    "size": "IPO Size",
+    "discountRate": "Discount Rate",
+    "circulatingRatio": "Free Float Ratio (%)",
+    "method": "IPO Method",
+    "fundUsage": "Use of Funds",
+    "saleMethod": "Sale Method",
+    "allocationGroups": "Allocation Groups",
+    "distributedAmount": "Distributed Amount",
+    "priceStabilization": "Price Stabilization",
+    "lockUp": "Lock-up Period",
+    "publicFloat": "Public Float"
+  },
+  "reportGen": {
+    "scanningNews": "Scanning news...",
+    "analyzingFinancials": "Analyzing financials...",
+    "calculatingSentiment": "Calculating sentiment...",
+    "writingReport": "Writing report...",
+    "finalizing": "Finalizing...",
+    "reportReady": "Report Ready",
+    "error": "An error occurred during simulation.",
+    "creating": "Generating Report"
+  },
+  "simulationLabels": {
+    "selectStock": "Select a stock...",
+    "autoTarget": "Auto (current+%10)",
+    "reach": "reach",
+    "fallBelow": "fall below",
+    "upward": "upward",
+    "downward": "downward",
+    "probability": "Probability",
+    "results": "Results",
+    "error": "An error occurred during simulation."
+  },
+  "currency": {
+    "buy": "Buy",
+    "sell": "Sell",
+    "major": "Major Rates",
+    "other": "Other Rates"
+  },
+  "favorite": {
+    "add": "Add to Favorites",
+    "remove": "Remove from Favorites",
+    "loginRequired": "You must log in first"
+  },
+  "advisorNote": "Analyst Recommendations",
+  "tooltip": {
+    "costDesc": "spent",
+    "remaining": "Remaining:"
+  },
+  "chart": {
+    "loading": "Loading...",
+    "noData": "No data available for this period"
   }
 }

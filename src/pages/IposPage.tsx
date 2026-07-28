@@ -51,24 +51,24 @@ export default function IposPage() {
   })
 
   const infoFields = [
-    { key: 'Halka Arz Fiyatı/Aralığı', label: 'Fiyat', icon: '₺' },
-    { key: 'Pay', label: 'Pay Miktarı' },
-    { key: 'Pazar', label: 'Pazar' },
-    { key: 'Bist İlk İşlem Tarihi', label: 'İlk İşlem' },
-    { key: 'Halka Arz Büyüklüğü', label: 'Büyüklük' },
-    { key: 'Halka Arz İskontosu', label: 'İskonto' },
-    { key: 'Fiili Dolaşımdaki Pay Oranı (%)', label: 'Dolaşımdaki Pay' },
+    { key: 'Halka Arz Fiyatı/Aralığı', label: t('ipo.price'), icon: '₺' },
+    { key: 'Pay', label: t('ipo.shareAmount') },
+    { key: 'Pazar', label: t('ipo.market') },
+    { key: 'Bist İlk İşlem Tarihi', label: t('ipo.firstTradeDate') },
+    { key: 'Halka Arz Büyüklüğü', label: t('ipo.size') },
+    { key: 'Halka Arz İskontosu', label: t('ipo.discountRate') },
+    { key: 'Fiili Dolaşımdaki Pay Oranı (%)', label: t('ipo.circulatingRatio') },
   ]
 
   const sectionKeys = [
-    'Halka Arz Şekli',
-    'Fonun Kullanım Yeri',
-    'Halka Arz Satış Yöntemi',
-    'Tahsisat Grupları',
-    'Dağıtılan Pay Miktarı *',
-    'Fiyat İstikrarı',
-    'Satmama Taahhüdü',
-    'Halka Açıklık',
+    { dataKey: 'Halka Arz Şekli', label: t('ipo.method') },
+    { dataKey: 'Fonun Kullanım Yeri', label: t('ipo.fundUsage') },
+    { dataKey: 'Halka Arz Satış Yöntemi', label: t('ipo.saleMethod') },
+    { dataKey: 'Tahsisat Grupları', label: t('ipo.allocationGroups') },
+    { dataKey: 'Dağıtılan Pay Miktarı *', label: t('ipo.distributedAmount') },
+    { dataKey: 'Fiyat İstikrarı', label: t('ipo.priceStabilization') },
+    { dataKey: 'Satmama Taahhüdü', label: t('ipo.lockUp') },
+    { dataKey: 'Halka Açıklık', label: t('ipo.publicFloat') },
   ]
 
   const formatDate = (d: string) => {
@@ -88,8 +88,8 @@ export default function IposPage() {
   }
 
   const tabs: { key: Tab; label: string; icon: typeof TrendingUp }[] = [
-    { key: 'active', label: 'Güncel', icon: TrendingUp },
-    { key: 'draft', label: 'Taslak', icon: Building2 },
+    { key: 'active', label: t('ipo.active'), icon: TrendingUp },
+    { key: 'draft', label: t('ipo.draft'), icon: Building2 },
   ]
 
   return (
@@ -211,12 +211,12 @@ export default function IposPage() {
                           </div>
 
                           <div className="space-y-3 pt-1 border-t border-border">
-                            {sectionKeys.map((key) => {
-                              const val = detail.sections[key]
+                            {sectionKeys.map((sk) => {
+                              const val = detail.sections[sk.dataKey]
                               if (!val) return null
                               return (
-                                <div key={key}>
-                                  <p className="text-xs font-medium text-primary mb-0.5">{key}</p>
+                                <div key={sk.dataKey}>
+                                  <p className="text-xs font-medium text-primary mb-0.5">{sk.label}</p>
                                   <p className="text-xs text-muted-foreground leading-relaxed whitespace-pre-line">{val}</p>
                                 </div>
                               )

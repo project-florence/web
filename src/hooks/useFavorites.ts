@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import api from '@/lib/api'
@@ -5,6 +6,7 @@ import { useAuthStore } from '@/stores/authStore'
 import type { FavoritesResponse } from '@/types/api'
 
 export function useFavorites() {
+  const { t } = useTranslation()
   const queryClient = useQueryClient()
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
 
@@ -40,7 +42,7 @@ export function useFavorites() {
 
   const toggle = (ticker: string) => {
     if (!isAuthenticated) {
-      toast.error('Giriş yapmalısınız')
+      toast.error(t('favorite.loginRequired'))
       return
     }
     if (isFavorite(ticker)) {

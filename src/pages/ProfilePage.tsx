@@ -101,7 +101,7 @@ export default function ProfilePage() {
       })
     },
     onSuccess: () => {
-      toast.success('Hesap silindi')
+      toast.success(t('profile.accountDeleted'))
       logout()
       navigate('/login', { replace: true })
     },

@@ -133,7 +133,7 @@ export default function SimulationPage() {
       <>
       <StockSearch
         onSelect={(t) => { setTicker(t); setRun(false) }}
-        placeholder="Hisse seçin..."
+        placeholder={t('simulationLabels.selectStock')}
       />
 
       {ticker && (
@@ -175,7 +175,7 @@ export default function SimulationPage() {
                 <input
                   type="number"
                   step="0.01"
-                  placeholder={currentPrice ? `Otomatik: ₺${(currentPrice * 1.1).toFixed(2)}` : 'Otomatik (güncel+%10)'}
+                    placeholder={currentPrice ? `Otomatik: ₺${(currentPrice * 1.1).toFixed(2)}` : t('simulationLabels.autoTarget')}
                   value={target}
                   onChange={(e) => { setTarget(e.target.value); setRun(false) }}
                   className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 pl-7"
@@ -283,7 +283,7 @@ export default function SimulationPage() {
       {error && !isLoading && (
         <Card>
           <CardContent className="p-4">
-            <p className="text-sm text-destructive">Simülasyon sırasında bir hata oluştu.</p>
+            <p className="text-sm text-destructive">{t('simulationLabels.error')}</p>
           </CardContent>
         </Card>
       )}
@@ -294,14 +294,14 @@ export default function SimulationPage() {
             <CardContent className="p-4 space-y-3">
               <div className="flex items-center gap-2">
                 <Target className="h-4 w-4 text-primary" />
-                <span className="text-sm font-medium">Olasılık</span>
+                <span className="text-sm font-medium">{t('simulationLabels.probability')}</span>
               </div>
               {(() => {
                 const targetNum = result.target && result.target !== 'auto' ? Number(result.target) : null
                 const isAboveTarget = !targetNum || (currentPrice !== undefined && targetNum >= currentPrice)
                 const dp = isAboveTarget ? result.prob_above : result.prob_below
                 const pct = dp * 100
-                const labelDir = isAboveTarget ? 'ulaşma' : 'altına inme'
+                const labelDir = isAboveTarget ? t('simulationLabels.reach') : t('simulationLabels.fallBelow')
                 const good = isAboveTarget ? dp >= 0.7 : dp <= 0.3
                 const bad = isAboveTarget ? dp <= 0.3 : dp >= 0.7
                 const color = good ? 'text-success' : bad ? 'text-destructive' : 'text-amber-500'
@@ -433,7 +433,7 @@ export default function SimulationPage() {
                           <Card className="border-t-0 rounded-t-none border-primary/20">
                             <CardContent className="p-4 space-y-3">
                               <div className="flex items-center justify-between">
-                                <span className="text-sm font-medium">Sonuçlar</span>
+                                <span className="text-sm font-medium">{t('simulationLabels.results')}</span>
                                 <Button variant="ghost" size="sm" onClick={() => navigate(`/stocks/${historyDetail.ticker}`)}>
                                   <TrendingUp className="h-3.5 w-3.5" />
                                 </Button>
@@ -453,7 +453,7 @@ export default function SimulationPage() {
                                     <div className="text-center">
                                       <span className={cn('text-2xl font-bold', color)}>%{pct.toFixed(2)}</span>
                                       <p className="text-xs text-muted-foreground mt-0.5">
-                                        {isAbove ? 'yukarı yönlü' : 'aşağı yönlü'} olasılık · {historyDetail.days} gün
+                                        {isAbove ? t('simulationLabels.upward') : t('simulationLabels.downward')} olasılık · {historyDetail.days} gün
                                       </p>
                                     </div>
                                     <div className="h-1.5 rounded-full bg-muted overflow-hidden">

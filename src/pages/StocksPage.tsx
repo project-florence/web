@@ -70,7 +70,7 @@ export default function StocksPage() {
               <ChevronLeft className="h-4 w-4" />
             </Button>
             <span className="text-sm text-muted-foreground min-w-[5rem] text-center">
-              {data ? `${page}/${totalPages}` : `Sayfa ${page}`}
+              {data ? `${page}/${totalPages}` : `${t('stocks.page')} ${page}`}
             </span>
             <Button
               variant="outline"

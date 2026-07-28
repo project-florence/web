@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { createChart, CandlestickSeries, type IChartApi, type ISeriesApi, type CandlestickData, type Time } from 'lightweight-charts'
 import type { PriceHistory } from '@/types/api'
 import { useThemeStore } from '@/stores/themeStore'
@@ -12,6 +13,7 @@ interface StockChartProps {
 }
 
 export function StockChart({ data, loading, visibleRange }: StockChartProps) {
+  const { t } = useTranslation()
   const containerRef = useRef<HTMLDivElement>(null)
   const chartRef = useRef<IChartApi | null>(null)
   const seriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null)
@@ -133,7 +135,7 @@ export function StockChart({ data, loading, visibleRange }: StockChartProps) {
         <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-background/60 backdrop-blur-[1px]">
           <div className="flex flex-col items-center gap-2">
             <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-            <span className="text-sm text-muted-foreground">Yükleniyor...</span>
+            <span className="text-sm text-muted-foreground">{t('chart.loading')}</span>
           </div>
         </div>
       )}
@@ -141,7 +143,7 @@ export function StockChart({ data, loading, visibleRange }: StockChartProps) {
         <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-background/60">
           <div className="flex flex-col items-center gap-2 text-muted-foreground">
             <AlertCircle className="h-8 w-8" />
-            <span className="text-sm">Bu periyot için veri bulunamadı</span>
+            <span className="text-sm">{t('chart.noData')}</span>
           </div>
         </div>
       )}

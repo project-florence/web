@@ -22,7 +22,7 @@ export function RecommendationsGauge({ data }: { data: Recommendation }) {
     <Card>
       <CardContent className="p-5">
         <div className="flex items-center gap-2 mb-3">
-          <span className="text-sm font-medium">Analist Önerileri</span>
+          <span className="text-sm font-medium">{t('advisorNote')}</span>
           <Tooltip>
             <TooltipTrigger>
               <TriangleAlert className="h-4 w-4 text-muted-foreground cursor-help" />

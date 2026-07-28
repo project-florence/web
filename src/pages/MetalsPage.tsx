@@ -8,30 +8,31 @@ import { parseChange } from '@/lib/parse'
 import api from '@/lib/api'
 import type { RateEntry } from '@/types/api'
 
-const METAL_NAMES: Record<string, string> = {
-  ons: 'Ons Altın',
-  'gram-altin': 'Gram Altın',
-  'gram-has-altin': 'Gram Has Altın',
-  'ceyrek-altin': 'Çeyrek Altın',
-  'yarim-altin': 'Yarım Altın',
-  'tam-altin': 'Tam Altın',
-  'cumhuriyet-altini': 'Cumhuriyet Altını',
-  'ata-altin': 'Ata Altın',
-  '14-ayar-altin': '14 Ayar Altın',
-  '18-ayar-altin': '18 Ayar Altın',
-  '22-ayar-bilezik': '22 Ayar Bilezik',
-  'ikibucuk-altin': 'İkibuçuk Altın',
-  'gremse-altin': 'Gremse Altın',
-  'resat-altin': 'Reşat Altın',
-  'besli-altin': 'Beşli Altın',
-  'hamit-altin': 'Hamit Altın',
-  'gumus': 'Gümüş',
-  'gram-palatin': 'Gram Palatin',
-  'gram-platin': 'Gram Platin',
-  'gram-paladyum': 'Gram Paladyum',
+const METAL_KEYS: Record<string, string> = {
+  ons: 'goldOz',
+  'gram-altin': 'goldGram',
+  'gram-has-altin': 'goldPure',
+  'ceyrek-altin': 'goldQuarter',
+  'yarim-altin': 'goldHalf',
+  'tam-altin': 'goldFull',
+  'cumhuriyet-altini': 'goldRepublic',
+  'ata-altin': 'goldAta',
+  '14-ayar-altin': 'gold14k',
+  '18-ayar-altin': 'gold18k',
+  '22-ayar-bilezik': 'gold22k',
+  'ikibucuk-altin': 'gold25',
+  'gremse-altin': 'goldGremse',
+  'resat-altin': 'goldResat',
+  'besli-altin': 'gold5',
+  'hamit-altin': 'goldHamit',
+  'gumus': 'silver',
+  'gram-palatin': 'platinum',
+  'gram-platin': 'platinum',
+  'gram-paladyum': 'palladium',
 }
 
 function MetalCard({ id, entry, index = 0 }: { id: string; entry: RateEntry; index?: number }) {
+  const { t } = useTranslation()
   const change = parseChange(entry.Change)
   return (
     <div className="animate-slideUp" style={{ animationDelay: `${(index % 12) * 60}ms` }}>
@@ -39,15 +40,15 @@ function MetalCard({ id, entry, index = 0 }: { id: string; entry: RateEntry; ind
       <CardContent className="p-4">
         <div className="flex items-center gap-2 mb-2">
           <span className="text-lg">{id.includes('altin') || id === 'ons' ? '🥇' : '🥈'}</span>
-          <span className="font-medium text-sm">{METAL_NAMES[id] || id}</span>
+          <span className="font-medium text-sm">{t(`metals.${METAL_KEYS[id]}`) || id}</span>
         </div>
         <div className="space-y-1 text-sm">
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Alış</span>
+            <span className="text-muted-foreground">{t('currency.buy')}</span>
             <span className="font-medium">{entry.Buying}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Satış</span>
+            <span className="text-muted-foreground">{t('currency.sell')}</span>
             <span className="font-medium">{entry.Selling}</span>
           </div>
         </div>

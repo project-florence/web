@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { Star } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useFavorites } from '@/hooks/useFavorites'
@@ -9,6 +10,7 @@ interface FavoriteButtonProps {
 }
 
 export function FavoriteButton({ ticker, className }: FavoriteButtonProps) {
+  const { t } = useTranslation()
   const { isFavorite, toggle } = useFavorites()
   const fav = isFavorite(ticker)
 
@@ -29,7 +31,7 @@ export function FavoriteButton({ ticker, className }: FavoriteButtonProps) {
           fav ? 'fill-accent text-accent' : 'text-muted-foreground',
         )}
       />
-      {fav ? 'Favoride' : 'Favorilere Ekle'}
+      {fav ? t('favorite.remove') : t('favorite.add')}
     </Button>
   )
 }

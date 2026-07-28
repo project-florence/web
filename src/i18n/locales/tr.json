@@ -68,7 +68,8 @@
     "sector": "Sektör",
     "details": "Detaylar",
     "addToWatchlist": "Takip Listesine Ekle",
-    "removeFromWatchlist": "Takip Listesinden Çıkar"
+    "removeFromWatchlist": "Takip Listesinden Çıkar",
+    "page": "Sayfa"
   },
   "stockDetail": {
     "title": "Hisse Detayı",
@@ -82,7 +83,45 @@
     "probability": "Olasılık",
     "confidenceInterval": "Güven Aralığı",
     "period": "Periyot",
-    "interval": "Aralık"
+    "interval": "Aralık",
+    "price": "Fiyat",
+    "marketCap": "Piyasa Değeri",
+    "dayRange": "Gün Aralığı",
+    "volume": "Hacim",
+    "high52": "52H Yüksek",
+    "low52": "52H Düşük",
+    "beta": "Beta",
+    "avgVolume": "Ort. Hacim",
+    "avgVolume10d": "Ort. Hacim (10g)",
+    "ma50": "50g Ort.",
+    "ma200": "200g Ort.",
+    "sharesOutstanding": "Dolaşımdaki Hisse",
+    "sharesFloat": "Float",
+    "insiderRatio": "İçeriden Oran",
+    "institutionalRatio": "Kurumsal Oran",
+    "shortRatio": "Short Oran",
+    "financialsTitle": "Finansallar",
+    "balanceTitle": "Bilanço",
+    "grossMargin": "Brüt Marj",
+    "revenueGrowth": "Ciro Büyüme",
+    "netProfitMargin": "Kar Marjı",
+    "roe": "Öz Sermaye Kârlılığı",
+    "roa": "Aktif Kârlılığı",
+    "freeCashFlow": "Serbest Nakit Akışı",
+    "cashPerShare": "Hisse Başı Nakit",
+    "debt": "Borç",
+    "debtToEquity": "Borç/Öz Sermaye",
+    "currentRatio": "Likidite Oranı",
+    "eps": "Hisse Başı Kâr",
+    "pe": "F/K (Trailing)",
+    "peForward": "F/K (Forward)",
+    "pb": "PD/DD",
+    "peg": "PEG Oranı",
+    "ps": "F/S (TTM)",
+    "enterpriseValue": "Enterprise Değer",
+    "dividendYield": "Temettü Verimi",
+    "targetPrice": "Hedef Fiyat (Ort)",
+    "peValue": "F/K Değer"
   },
   "watchlist": {
     "title": "Takip Listesi",
@@ -133,7 +172,26 @@
     "title": "Kıymetli Madenler",
     "gumus": "Gümüş",
     "gramPalatin": "Gram Palatin",
-    "gramPaladyum": "Gram Paladyum"
+    "gramPaladyum": "Gram Paladyum",
+    "goldOz": "Ons Altın",
+    "goldGram": "Gram Altın",
+    "goldPure": "Gram Has Altın",
+    "goldQuarter": "Çeyrek Altın",
+    "goldHalf": "Yarım Altın",
+    "goldFull": "Tam Altın",
+    "goldRepublic": "Cumhuriyet Altını",
+    "goldAta": "Ata Altın",
+    "gold14k": "14 Ayar Altın",
+    "gold18k": "18 Ayar Altın",
+    "gold22k": "22 Ayar Bilezik",
+    "gold25": "İkibuçuk Altın",
+    "goldGremse": "Gremse Altın",
+    "goldResat": "Reşat Altın",
+    "gold5": "Beşli Altın",
+    "goldHamit": "Hamit Altın",
+    "silver": "Gümüş",
+    "platinum": "Gram Platin",
+    "palladium": "Gram Paladyum"
   },
   "profile": {
     "title": "Profil",
@@ -158,7 +216,8 @@
     "deleteAccount": "Hesabımı Sil",
     "deleteDesc": "Hesabınızı kalıcı olarak silin. Bu işlem geri alınamaz.",
     "passwordRequired": "Bu işlem için mevcut şifreniz gereklidir",
-    "confirmDelete": "Hesabınızı silmek istediğinize emin misiniz? Bu işlem geri alınamaz."
+    "confirmDelete": "Hesabınızı silmek istediğinize emin misiniz? Bu işlem geri alınamaz.",
+    "accountDeleted": "Hesap silindi"
   },
   "reports": {
     "title": "Raporlar",
@@ -276,5 +335,86 @@
       "heading": "Gelişmiş Piyasa Simülasyonları.",
       "desc": "Hamle yapmadan önce stratejinizi test edin. Gelişmiş simülasyon modelleriyle olasılıkları hesaplayın, fiyat hareketlerini öngörün ve güven aralıklarını belirleyin."
     }
+  },
+  "maintenance": {
+    "advisor": "Hisse dedektifi özelliği geçici olarak bakımdadır.",
+    "simulation": "Simülasyon özelliği geçici olarak bakımdadır."
+  },
+  "welcome": {
+    "morning": "Günaydın",
+    "afternoon": "İyi günler",
+    "evening": "İyi akşamlar",
+    "night": "İyi geceler",
+    "simulation": "Simülasyon",
+    "advisor": "Danışman",
+    "markets": "Piyasalar",
+    "reports": "Raporlar"
+  },
+  "validation": {
+    "usernameRequired": "Kullanıcı adı gerekli",
+    "passwordRequired": "Şifre gerekli",
+    "usernameMin": "En az 3 karakter",
+    "emailInvalid": "Geçerli bir e-posta girin",
+    "passwordMin": "En az 6 karakter"
+  },
+  "ipo": {
+    "active": "Güncel",
+    "draft": "Taslak",
+    "price": "Halka Arz Fiyatı/Aralığı",
+    "shareAmount": "Pay Miktarı",
+    "market": "Pazar",
+    "firstTradeDate": "BIST İlk İşlem Tarihi",
+    "size": "Halka Arz Büyüklüğü",
+    "discountRate": "Halka Arz İskontosu",
+    "circulatingRatio": "Fiili Dolaşımdaki Pay Oranı (%)",
+    "method": "Halka Arz Şekli",
+    "fundUsage": "Fonun Kullanım Yeri",
+    "saleMethod": "Halka Arz Satış Yöntemi",
+    "allocationGroups": "Tahsisat Grupları",
+    "distributedAmount": "Dağıtılan Pay Miktarı",
+    "priceStabilization": "Fiyat İstikrarı",
+    "lockUp": "Satmama Taahhüdü",
+    "publicFloat": "Halka Açıklık"
+  },
+  "reportGen": {
+    "scanningNews": "Haberler taranıyor...",
+    "analyzingFinancials": "Finansallar analiz ediliyor...",
+    "calculatingSentiment": "Duyarlılık hesaplanıyor...",
+    "writingReport": "Rapor yazılıyor...",
+    "finalizing": "Son rötuşlar...",
+    "reportReady": "Rapor Hazır",
+    "error": "Simülasyon sırasında bir hata oluştu.",
+    "creating": "Rapor Oluşturuluyor"
+  },
+  "simulationLabels": {
+    "selectStock": "Hisse seçin...",
+    "autoTarget": "Otomatik (güncel+%10)",
+    "reach": "ulaşma",
+    "fallBelow": "altına inme",
+    "upward": "yukarı yönlü",
+    "downward": "aşağı yönlü",
+    "probability": "Olasılık",
+    "results": "Sonuçlar",
+    "error": "Simülasyon sırasında bir hata oluştu."
+  },
+  "currency": {
+    "buy": "Alış",
+    "sell": "Satış",
+    "major": "Başlıca Kurlar",
+    "other": "Diğer Kurlar"
+  },
+  "favorite": {
+    "add": "Favorilere Ekle",
+    "remove": "Favoriden Çıkar",
+    "loginRequired": "Giriş yapmalısınız"
+  },
+  "advisorNote": "Analist Önerileri",
+  "tooltip": {
+    "costDesc": "harcanır",
+    "remaining": "Kalan:"
+  },
+  "chart": {
+    "loading": "Yükleniyor...",
+    "noData": "Bu periyot için veri bulunamadı"
   }
 }

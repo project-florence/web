@@ -30,11 +30,11 @@ function CurrencyCard({ code, entry, index = 0 }: { code: string; entry: RateEnt
         </div>
         <div className="space-y-1 text-sm">
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Alış</span>
+            <span className="text-muted-foreground">{t('currency.buy')}</span>
             <span className="font-medium">{price ? price.toFixed(4) : entry.Buying}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-muted-foreground">Satış</span>
+            <span className="text-muted-foreground">{t('currency.sell')}</span>
             <span className="font-medium">{entry.Selling}</span>
           </div>
         </div>
@@ -84,7 +84,7 @@ export default function CurrencyPage() {
       ) : (
         <>
           <div>
-            <h3 className="text-sm font-medium text-muted-foreground mb-3">Başlıca Kurlar</h3>
+            <h3 className="text-sm font-medium text-muted-foreground mb-3">{t('currency.major')}</h3>
             <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
               {pinnedRates.map(([code, entry], i) => (
                 <CurrencyCard key={code} code={code} entry={entry} index={i} />
@@ -92,7 +92,7 @@ export default function CurrencyPage() {
             </div>
           </div>
           <div>
-            <h3 className="text-sm font-medium text-muted-foreground mb-3">Diğer Kurlar</h3>
+            <h3 className="text-sm font-medium text-muted-foreground mb-3">{t('currency.other')}</h3>
             <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
               {otherRates.map(([code, entry], i) => (
                 <CurrencyCard key={code} code={code} entry={entry} index={i + 5} />

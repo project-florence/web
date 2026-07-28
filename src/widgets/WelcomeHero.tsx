@@ -1,19 +1,12 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { StockSearch } from '@/components/shared/StockSearch'
 import { BarChart3, Search, FlaskConical, TrendingUp } from 'lucide-react'
 import api from '@/lib/api'
-
-function getGreeting(h: number): string {
-  if (h < 6) return 'İyi geceler'
-  if (h < 12) return 'Günaydın'
-  if (h < 18) return 'İyi günler'
-  if (h < 22) return 'İyi akşamlar'
-  return 'İyi geceler'
-}
 
 function getGreetingEmoji(h: number): string {
   if (h < 6) return '🌙'
@@ -24,8 +17,17 @@ function getGreetingEmoji(h: number): string {
 }
 
 export default function WelcomeHero() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [now, setNow] = useState(new Date())
+
+  function getGreeting(): string {
+    const h = new Date().getHours()
+    if (h >= 6 && h < 12) return t('welcome.morning')
+    if (h >= 12 && h < 17) return t('welcome.afternoon')
+    if (h >= 17 && h < 22) return t('welcome.evening')
+    return t('welcome.night')
+  }
 
   useEffect(() => {
     const timer = setInterval(() => setNow(new Date()), 30_000)
@@ -42,7 +44,7 @@ export default function WelcomeHero() {
   })
 
   const hour = now.getHours()
-  const greeting = getGreeting(hour)
+  const greeting = getGreeting()
   const emoji = getGreetingEmoji(hour)
   const username = profile?.username ?? ''
 
@@ -70,7 +72,7 @@ export default function WelcomeHero() {
           <div className="mb-5">
             <StockSearch
               onSelect={(ticker) => navigate(`/stocks/${ticker}`)}
-              placeholder="Hisse senedi ara"
+              placeholder={t('stocks.search')}
               autoFocus={false}
             />
           </div>
@@ -78,19 +80,19 @@ export default function WelcomeHero() {
           <div className="flex flex-wrap gap-2">
             <Button variant="gradient" size="sm" onClick={() => navigate('/simulation')}>
               <FlaskConical className="h-4 w-4 mr-1.5" />
-              Simülasyon
+              {t('welcome.simulation')}
             </Button>
             <Button variant="gradient" size="sm" onClick={() => navigate('/advisor')}>
               <Search className="h-4 w-4 mr-1.5" />
-              Danışman
+              {t('welcome.advisor')}
             </Button>
             <Button variant="outline" size="sm" onClick={() => navigate('/stocks')}>
               <TrendingUp className="h-4 w-4 mr-1.5" />
-              Piyasalar
+              {t('welcome.markets')}
             </Button>
             <Button variant="outline" size="sm" onClick={() => navigate('/reports')}>
               <BarChart3 className="h-4 w-4 mr-1.5" />
-              Raporlar
+              {t('welcome.reports')}
             </Button>
           </div>
         </CardContent>
