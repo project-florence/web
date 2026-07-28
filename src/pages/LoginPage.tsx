@@ -1,7 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useAuthStore } from '@/stores/authStore'
 import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select'
 import { Globe } from 'lucide-react'
 import { useForm } from 'react-hook-form'
