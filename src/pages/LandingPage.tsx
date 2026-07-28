@@ -51,7 +51,7 @@ export default function LandingPage() {
 
       {/* Hero */}
       <section className="flex-1 flex items-center justify-center px-4 py-20 relative z-10">
-        <Card className="w-full max-w-2xl bg-card/60 backdrop-blur-xl border border-white/5 shadow-2xl">
+        <Card className="w-full max-w-3xl bg-card/60 backdrop-blur-xl border border-white/5 shadow-2xl">
           <CardContent className="p-8 md:p-12 text-center space-y-8">
             <img src={florenceLogo} alt="Florence" className="h-16 w-16 mx-auto" />
 
@@ -77,6 +77,9 @@ export default function LandingPage() {
         </Card>
       </section>
 
+      {/* Spacer */}
+      <div className="h-12 md:h-20 relative z-10" />
+
       {/* Feature sections */}
       {[
         { key: 'feature1', img: '/assets/stocks.png', right: false },
@@ -85,9 +88,9 @@ export default function LandingPage() {
         { key: 'feature4', img: '/assets/report.png', right: true },
         { key: 'feature5', img: '/assets/simulation.png', right: false },
       ].map((f) => (
-        <section key={f.key} className="py-16 md:py-24 relative z-10">
+        <section key={f.key} className="py-20 md:py-32 relative z-10">
           <div className="max-w-6xl mx-auto px-4 md:px-8">
-            <div className="grid md:grid-cols-2 gap-8 md:gap-16 items-center">
+            <div className="grid md:grid-cols-2 gap-12 md:gap-20 items-center">
               {f.right ? (
                 <>
                   <div className="md:order-1">

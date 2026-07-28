@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { useAuthStore } from '@/stores/authStore'
 import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select'
 import { Globe } from 'lucide-react'
 import { useForm } from 'react-hook-form'
@@ -25,7 +26,14 @@ type LoginForm = z.infer<typeof loginSchema>
 export default function LoginPage() {
   const { t, i18n } = useTranslation()
   const navigate = useNavigate()
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard', { replace: true })
+    }
+  }, [isAuthenticated, navigate])
 
   const {
     register,

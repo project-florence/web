@@ -98,6 +98,13 @@ export default function StockDetailPage() {
     staleTime: 5 * 60_000,
   })
 
+  const m = info?.market
+  const v = info?.valuation
+  const f = info?.financials
+  const tData = info?.trading
+  const bs = info?.balanceSheet
+  const companyName = info?.name || ticker
+
   const processed = useMemo(() => {
     if (!fullHistory) return { data: [] as PriceHistory[], from: 0, to: 0 }
     return processPriceData(fullHistory, period.value, interval)
@@ -151,13 +158,6 @@ export default function StockDetailPage() {
       </div>
     )
   }
-
-  const m = info?.market
-  const v = info?.valuation
-  const f = info?.financials
-  const tData = info?.trading
-  const bs = info?.balanceSheet
-  const companyName = info?.name || ticker
 
   const dailyChange = dailyChangeFromMarket
 

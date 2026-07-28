@@ -28,6 +28,7 @@ const ProfilePage = lazy(() => import('@/pages/ProfilePage'))
 const AboutPage = lazy(() => import('@/pages/AboutPage'))
 const ContactPage = lazy(() => import('@/pages/ContactPage'))
 const LegalPage = lazy(() => import('@/pages/LegalPage'))
+const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'))
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -82,6 +83,7 @@ export default function App() {
               <Route path="/about" element={<AboutPage />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/legal/:policy" element={<LegalPage />} />
+              <Route path="*" element={<NotFoundPage />} />
               <Route
                 element={
                   <ProtectedRoute>
