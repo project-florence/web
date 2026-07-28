@@ -9,8 +9,9 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { StockSearch } from '@/components/shared/StockSearch'
 import { CreditCostTooltip } from '@/components/shared/CreditCostTooltip'
 import { cn } from '@/lib/utils'
-import { Target, FlaskConical, BarChart3, Coins, TrendingUp } from 'lucide-react'
+import { Target, FlaskConical, BarChart3, Coins, TrendingUp, Wrench } from 'lucide-react'
 import api from '@/lib/api'
+import { useMaintenanceStore } from '@/stores/maintenanceStore'
 import type { CompanyInfo, SimulationResponse, PerDayCostResponse, Credits, SimulationHistoryItem, SimulationHistoryDetail } from '@/types/api'
 
 export default function SimulationPage() {
@@ -104,10 +105,18 @@ export default function SimulationPage() {
   })
 
   const currentPrice = info?.market.currentPrice
+  const simulationDisabled = useMaintenanceStore((s) => s.isDisabled('simulation'))
 
   return (
     <div className="max-w-lg mx-auto space-y-6">
       <h2 className="text-3xl font-bold tracking-tight">{t('simulation.title')}</h2>
+
+      {simulationDisabled && (
+        <div className="flex items-center gap-2 p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-600 text-sm">
+          <Wrench className="h-4 w-4 shrink-0" />
+          <span>{t('maintenance.simulation') || 'Simülasyon özelliği geçici olarak bakımdadır.'}</span>
+        </div>
+      )}
 
       <div className="flex gap-2">
         <Button variant={tab === 'simulate' ? 'gradient' : 'outline'} size="sm" onClick={() => setTab('simulate')}>
@@ -252,6 +261,7 @@ export default function SimulationPage() {
                   variant="gradient"
                   className="w-full h-10"
                   onClick={() => setRun(true)}
+                  disabled={simulationDisabled}
                 >
                   <FlaskConical className="h-4 w-4 mr-2 shrink-0" />
                   <span className="mr-1">{t('simulation.calculate')}</span>

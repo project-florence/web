@@ -8,8 +8,9 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 import { StockSearch } from '@/components/shared/StockSearch'
-import { Search, BarChart3, TrendingUp, Shield, X, Sparkles, Target } from 'lucide-react'
+import { Search, BarChart3, TrendingUp, Shield, X, Sparkles, Target, Wrench } from 'lucide-react'
 import api from '@/lib/api'
+import { useMaintenanceStore } from '@/stores/maintenanceStore'
 import type { StockFitResult, StockFitResponse, PortfolioProfileResponse } from '@/types/api'
 
 type Mode = 'fit' | 'portfolio'
@@ -151,11 +152,20 @@ export default function AdvisorPage() {
     return t('scout.low')
   }
 
+  const advisorDisabled = useMaintenanceStore((s) => s.isDisabled('advisor'))
+
   return (
     <div className="max-w-lg mx-auto space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-3xl font-bold tracking-tight">{t('scout.title')}</h2>
       </div>
+
+      {advisorDisabled && (
+        <div className="flex items-center gap-2 p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-600 text-sm">
+          <Wrench className="h-4 w-4 shrink-0" />
+          <span>{t('maintenance.advisor') || 'Hisse dedektifi özelliği geçici olarak bakımdadır.'}</span>
+        </div>
+      )}
 
       <div className="flex gap-2">
         <Button

@@ -1,10 +1,11 @@
-import { Suspense, lazy } from 'react'
+import { Suspense, lazy, useEffect } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Toaster } from 'sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { Layout } from '@/components/shared/Layout'
 import { ProtectedRoute } from '@/components/shared/ProtectedRoute'
+import { useMaintenanceStore } from '@/stores/maintenanceStore'
 
 const LoginPage = lazy(() => import('@/pages/LoginPage'))
 const RegisterPage = lazy(() => import('@/pages/RegisterPage'))
@@ -43,6 +44,12 @@ function PageLoader() {
 }
 
 export default function App() {
+  const fetchDisabled = useMaintenanceStore((s) => s.fetchDisabled)
+
+  useEffect(() => {
+    fetchDisabled()
+  }, [fetchDisabled])
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>

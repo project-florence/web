@@ -13,9 +13,11 @@ import {
   User,
   PanelLeftClose,
   PanelLeft,
+  Wrench,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useNavStore } from '@/stores/navStore'
+import { useMaintenanceStore } from '@/stores/maintenanceStore'
 import { CreditDisplay } from '@/components/shared/CreditDisplay'
 import type { MouseEvent } from 'react'
 import florenceLogo from '@/assets/florence_logo.svg'
@@ -24,9 +26,9 @@ const navItems = [
   { to: '/', icon: LayoutDashboard, labelKey: 'nav.dashboard', end: true, activeCheck: (p: string) => p === '/' },
   { to: '/stocks', icon: TrendingUp, labelKey: 'nav.stocks', stocks: true, activeCheck: (p: string) => p.startsWith('/stocks') },
   { to: '/watchlist', icon: Star, labelKey: 'nav.watchlist', activeCheck: (p: string) => p === '/watchlist' },
-  { to: '/simulation', icon: BarChart3, labelKey: 'nav.simulation', activeCheck: (p: string) => p === '/simulation' },
+  { to: '/simulation', icon: BarChart3, labelKey: 'nav.simulation', feature: 'simulation', activeCheck: (p: string) => p === '/simulation' },
   { to: '/reports', icon: FileText, labelKey: 'nav.reports', activeCheck: (p: string) => p === '/reports' },
-  { to: '/advisor', icon: Search, labelKey: 'nav.scout', activeCheck: (p: string) => p === '/advisor' },
+  { to: '/advisor', icon: Search, labelKey: 'nav.scout', feature: 'advisor', activeCheck: (p: string) => p === '/advisor' },
   { to: '/ipos', icon: Rocket, labelKey: 'nav.ipos', activeCheck: (p: string) => p === '/ipos' },
   { to: '/currency', icon: DollarSign, labelKey: 'nav.currency', activeCheck: (p: string) => p === '/currency' },
   { to: '/metals', icon: Gem, labelKey: 'nav.metals', activeCheck: (p: string) => p === '/metals' },
@@ -39,6 +41,7 @@ export function Sidebar() {
   const lastStockTicker = useNavStore((s) => s.lastStockTicker)
   const collapsed = useNavStore((s) => s.sidebarCollapsed)
   const toggleSidebar = useNavStore((s) => s.toggleSidebar)
+  const isDisabled = useMaintenanceStore((s) => s.isDisabled)
 
   const linkClass = (active: boolean) =>
     cn(
@@ -94,17 +97,22 @@ export function Sidebar() {
         <nav className={cn('flex-1 space-y-1', collapsed && 'space-y-2')}>
           {navItems.map((item) => {
             const active = item.activeCheck(location.pathname)
+            const disabled = item.feature ? isDisabled(item.feature) : false
             return (
               <NavLink
                 key={item.to}
-                to={item.to}
-                end={item.end ?? false}
-                onClick={item.stocks ? handleStocksClick : undefined}
-                className={linkClass(active)}
+                to={disabled ? '#' : item.to}
+                onClick={(e) => { if (disabled) e.preventDefault(); if (item.stocks && !disabled) handleStocksClick(e) }}
+                className={cn(linkClass(active), disabled && 'opacity-40 cursor-not-allowed')}
                 aria-current={active ? 'page' : undefined}
               >
                 <item.icon className="h-4 w-4 transition-transform duration-200 group-hover:scale-110 shrink-0" />
-                {!collapsed && <span>{t(item.labelKey)}</span>}
+                {!collapsed && (
+                  <span className="flex items-center gap-2">
+                    {t(item.labelKey)}
+                    {disabled && <Wrench className="h-3 w-3 text-amber-500" />}
+                  </span>
+                )}
               </NavLink>
             )
           })}
