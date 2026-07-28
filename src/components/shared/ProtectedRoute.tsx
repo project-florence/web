@@ -6,13 +6,12 @@ import type { ReactNode } from 'react'
 export function ProtectedRoute({ children }: { children: ReactNode }) {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
   const loading = useAuthStore((s) => s.loading)
-  const checkAuth = useAuthStore((s) => s.checkAuth)
 
   useEffect(() => {
     if (!isAuthenticated) {
-      checkAuth()
+      useAuthStore.getState().checkAuth()
     }
-  }, [isAuthenticated, checkAuth])
+  }, [isAuthenticated])
 
   if (loading) {
     return (

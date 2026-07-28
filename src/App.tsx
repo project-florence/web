@@ -64,11 +64,9 @@ function TelemetryProvider() {
 }
 
 export default function App() {
-  const fetchDisabled = useMaintenanceStore((s) => s.fetchDisabled)
-
   useEffect(() => {
-    fetchDisabled()
-  }, [fetchDisabled])
+    useMaintenanceStore.getState().fetchDisabled()
+  }, [])
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -83,7 +81,6 @@ export default function App() {
               <Route path="/about" element={<AboutPage />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/legal/:policy" element={<LegalPage />} />
-              <Route path="*" element={<NotFoundPage />} />
               <Route
                 element={
                   <ProtectedRoute>
@@ -104,6 +101,7 @@ export default function App() {
                 <Route path="metals" element={<MetalsPage />} />
                 <Route path="profile" element={<ProfilePage />} />
               </Route>
+              <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </Suspense>
         </BrowserRouter>
