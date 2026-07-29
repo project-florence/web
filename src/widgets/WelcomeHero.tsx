@@ -69,7 +69,7 @@ export default function WelcomeHero() {
             </div>
           </div>
 
-          <div className="mb-5">
+          <div className="mb-5 max-w-sm">
             <StockSearch
               onSelect={(ticker) => navigate(`/stocks/${ticker}`)}
               placeholder={t('stocks.search')}

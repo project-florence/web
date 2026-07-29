@@ -8,12 +8,24 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { StockSearch } from '@/components/shared/StockSearch'
 import { FavoriteButton } from '@/components/shared/FavoriteButton'
 import { CompanyCard } from '@/components/shared/CompanyCard'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { ChevronLeft, ChevronRight, ArrowUpDown } from 'lucide-react'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useNavStore } from '@/stores/navStore'
 import api from '@/lib/api'
 import type { CompanySummaryResponse } from '@/types/api'
 
 const PER_PAGE = 50
+
+const SORT_OPTIONS = [
+  { value: 'popular', labelKey: 'stocks.sortPopular' },
+  { value: 'alphabetical', labelKey: 'stocks.sortAlphabetical' },
+  { value: 'gainers', labelKey: 'stocks.sortGainers' },
+  { value: 'losers', labelKey: 'stocks.sortLosers' },
+  { value: 'price_high', labelKey: 'stocks.sortPriceHigh' },
+  { value: 'price_low', labelKey: 'stocks.sortPriceLow' },
+  { value: 'volume', labelKey: 'stocks.sortVolume' },
+  { value: 'market_cap', labelKey: 'stocks.sortMarketCap' },
+]
 
 export default function StocksPage() {
   const { t } = useTranslation()
@@ -21,18 +33,23 @@ export default function StocksPage() {
   const savedPage = useNavStore((s) => s.stocksPage)
   const setStocksPage = useNavStore((s) => s.setStocksPage)
   const [page, setPage] = useState(savedPage)
+  const [sort, setSort] = useState('popular')
 
   useEffect(() => {
     setStocksPage(page)
   }, [page, setStocksPage])
 
+  useEffect(() => {
+    setPage(1)
+  }, [sort])
+
   const offset = (page - 1) * PER_PAGE
 
   const { data, isLoading } = useQuery({
-    queryKey: ['companies-summary', page],
+    queryKey: ['companies-summary', page, sort],
     queryFn: async () => {
       const res = await api.get('/api/v1/companies/summary', {
-        params: { limit: PER_PAGE, offset, sort: 'popular' },
+        params: { limit: PER_PAGE, offset, sort },
       })
       return res.data as CompanySummaryResponse
     },
@@ -47,8 +64,23 @@ export default function StocksPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-4">
         <h2 className="text-3xl font-bold tracking-tight">{t('stocks.title')}</h2>
+        <div className="flex items-center gap-2">
+          <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
+          <Select value={sort} onValueChange={(v) => v && setSort(v)}>
+            <SelectTrigger className="w-40 h-9">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {SORT_OPTIONS.map((opt) => (
+                <SelectItem key={opt.value} value={opt.value}>
+                  {t(opt.labelKey)}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       <div className="max-w-sm">
