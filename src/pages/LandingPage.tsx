@@ -2,6 +2,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
+import { ChevronDown } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import florenceLogo from '@/assets/florence_logo.svg'
 import { FluidBackground } from '@/components/shared/FluidBackground'
@@ -49,31 +50,41 @@ export default function LandingPage() {
       </header>
 
       {/* Hero */}
-      <section className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 relative z-10">
-        <Card className="w-full max-w-3xl bg-card/60 backdrop-blur-xl border border-white/5 shadow-2xl">
-          <CardContent className="p-8 md:p-12 text-center space-y-8">
-            <img src={florenceLogo} alt="Florence" className="h-16 w-16 mx-auto" />
+      <section className="min-h-[calc(100vh-4rem)] flex flex-col px-4 relative z-10">
+        <div className="flex-1 flex items-center justify-center">
+          <Card className="w-full max-w-3xl bg-card/60 backdrop-blur-xl border border-white/5 shadow-2xl">
+            <CardContent className="p-8 md:p-12 text-center space-y-8">
+              <img src={florenceLogo} alt="Florence" className="h-16 w-16 mx-auto" />
 
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-tight">
-              {t('landing.heading')}
-            </h1>
+              <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-tight">
+                {t('landing.heading')}
+              </h1>
 
-            <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
-              {t('landing.subheading')}
-            </p>
+              <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
+                {t('landing.subheading')}
+              </p>
 
-            <div className="flex items-center justify-center gap-4 pt-2">
-              <Button
-                variant="gradient"
-                size="lg"
-                onClick={() => navigate('/register')}
-                className="text-base px-10 py-6 h-auto rounded-xl shadow-lg shadow-amber-500/20 hover:shadow-xl hover:shadow-amber-500/30 transition-all duration-300 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white font-bold"
-              >
-                {t('landing.getStarted')}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+              <div className="flex items-center justify-center gap-4 pt-2">
+                <Button
+                  variant="gradient"
+                  size="lg"
+                  onClick={() => navigate('/register')}
+                  className="text-base px-10 py-6 h-auto rounded-xl shadow-lg shadow-amber-500/20 hover:shadow-xl hover:shadow-amber-500/30 transition-all duration-300 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white font-bold"
+                >
+                  {t('landing.getStarted')}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+        <button
+          type="button"
+          onClick={() => document.getElementById('features-start')?.scrollIntoView({ behavior: 'smooth' })}
+          className="flex flex-col items-center gap-1 pb-6 text-muted-foreground/40 hover:text-muted-foreground/70 transition-colors cursor-pointer"
+        >
+          <span className="text-[11px] tracking-widest uppercase">{t('landing.features')}</span>
+          <ChevronDown className="h-5 w-5 animate-bounce" />
+        </button>
       </section>
 
       {/* Feature sections */}
@@ -83,8 +94,8 @@ export default function LandingPage() {
         { key: 'feature3', img: '/assets/advisor.png' },
         { key: 'feature4', img: '/assets/report.png' },
         { key: 'feature5', img: '/assets/simulation.png' },
-      ].map((f) => (
-        <section key={f.key} className="py-24 md:py-40 relative z-10">
+      ].map((f, fi) => (
+        <section key={f.key} id={fi === 0 ? 'features-start' : undefined} className="py-24 md:py-40 relative z-10">
           <div className="max-w-6xl mx-auto px-4 md:px-8">
             <img src={f.img} alt="" className="w-full rounded-2xl shadow-2xl border border-border/50 mb-10" loading="lazy" />
             <div className="max-w-3xl mx-auto text-center">
