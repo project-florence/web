@@ -13,9 +13,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Globe, ExternalLink } from 'lucide-react'
+import { HyperspaceBackground } from '@/components/shared/HyperspaceBackground'
 import api from '@/lib/api'
 import type { AxiosError } from 'axios'
-import bgImage from '@/assets/background/login_background.png'
 import florenceLogo from '@/assets/florence_logo.svg'
 
 const POLICIES = ['terms', 'privacy_policy', 'cookie_policy', 'disclaimer'] as const
@@ -90,6 +90,7 @@ export default function RegisterPage() {
   const { t, i18n } = useTranslation()
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
+  const [hyperdriveTriggered, setHyperdriveTriggered] = useState(false)
   const [accepted, setAccepted] = useState<Record<Policy, boolean>>({
     terms: false,
     privacy_policy: false,
@@ -120,8 +121,7 @@ export default function RegisterPage() {
     setLoading(true)
     try {
       await api.post('/api/v1/auth/register', data)
-      toast.success(t('auth.registerSuccess'))
-      navigate('/login', { replace: true })
+      setHyperdriveTriggered(true)
     } catch (err) {
       const error = err as AxiosError<{ detail: string }>
       toast.error(error.response?.data?.detail || t('auth.registerError'))
@@ -130,12 +130,17 @@ export default function RegisterPage() {
     }
   }
 
+  const handleHyperdriveComplete = () => {
+    navigate('/dashboard', { replace: true })
+  }
+
   return (
-    <div
-      className="relative min-h-screen flex items-center justify-center bg-background p-4 bg-cover bg-center overflow-hidden"
-      style={{ backgroundImage: `url(${bgImage})` }}
-    >
-      <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background/80 backdrop-blur-[2px]" />
+    <div className="relative min-h-screen flex items-center justify-center bg-background p-4 overflow-hidden">
+      <HyperspaceBackground
+        hyperdriveTriggered={hyperdriveTriggered}
+        onHyperdriveComplete={handleHyperdriveComplete}
+      />
+      <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-background/10 to-background/30 backdrop-blur-[1px]" />
       <div className="relative z-10 w-full max-w-full md:max-w-md animate-fadeIn">
         <Card className="w-full bg-card/60 backdrop-blur-xl border border-white/5 shadow-2xl animate-slideUp">
           <CardHeader className="text-center">

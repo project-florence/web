@@ -10,9 +10,9 @@ import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { HyperspaceBackground } from '@/components/shared/HyperspaceBackground'
 import api from '@/lib/api'
 import type { AxiosError } from 'axios'
-import bgImage from '@/assets/background/login_background.png'
 import florenceLogo from '@/assets/florence_logo.svg'
 
 const loginSchema = z.object({
@@ -26,6 +26,7 @@ export default function LoginPage() {
   const { t, i18n } = useTranslation()
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
+  const [hyperdriveTriggered, setHyperdriveTriggered] = useState(false)
 
   const {
     register,
@@ -51,8 +52,7 @@ export default function LoginPage() {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       })
 
-      toast.success(t('auth.loginSuccess'))
-      navigate('/dashboard', { replace: true })
+      setHyperdriveTriggered(true)
     } catch (err) {
       const error = err as AxiosError<{ detail: string }>
       if (!error.response) {
@@ -67,12 +67,17 @@ export default function LoginPage() {
     }
   }
 
+  const handleHyperdriveComplete = () => {
+    navigate('/dashboard', { replace: true })
+  }
+
   return (
-    <div
-      className="relative min-h-screen flex items-center justify-center bg-background p-4 bg-cover bg-center overflow-hidden"
-      style={{ backgroundImage: `url(${bgImage})` }}
-    >
-      <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/60 to-background/80 backdrop-blur-[2px]" />
+    <div className="relative min-h-screen flex items-center justify-center bg-background p-4 overflow-hidden">
+      <HyperspaceBackground
+        hyperdriveTriggered={hyperdriveTriggered}
+        onHyperdriveComplete={handleHyperdriveComplete}
+      />
+      <div className="absolute inset-0 bg-gradient-to-b from-background/20 via-background/10 to-background/30 backdrop-blur-[1px]" />
       <div className="relative z-10 w-full max-w-md animate-fadeIn">
         <Card className="w-full bg-card/60 backdrop-blur-xl border border-white/5 shadow-2xl animate-slideUp">
           <CardHeader className="text-center">

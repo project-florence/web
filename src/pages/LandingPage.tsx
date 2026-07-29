@@ -25,11 +25,11 @@ export default function LandingPage() {
       <FluidBackground />
 
       {/* Top navbar */}
-      <header className="flex items-center justify-between px-4 md:px-8 h-16 relative z-10">
-        <div className="flex items-center gap-2">
+      <header className="sticky top-0 z-50 flex items-center justify-between px-4 md:px-8 h-16 bg-background/60 backdrop-blur-xl">
+        <button type="button" onClick={() => navigate('/')} className="flex items-center gap-2 cursor-pointer">
           <img src={florenceLogo} alt="Florence" className="h-8 w-8" />
           <span className="font-semibold text-lg">{t('app.name')}</span>
-        </div>
+        </button>
         <div className="flex items-center gap-3">
           <Select value={i18n.language} onValueChange={(v) => v && i18n.changeLanguage(v)}>
             <SelectTrigger className="w-[105px] h-9">
@@ -50,7 +50,7 @@ export default function LandingPage() {
       </header>
 
       {/* Hero */}
-      <section className="flex-1 flex items-center justify-center px-4 py-20 relative z-10">
+      <section className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 relative z-10">
         <Card className="w-full max-w-3xl bg-card/60 backdrop-blur-xl border border-white/5 shadow-2xl">
           <CardContent className="p-8 md:p-12 text-center space-y-8">
             <img src={florenceLogo} alt="Florence" className="h-16 w-16 mx-auto" />
@@ -76,9 +76,6 @@ export default function LandingPage() {
           </CardContent>
         </Card>
       </section>
-
-      {/* Spacer */}
-      <div className="h-20 md:h-36 relative z-10" />
 
       {/* Feature sections */}
       {[
