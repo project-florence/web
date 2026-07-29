@@ -111,25 +111,6 @@ export function StockChart({ data, loading, visibleRange }: StockChartProps) {
     chart.setSymbol?.({ ticker: '', pricePrecision: 2, volumePrecision: 0 })
     chart.setPeriod?.({ type: 'day', span: 1 })
 
-    chart.setDataLoader({
-      getBars: (params) => {
-        const currentData = dataRef.current
-        const valid = currentData.filter((d) => {
-          const { open, high, low, close } = d
-          return (
-            open != null && high != null && low != null && close != null &&
-            isFinite(open) && isFinite(high) && isFinite(low) && isFinite(close)
-          )
-        })
-        if (valid.length > 0) {
-          hasDataRef.current = true
-          params.callback(valid.map(toKLineData), false)
-        } else {
-          params.callback([], false)
-        }
-      },
-    })
-
     chartRef.current = chart
 
     const handleResize = () => { chart.resize() }
@@ -148,24 +129,49 @@ export function StockChart({ data, loading, visibleRange }: StockChartProps) {
     chartRef.current.setStyles(buildStyles(themes[themeName].charts))
   }, [themeName])
 
+  const visibleFrom = visibleRange?.from
+  const visibleTo = visibleRange?.to
+
   useEffect(() => {
     const chart = chartRef.current
-    if (!chart || data.length === 0) return
+    if (!chart) return
 
-    const vr = visibleRangeRef.current
-    if (vr) {
-      const minTs = new Date(data[0].ts).getTime()
-      const maxTs = new Date(data[data.length - 1].ts).getTime()
-      if (vr.from >= minTs && vr.from <= maxTs) {
-        chart.scrollToTimestamp?.(vr.from, 0)
-      } else {
-        chart.scrollToRealTime?.(0)
-      }
-    } else {
-      chart.scrollToRealTime?.(0)
-    }
+    chart.setDataLoader({
+      getBars: (params) => {
+        const currentData = dataRef.current
+        const vr = visibleRangeRef.current
+        let filtered = currentData
+        if (vr) {
+          filtered = currentData.filter((d) => {
+            const ts = new Date(d.ts).getTime()
+            return ts >= vr.from && ts <= vr.to
+          })
+        }
+        const valid = filtered.filter((d) => {
+          const { open, high, low, close } = d
+          return (
+            open != null && high != null && low != null && close != null &&
+            isFinite(open) && isFinite(high) && isFinite(low) && isFinite(close)
+          )
+        })
+        if (valid.length > 0) {
+          hasDataRef.current = true
+          params.callback(valid.map(toKLineData), false)
+        } else {
+          params.callback([], false)
+        }
+        const scrollVr = visibleRangeRef.current
+        if (scrollVr) {
+          const minTs = new Date(currentData[0]?.ts).getTime()
+          const maxTs = new Date(currentData[currentData.length - 1]?.ts).getTime()
+          if (scrollVr.from >= minTs && scrollVr.from <= maxTs) {
+            chart.scrollToTimestamp?.(scrollVr.from, 0)
+          }
+        }
+      },
+    })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data])
+  }, [data, visibleFrom, visibleTo])
 
   const hasValidData = data.some((d) => {
     const { open, high, low, close } = d
