@@ -80,9 +80,9 @@ export default function LandingPage() {
         <button
           type="button"
           onClick={() => document.getElementById('features-start')?.scrollIntoView({ behavior: 'smooth' })}
-          className="flex flex-col items-center gap-1 pb-6 text-muted-foreground/40 hover:text-muted-foreground/70 transition-colors cursor-pointer"
+          className="flex flex-col items-center gap-1 pb-6 text-foreground/70 hover:text-foreground/90 transition-colors cursor-pointer"
         >
-          <span className="text-[11px] tracking-widest uppercase">{t('landing.features')}</span>
+          <span className="text-xs tracking-widest uppercase font-medium">{t('landing.features')}</span>
           <ChevronDown className="h-5 w-5 animate-bounce" />
         </button>
       </section>
