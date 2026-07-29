@@ -157,6 +157,7 @@ export function StockChart({ data, loading, visibleRange }: StockChartProps) {
         if (valid.length > 0) {
           hasDataRef.current = true
           params.callback(valid.map(toKLineData), false)
+          chart.scrollToRealTime?.(0)
         } else {
           params.callback([], false)
         }
