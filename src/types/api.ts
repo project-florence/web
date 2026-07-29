@@ -346,6 +346,7 @@ export interface Profile {
   email: string
   credits: number
   user_type: string
+  created_at?: string
 }
 
 export interface Announcement {

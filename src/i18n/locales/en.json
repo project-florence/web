@@ -195,6 +195,7 @@
   },
   "profile": {
     "title": "Profile",
+    "registered": "Registered",
     "credits": "Credit Balance",
     "account": "Account",
     "security": "Security",

@@ -16,7 +16,7 @@ export function AnnouncementBell() {
     queryKey: ['announcements'],
     queryFn: async () => {
       const res = await api.get('/api/v1/announcements')
-      return res.data as Announcement[]
+      return (res.data as { announcements: Announcement[] }).announcements
     },
     refetchInterval: 60_000,
   })

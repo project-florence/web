@@ -224,7 +224,7 @@ export default function RegisterPage() {
                 ))}
               </div>
 
-              <Button type="submit" variant="gradient" className="w-full" disabled={loading || !allAccepted || !formFilled}>
+              <Button type="submit" variant="gradient" className="w-full" disabled={loading || hyperdriveTriggered || !allAccepted || !formFilled}>
                 {loading ? t('common.loading') : t('auth.register')}
               </Button>
             </form>

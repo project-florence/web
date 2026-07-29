@@ -139,6 +139,11 @@ export default function ProfilePage() {
             <div>
               <p className="text-lg font-bold">{profile?.username}</p>
               <p className="text-sm text-muted-foreground">{profile?.email}</p>
+              {profile?.created_at && (
+                <p className="text-xs text-muted-foreground/60 mt-0.5">
+                  {t('profile.registered')}: {new Date(profile.created_at).toLocaleDateString()}
+                </p>
+              )}
               <span className={cn(
                 'inline-block mt-1 text-[11px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border',
                 profile?.user_type === 'admin'

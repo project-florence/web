@@ -110,7 +110,7 @@ export default function LoginPage() {
                   <p className="text-sm text-destructive mt-1">{errors.password.message}</p>
                 )}
               </div>
-              <Button type="submit" variant="gradient" className="w-full" disabled={loading || !formFilled}>
+              <Button type="submit" variant="gradient" className="w-full" disabled={loading || hyperdriveTriggered || !formFilled}>
                 {loading ? t('common.loading') : t('auth.login')}
               </Button>
             </form>
