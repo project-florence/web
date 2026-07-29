@@ -503,29 +503,34 @@ function PortfolioAnalysis({ portfolioId }: { portfolioId: string }) {
     },
   })
 
+  const r = returns
+  const k = risk
+  const bm = benchmark
+  const div = diversification
+
   return (
     <div className="space-y-4">
       <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
         <Card>
           <CardContent className="p-4 text-center">
             <p className="text-xs text-muted-foreground">{t('portfolio.totalPnl')}</p>
-            <p className={cn('text-lg font-bold', (returns?.absolute_return ?? 0) >= 0 ? 'text-success' : 'text-destructive')}>
-              {returns ? `${returns.absolute_return >= 0 ? '+' : ''}${returns.absolute_return.toFixed(2)}` : '-'}
+            <p className={cn('text-lg font-bold', (r?.absolute_return ?? 0) >= 0 ? 'text-success' : 'text-destructive')}>
+              {r?.absolute_return != null ? `${r.absolute_return >= 0 ? '+' : ''}${r.absolute_return.toFixed(2)}` : '-'}
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
             <p className="text-xs text-muted-foreground">CAGR</p>
-            <p className={cn('text-lg font-bold', (returns?.cagr_percentage ?? 0) >= 0 ? 'text-success' : 'text-destructive')}>
-              {returns?.cagr_percentage != null ? `${returns.cagr_percentage >= 0 ? '+' : ''}${returns.cagr_percentage.toFixed(2)}%` : '-'}
+            <p className={cn('text-lg font-bold', (r?.cagr_percentage ?? 0) >= 0 ? 'text-success' : 'text-destructive')}>
+              {r?.cagr_percentage != null ? `${r.cagr_percentage >= 0 ? '+' : ''}${r.cagr_percentage.toFixed(2)}%` : '-'}
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
             <p className="text-xs text-muted-foreground">{t('portfolio.totalValue')}</p>
-            <p className="text-lg font-bold">{returns?.absolute_return != null ? (returns.absolute_return + (returns?.cagr_percentage ?? 0)).toFixed(2) : '-'}</p>
+            <p className="text-lg font-bold">{r?.absolute_return != null ? (r.absolute_return + (r?.cagr_percentage ?? 0)).toFixed(2) : '-'}</p>
           </CardContent>
         </Card>
       </div>
@@ -534,22 +539,22 @@ function PortfolioAnalysis({ portfolioId }: { portfolioId: string }) {
         <Card>
           <CardHeader><CardTitle className="text-sm">Risk Metrikleri</CardTitle></CardHeader>
           <CardContent className="space-y-2 text-sm">
-            <div className="flex justify-between"><span className="text-muted-foreground">Volatilite</span><span>{risk?.volatility != null ? `${risk.volatility.toFixed(2)}%` : '-'}</span></div>
-            <div className="flex justify-between"><span className="text-muted-foreground">Max Drawdown</span><span className="text-destructive">{risk?.max_drawdown != null ? `-${risk.max_drawdown.toFixed(2)}%` : '-'}</span></div>
-            <div className="flex justify-between"><span className="text-muted-foreground">Sharpe Ratio</span><span>{risk?.sharpe_ratio != null ? risk.sharpe_ratio.toFixed(2) : '-'}</span></div>
+            <div className="flex justify-between"><span className="text-muted-foreground">Volatilite</span><span>{k?.volatility != null ? `${k.volatility.toFixed(2)}%` : '-'}</span></div>
+            <div className="flex justify-between"><span className="text-muted-foreground">Max Drawdown</span><span className="text-destructive">{k?.max_drawdown != null ? `-${k.max_drawdown.toFixed(2)}%` : '-'}</span></div>
+            <div className="flex justify-between"><span className="text-muted-foreground">Sharpe Ratio</span><span>{k?.sharpe_ratio != null ? k.sharpe_ratio.toFixed(2) : '-'}</span></div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader><CardTitle className="text-sm">Benchmark (XU100)</CardTitle></CardHeader>
           <CardContent className="space-y-2 text-sm">
-            {benchmark ? (
+            {bm ? (
               <>
-                <div className="flex justify-between"><span className="text-muted-foreground">Portföy</span><span className={benchmark.portfolio_return_pct >= 0 ? 'text-success' : 'text-destructive'}>{benchmark.portfolio_return_pct >= 0 ? '+' : ''}{benchmark.portfolio_return_pct.toFixed(2)}%</span></div>
-                <div className="flex justify-between"><span className="text-muted-foreground">XU100</span><span>{benchmark.benchmark_return_pct >= 0 ? '+' : ''}{benchmark.benchmark_return_pct.toFixed(2)}%</span></div>
+                <div className="flex justify-between"><span className="text-muted-foreground">Portföy</span><span className={bm.portfolio_return_pct >= 0 ? 'text-success' : 'text-destructive'}>{bm.portfolio_return_pct >= 0 ? '+' : ''}{bm.portfolio_return_pct.toFixed(2)}%</span></div>
+                <div className="flex justify-between"><span className="text-muted-foreground">XU100</span><span>{bm.benchmark_return_pct >= 0 ? '+' : ''}{bm.benchmark_return_pct.toFixed(2)}%</span></div>
                 <div className="flex justify-between pt-2 border-t border-border/40">
                   <span className="text-muted-foreground">Fark</span>
-                  <span className={benchmark.outperformed ? 'text-success' : 'text-destructive'}>{benchmark.difference_pct >= 0 ? '+' : ''}{benchmark.difference_pct.toFixed(2)}%</span>
+                  <span className={bm.outperformed ? 'text-success' : 'text-destructive'}>{bm.difference_pct >= 0 ? '+' : ''}{bm.difference_pct.toFixed(2)}%</span>
                 </div>
               </>
             ) : (
@@ -562,16 +567,16 @@ function PortfolioAnalysis({ portfolioId }: { portfolioId: string }) {
       <Card>
         <CardHeader><CardTitle className="text-sm">{t('portfolio.diversification')}</CardTitle></CardHeader>
         <CardContent>
-          {diversification ? (
+          {div ? (
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Nakit</span>
-                <span>{diversification.cash_allocation_pct.toFixed(1)}%</span>
+                <span>{div.cash_allocation_pct != null ? `${div.cash_allocation_pct.toFixed(1)}%` : '-'}</span>
               </div>
-              {diversification.assets.map((a) => (
+              {div.assets?.map((a) => (
                 <div key={a.ticker} className="flex justify-between">
                   <span className="text-muted-foreground">{a.ticker} <span className="text-[10px]">({a.type})</span></span>
-                  <span>{a.allocation_pct.toFixed(1)}%</span>
+                  <span>{a.allocation_pct != null ? `${a.allocation_pct.toFixed(1)}%` : '-'}</span>
                 </div>
               ))}
             </div>
