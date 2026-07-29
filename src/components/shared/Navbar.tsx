@@ -1,10 +1,8 @@
-import { useTranslation } from 'react-i18next'
 import { Menu, X } from 'lucide-react'
-import florenceLogo from '@/assets/florence_logo.svg'
 import { useNavStore } from '@/stores/navStore'
+import { AnnouncementBell } from './AnnouncementBell'
 
 export function Navbar() {
-  const { t } = useTranslation()
   const mobileSidebarOpen = useNavStore((s) => s.mobileSidebarOpen)
   const toggleMobileSidebar = useNavStore((s) => s.toggleMobileSidebar)
 
@@ -19,8 +17,9 @@ export function Navbar() {
         >
           {mobileSidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
-        <img src={florenceLogo} alt="Florence" className="h-7 w-7" />
-        <h1 className="text-lg font-semibold">{t('app.name')}</h1>
+      </div>
+      <div className="flex items-center gap-1">
+        <AnnouncementBell />
       </div>
     </header>
   )

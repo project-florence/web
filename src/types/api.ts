@@ -345,6 +345,17 @@ export interface Profile {
   username: string
   email: string
   credits: number
+  user_type: string
+}
+
+export interface Announcement {
+  id: number
+  title: string
+  content: string
+  sent_by: string
+  is_unread: boolean
+  created_at: string
+  updated_at: string
 }
 
 export interface Credits {

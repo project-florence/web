@@ -1,15 +1,16 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useQuery, useMutation } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { toast } from 'sonner'
-import { LogOut, User, Key, Download, Trash2, ArrowLeft, Settings, Palette, Globe } from 'lucide-react'
+import { LogOut, User, Key, Download, Trash2, ArrowLeft, Settings, Palette, Globe, Megaphone, Plus, Pencil, Trash } from 'lucide-react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useAuthStore } from '@/stores/authStore'
 import { useThemeStore } from '@/stores/themeStore'
@@ -17,7 +18,8 @@ import { themes } from '@/config/themes'
 import type { ThemeName } from '@/config/themes'
 import { usePreferences } from '@/hooks/usePreferences'
 import api from '@/lib/api'
-import type { Profile } from '@/types/api'
+import { cn } from '@/lib/utils'
+import type { Profile, Announcement } from '@/types/api'
 import { CreditDisplay } from '@/components/shared/CreditDisplay'
 
 export default function ProfilePage() {
@@ -137,6 +139,14 @@ export default function ProfilePage() {
             <div>
               <p className="text-lg font-bold">{profile?.username}</p>
               <p className="text-sm text-muted-foreground">{profile?.email}</p>
+              <span className={cn(
+                'inline-block mt-1 text-[11px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border',
+                profile?.user_type === 'admin'
+                  ? 'bg-amber-500/10 text-amber-500 border-amber-500/30'
+                  : 'bg-muted text-muted-foreground border-border/40',
+              )}>
+                {profile?.user_type === 'admin' ? t('profile.admin') : t('profile.user')}
+              </span>
             </div>
           </CardContent>
         </Card>
@@ -165,6 +175,12 @@ export default function ProfilePage() {
             <Settings className="h-4 w-4 mr-2" />
             {t('profile.settings')}
           </TabsTrigger>
+          {profile?.user_type === 'admin' && (
+            <TabsTrigger value="admin" className="flex-1">
+              <Megaphone className="h-4 w-4 mr-2" />
+              {t('announcement.manage')}
+            </TabsTrigger>
+          )}
         </TabsList>
 
         <TabsContent value="account" className="mt-4 space-y-4">
@@ -403,7 +419,191 @@ export default function ProfilePage() {
             </CardContent>
           </Card>
         </TabsContent>
+        {profile?.user_type === 'admin' && (
+          <TabsContent value="admin" className="mt-4 space-y-4">
+            <AdminAnnouncements />
+          </TabsContent>
+        )}
       </Tabs>
     </div>
+  )
+}
+
+function AdminAnnouncements() {
+  const { t } = useTranslation()
+  const queryClient = useQueryClient()
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [editItem, setEditItem] = useState<Announcement | null>(null)
+  const [formTitle, setFormTitle] = useState('')
+  const [formContent, setFormContent] = useState('')
+  const [deleteId, setDeleteId] = useState<number | null>(null)
+
+  const { data: announcements, isLoading } = useQuery({
+    queryKey: ['admin-announcements'],
+    queryFn: async () => {
+      const res = await api.get('/api/v1/announcements')
+      return res.data as Announcement[]
+    },
+  })
+
+  const createMutation = useMutation({
+    mutationFn: async () => {
+      await api.post('/api/v1/announcements', { title: formTitle, content: formContent })
+    },
+    onSuccess: () => {
+      toast.success(t('common.success'))
+      setDialogOpen(false)
+      setFormTitle('')
+      setFormContent('')
+      queryClient.invalidateQueries({ queryKey: ['admin-announcements'] })
+      queryClient.invalidateQueries({ queryKey: ['announcements'] })
+    },
+    onError: () => toast.error(t('common.error')),
+  })
+
+  const updateMutation = useMutation({
+    mutationFn: async () => {
+      if (!editItem) return
+      await api.put(`/api/v1/announcements/${editItem.id}`, { title: formTitle, content: formContent })
+    },
+    onSuccess: () => {
+      toast.success(t('common.success'))
+      setDialogOpen(false)
+      setEditItem(null)
+      setFormTitle('')
+      setFormContent('')
+      queryClient.invalidateQueries({ queryKey: ['admin-announcements'] })
+      queryClient.invalidateQueries({ queryKey: ['announcements'] })
+    },
+    onError: () => toast.error(t('common.error')),
+  })
+
+  const deleteMutation = useMutation({
+    mutationFn: async () => {
+      if (!deleteId) return
+      await api.delete(`/api/v1/announcements/${deleteId}`)
+    },
+    onSuccess: () => {
+      toast.success(t('common.success'))
+      setDeleteId(null)
+      queryClient.invalidateQueries({ queryKey: ['admin-announcements'] })
+      queryClient.invalidateQueries({ queryKey: ['announcements'] })
+    },
+    onError: () => toast.error(t('common.error')),
+  })
+
+  const openCreate = () => {
+    setEditItem(null)
+    setFormTitle('')
+    setFormContent('')
+    setDialogOpen(true)
+  }
+
+  const openEdit = (a: Announcement) => {
+    setEditItem(a)
+    setFormTitle(a.title)
+    setFormContent(a.content)
+    setDialogOpen(true)
+  }
+
+  const confirmDelete = (id: number) => {
+    if (deleteId === id) {
+      deleteMutation.mutate()
+    } else {
+      setDeleteId(id)
+    }
+  }
+
+  return (
+    <>
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle className="text-sm">{t('announcement.manage')}</CardTitle>
+          <Button variant="gradient" size="sm" onClick={openCreate}>
+            <Plus className="h-4 w-4 mr-1" />
+            {t('announcement.create')}
+          </Button>
+        </CardHeader>
+        <CardContent>
+          {isLoading ? (
+            <div className="space-y-3">
+              <Skeleton className="h-12 w-full" />
+              <Skeleton className="h-12 w-full" />
+            </div>
+          ) : !announcements?.length ? (
+            <p className="text-sm text-muted-foreground text-center py-6">
+              {t('announcement.empty')}
+            </p>
+          ) : (
+            <div className="space-y-2">
+              {announcements.map((a) => (
+                <div
+                  key={a.id}
+                  className="flex items-center justify-between rounded-lg border border-border/40 px-4 py-3"
+                >
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm font-medium truncate">{a.title}</p>
+                      {a.is_unread && (
+                        <span className="h-2 w-2 shrink-0 rounded-full bg-primary" />
+                      )}
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      {new Date(a.created_at).toLocaleDateString()} &middot; {a.sent_by}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-1 shrink-0 ml-3">
+                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={() => openEdit(a)}>
+                      <Pencil className="h-3.5 w-3.5" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className={cn('h-8 w-8 p-0', deleteId === a.id ? 'text-destructive' : 'text-muted-foreground hover:text-destructive')}
+                      onClick={() => confirmDelete(a.id)}
+                    >
+                      <Trash className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{editItem ? t('announcement.editTitle') : t('announcement.createTitle')}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <Input
+              placeholder={t('announcement.formTitle')}
+              value={formTitle}
+              onChange={(e) => setFormTitle(e.target.value)}
+            />
+            <Textarea
+              placeholder={t('announcement.formContent')}
+              value={formContent}
+              onChange={(e) => setFormContent(e.target.value)}
+              rows={5}
+            />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setDialogOpen(false)}>
+              {t('common.cancel')}
+            </Button>
+            <Button
+              variant="gradient"
+              disabled={!formTitle || !formContent || createMutation.isPending || updateMutation.isPending}
+              onClick={() => editItem ? updateMutation.mutate() : createMutation.mutate()}
+            >
+              {editItem ? t('announcement.update') : t('announcement.publish')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }

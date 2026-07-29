@@ -208,6 +208,9 @@
     "changePassword": "Şifre Değiştir",
     "saveUsername": "Kullanıcı Adını Kaydet",
     "saveEmail": "E-postayı Kaydet",
+    "userType": "Hesap Türü",
+    "user": "Kullanıcı",
+    "admin": "Yönetici",
     "passwordChanged": "Şifre başarıyla değiştirildi",
     "usernameChanged": "Kullanıcı adı başarıyla değiştirildi",
     "emailChanged": "E-posta başarıyla değiştirildi",
@@ -267,6 +270,22 @@
   },
   "about": {
     "contributors": "Katkıda Bulunanlar"
+  },
+  "announcement": {
+    "title": "Duyurular",
+    "noAnnouncements": "Yeni duyuru yok",
+    "markAllRead": "Tümünü Okundu İşaretle",
+    "create": "Duyuru Yayınla",
+    "createTitle": "Yeni Duyuru",
+    "editTitle": "Duyuruyu Düzenle",
+    "formTitle": "Başlık",
+    "formContent": "İçerik",
+    "publish": "Yayınla",
+    "update": "Güncelle",
+    "delete": "Sil",
+    "deleteConfirm": "Bu duyuruyu silmek istediğinize emin misiniz?",
+    "manage": "Duyuru Yönetimi",
+    "empty": "Henüz duyuru yok"
   },
   "footer": {
     "about": "Hakkımızda",

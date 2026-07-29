@@ -208,6 +208,9 @@
     "changePassword": "Change Password",
     "saveUsername": "Save Username",
     "saveEmail": "Save Email",
+    "userType": "Account Type",
+    "user": "User",
+    "admin": "Admin",
     "passwordChanged": "Password changed successfully",
     "usernameChanged": "Username changed successfully",
     "emailChanged": "Email changed successfully",
@@ -267,6 +270,22 @@
   },
   "about": {
     "contributors": "Contributors"
+  },
+  "announcement": {
+    "title": "Announcements",
+    "noAnnouncements": "No new announcements",
+    "markAllRead": "Mark All as Read",
+    "create": "Publish Announcement",
+    "createTitle": "New Announcement",
+    "editTitle": "Edit Announcement",
+    "formTitle": "Title",
+    "formContent": "Content",
+    "publish": "Publish",
+    "update": "Update",
+    "delete": "Delete",
+    "deleteConfirm": "Are you sure you want to delete this announcement?",
+    "manage": "Announcement Management",
+    "empty": "No announcements yet"
   },
   "footer": {
     "about": "About",
