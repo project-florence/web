@@ -265,6 +265,9 @@
     "accept": "I have read and agree",
     "lastUpdated": "Last Updated"
   },
+  "about": {
+    "contributors": "Contributors"
+  },
   "footer": {
     "about": "About",
     "contact": "Contact",

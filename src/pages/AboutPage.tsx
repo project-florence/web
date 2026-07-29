@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft } from 'lucide-react'
+import { ContributorCard } from '@/components/shared/ContributorCard'
 import api from '@/lib/api'
 
 interface AboutResponse {
@@ -45,6 +46,9 @@ export default function AboutPage() {
           {data?.content}
         </div>
       )}
+      <div className="mt-10 pt-8 border-t border-border/40">
+        <ContributorCard />
+      </div>
     </div>
   )
 }

@@ -160,14 +160,6 @@ export function StockChart({ data, loading, visibleRange }: StockChartProps) {
         } else {
           params.callback([], false)
         }
-        const scrollVr = visibleRangeRef.current
-        if (scrollVr) {
-          const minTs = new Date(currentData[0]?.ts).getTime()
-          const maxTs = new Date(currentData[currentData.length - 1]?.ts).getTime()
-          if (scrollVr.from >= minTs && scrollVr.from <= maxTs) {
-            chart.scrollToTimestamp?.(scrollVr.from, 0)
-          }
-        }
       },
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps

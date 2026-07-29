@@ -265,6 +265,9 @@
     "accept": "Okudum ve kabul ediyorum",
     "lastUpdated": "Son Güncelleme"
   },
+  "about": {
+    "contributors": "Katkıda Bulunanlar"
+  },
   "footer": {
     "about": "Hakkımızda",
     "contact": "İletişim",
