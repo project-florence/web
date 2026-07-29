@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useForm } from 'react-hook-form'
@@ -81,7 +81,7 @@ function PolicyViewer({ policy, onClose }: { policy: Policy | null; onClose: () 
 const registerSchema = z.object({
   username: z.string().min(3, 'En az 3 karakter'),
   email: z.string().email('Geçerli bir e-posta girin'),
-  password: z.string().min(6, 'En az 6 karakter'),
+  password: z.string().min(10, 'En az 10 karakter'),
 })
 
 type RegisterForm = z.infer<typeof registerSchema>
@@ -91,6 +91,7 @@ export default function RegisterPage() {
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
   const [hyperdriveTriggered, setHyperdriveTriggered] = useState(false)
+  const credsRef = useRef({ username: '', password: '' })
   const [accepted, setAccepted] = useState<Record<Policy, boolean>>({
     terms: false,
     privacy_policy: false,
@@ -120,17 +121,33 @@ export default function RegisterPage() {
     }
     setLoading(true)
     try {
+      credsRef.current = { username: data.username, password: data.password }
       await api.post('/api/v1/auth/register', data)
       setHyperdriveTriggered(true)
     } catch (err) {
-      const error = err as AxiosError<{ detail: string }>
-      toast.error(error.response?.data?.detail || t('auth.registerError'))
+      const error = err as AxiosError<{ detail: string | { msg: string }[] }>
+      const detail = error.response?.data?.detail
+      const message = Array.isArray(detail) ? detail[0]?.msg : detail
+      toast.error(message || t('auth.registerError'))
     } finally {
       setLoading(false)
     }
   }
 
-  const handleHyperdriveComplete = () => {
+  const handleHyperdriveComplete = async () => {
+    try {
+      const formData = new URLSearchParams()
+      formData.append('grant_type', 'password')
+      formData.append('username', credsRef.current.username)
+      formData.append('password', credsRef.current.password)
+      await api.post('/api/v1/auth/login', formData, {
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      })
+    } catch {
+      // fallback: login failed, redirect to login page
+      navigate('/login', { replace: true })
+      return
+    }
     navigate('/dashboard', { replace: true })
   }
 

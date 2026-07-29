@@ -17,6 +17,7 @@ const CURRENCY_FLAGS: Record<string, string> = {
 }
 
 function CurrencyCard({ code, entry, index = 0 }: { code: string; entry: RateEntry; index?: number }) {
+  const { t } = useTranslation()
   const price = parsePrice(entry.Buying)
   const change = parseChange(entry.Change)
 

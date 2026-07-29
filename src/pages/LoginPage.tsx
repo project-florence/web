@@ -54,13 +54,15 @@ export default function LoginPage() {
 
       setHyperdriveTriggered(true)
     } catch (err) {
-      const error = err as AxiosError<{ detail: string }>
+      const error = err as AxiosError<{ detail: string | { msg: string }[] }>
       if (!error.response) {
         toast.error(t('auth.networkError'))
       } else if (error.response.status >= 500) {
         toast.error(t('auth.serverError'))
       } else {
-        toast.error(error.response.data?.detail || t('auth.loginError'))
+        const detail = error.response.data?.detail
+        const message = Array.isArray(detail) ? detail[0]?.msg : detail
+        toast.error(message || t('auth.loginError'))
       }
     } finally {
       setLoading(false)

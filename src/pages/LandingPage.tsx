@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { Globe } from 'lucide-react'
 import florenceLogo from '@/assets/florence_logo.svg'
 import { FluidBackground } from '@/components/shared/FluidBackground'
 
@@ -26,7 +25,7 @@ export default function LandingPage() {
 
       {/* Top navbar */}
       <header className="sticky top-0 z-50 flex items-center justify-between px-4 md:px-8 h-16 bg-background/60 backdrop-blur-xl">
-        <button type="button" onClick={() => navigate('/')} className="flex items-center gap-2 cursor-pointer">
+        <button type="button" onClick={() => { window.scrollTo({ top: 0, behavior: 'smooth' }); navigate('/') }} className="flex items-center gap-2 cursor-pointer">
           <img src={florenceLogo} alt="Florence" className="h-8 w-8" />
           <span className="font-semibold text-lg">{t('app.name')}</span>
         </button>
