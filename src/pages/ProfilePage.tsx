@@ -447,7 +447,7 @@ function AdminAnnouncements() {
     queryKey: ['admin-announcements'],
     queryFn: async () => {
       const res = await api.get('/api/v1/announcements')
-      return res.data as Announcement[]
+      return (res.data as { announcements: Announcement[] }).announcements
     },
   })
 

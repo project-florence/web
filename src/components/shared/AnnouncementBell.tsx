@@ -1,7 +1,9 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { Bell, CheckCheck, Loader2 } from 'lucide-react'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
@@ -11,6 +13,7 @@ import type { Announcement } from '@/types/api'
 export function AnnouncementBell() {
   const { t } = useTranslation()
   const queryClient = useQueryClient()
+  const [selected, setSelected] = useState<Announcement | null>(null)
 
   const { data: announcements, isLoading } = useQuery({
     queryKey: ['announcements'],
@@ -33,6 +36,7 @@ export function AnnouncementBell() {
   })
 
   return (
+    <>
     <Popover>
       <PopoverTrigger
         className="relative p-2 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
@@ -77,10 +81,12 @@ export function AnnouncementBell() {
             </p>
           ) : (
             announcements.map((a) => (
-              <div
+              <button
                 key={a.id}
+                type="button"
+                onClick={() => setSelected(a)}
                 className={cn(
-                  'px-4 py-3 border-b border-border/50 last:border-0 transition-colors',
+                  'w-full text-left px-4 py-3 border-b border-border/50 last:border-0 transition-colors hover:bg-muted/50',
                   a.is_unread ? 'bg-primary/[0.03]' : '',
                 )}
               >
@@ -98,11 +104,22 @@ export function AnnouncementBell() {
                     </p>
                   </div>
                 </div>
-              </div>
+              </button>
             ))
           )}
         </div>
       </PopoverContent>
     </Popover>
+      <Dialog open={selected !== null} onOpenChange={(open) => { if (!open) setSelected(null) }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{selected?.title}</DialogTitle>
+          </DialogHeader>
+          <div className="text-sm leading-relaxed whitespace-pre-wrap">
+            {selected?.content}
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }
