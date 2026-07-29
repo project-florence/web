@@ -6,8 +6,14 @@ import api from '@/lib/api'
 
 interface Contributor {
   nickname: string
-  picture_url: string
   github_url: string
+}
+
+const AVATAR_MAP: Record<string, string> = {
+  dethrandir: '/assets/contributors/dethrandir.png',
+  Burakkandemir10: '/assets/contributors/burakkandemir10.png',
+  canaltngyk: '/assets/contributors/canaltngyk.png',
+  burockkkk: '/assets/contributors/burockkkk.png',
 }
 
 export function ContributorCard() {
@@ -53,7 +59,7 @@ export function ContributorCard() {
             className="flex items-center gap-3 rounded-lg border border-border/40 bg-card/50 px-4 py-2.5 transition-colors hover:bg-card hover:border-border/80 group"
           >
             <img
-              src={c.picture_url}
+              src={AVATAR_MAP[c.nickname] || c.github_url + '.png'}
               alt={c.nickname}
               className="h-10 w-10 rounded-full"
             />

@@ -89,8 +89,13 @@ export default function LoginPage() {
     }
   }
 
-  const handleHyperdriveComplete = () => {
-    navigate('/dashboard', { replace: true })
+  const handleHyperdriveComplete = async () => {
+    try {
+      await api.get('/api/v1/profile')
+      navigate('/dashboard', { replace: true })
+    } catch {
+      navigate('/login', { replace: true })
+    }
   }
 
   return (
