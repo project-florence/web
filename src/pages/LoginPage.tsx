@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select'
@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { HyperspaceBackground } from '@/components/shared/HyperspaceBackground'
+import { useAuthStore } from '@/stores/authStore'
 import api from '@/lib/api'
 import type { AxiosError } from 'axios'
 import florenceLogo from '@/assets/florence_logo.svg'
@@ -27,6 +28,23 @@ export default function LoginPage() {
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
   const [hyperdriveTriggered, setHyperdriveTriggered] = useState(false)
+  const authChecked = useRef(false)
+
+  useEffect(() => {
+    if (!authChecked.current) {
+      authChecked.current = true
+      useAuthStore.getState().checkAuth()
+    }
+  }, [])
+
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
+  const authLoading = useAuthStore((s) => s.loading)
+
+  useEffect(() => {
+    if (!authLoading && isAuthenticated) {
+      navigate('/dashboard', { replace: true })
+    }
+  }, [isAuthenticated, authLoading, navigate])
 
   const {
     register,
@@ -39,6 +57,8 @@ export default function LoginPage() {
 
   const formValues = watch()
   const formFilled = formValues.username?.trim() && formValues.password?.trim()
+
+  if (authLoading || isAuthenticated) return null
 
   const onSubmit = async (data: LoginForm) => {
     setLoading(true)

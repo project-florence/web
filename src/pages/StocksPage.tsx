@@ -9,7 +9,7 @@ import { StockSearch } from '@/components/shared/StockSearch'
 import { FavoriteButton } from '@/components/shared/FavoriteButton'
 import { CompanyCard } from '@/components/shared/CompanyCard'
 import { ChevronLeft, ChevronRight, ArrowUpDown } from 'lucide-react'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select'
 import { useNavStore } from '@/stores/navStore'
 import api from '@/lib/api'
 import type { CompanySummaryResponse } from '@/types/api'
@@ -70,7 +70,7 @@ export default function StocksPage() {
           <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
           <Select value={sort} onValueChange={(v) => v && setSort(v)}>
             <SelectTrigger className="w-40 h-9">
-              <SelectValue />
+              <span>{t(SORT_OPTIONS.find((o) => o.value === sort)?.labelKey ?? '')}</span>
             </SelectTrigger>
             <SelectContent>
               {SORT_OPTIONS.map((opt) => (
