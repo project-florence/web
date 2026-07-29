@@ -5,6 +5,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
 import { TrendingUp, TrendingDown } from 'lucide-react'
 import { parsePrice, parseChange } from '@/lib/parse'
+import { PortfolioBuySell } from '@/components/shared/PortfolioBuySell'
 import api from '@/lib/api'
 import type { RateEntry } from '@/types/api'
 
@@ -48,6 +49,9 @@ function CurrencyCard({ code, entry, index = 0 }: { code: string; entry: RateEnt
             {change >= 0 ? '+' : ''}{change.toFixed(2)}%
           </div>
         )}
+        <div className="mt-2">
+          <PortfolioBuySell ticker={code} variant="compact" />
+        </div>
       </CardContent>
     </Card>
     </div>

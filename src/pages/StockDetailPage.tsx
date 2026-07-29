@@ -14,6 +14,7 @@ import { StockChart } from '@/components/shared/StockChart'
 import { StatCard } from '@/components/shared/StatCard'
 import { RecommendationsGauge } from '@/components/shared/RecommendationsGauge'
 import { FavoriteButton } from '@/components/shared/FavoriteButton'
+import { PortfolioBuySell } from '@/components/shared/PortfolioBuySell'
 import { useNavStore } from '@/stores/navStore'
 import { processPriceData } from '@/lib/price'
 import api from '@/lib/api'
@@ -219,6 +220,7 @@ export default function StockDetailPage() {
         {ticker && (
             <div className="flex items-center gap-2 flex-wrap">
               <FavoriteButton ticker={ticker} />
+              <PortfolioBuySell ticker={ticker} />
               <Button variant="outline" size="sm" onClick={() => { trackWithTicker('feature_click', ticker, { feature: 'simulation_button' }); navigate(`/simulation?ticker=${ticker}`) }}>
                 <FlaskConical className="h-4 w-4 mr-1" />
                 Simülasyon

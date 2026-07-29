@@ -368,6 +368,50 @@ export interface ChangePasswordPayload {
   new_password: string
 }
 
+export interface PortfolioMetadata {
+  id: string
+  user_id: number
+  name: string
+  initial_balance: number
+  balance: number
+  created_at: string
+  updated_at: string
+}
+
+export interface PortfolioTransaction {
+  id: string
+  ticker: string
+  type: 'BUY' | 'SELL'
+  quantity: number
+  price: number
+  date: string
+}
+
+export interface Portfolio {
+  metadata: PortfolioMetadata
+  transactions: PortfolioTransaction[]
+}
+
+export interface PortfolioValuationAsset {
+  ticker: string
+  amount: number
+  current_price: number | null
+  total_value: number | null
+  total_cost: number | null
+  weighted_avg_cost: number
+  unrealized_pnl: number | null
+  unrealized_pnl_pct: number | null
+}
+
+export interface PortfolioValuation {
+  total_value: number
+  cash_balance: number
+  holdings_value: number
+  total_pnl: number
+  pnl_percentage: number | null
+  assets: PortfolioValuationAsset[]
+}
+
 export interface UpdateEmailPayload {
   new_email: string
   current_password: string

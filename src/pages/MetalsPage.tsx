@@ -5,6 +5,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
 import { TrendingUp, TrendingDown, Gem } from 'lucide-react'
 import { parseChange } from '@/lib/parse'
+import { PortfolioBuySell } from '@/components/shared/PortfolioBuySell'
 import api from '@/lib/api'
 import type { RateEntry } from '@/types/api'
 
@@ -61,6 +62,9 @@ function MetalCard({ id, entry, index = 0 }: { id: string; entry: RateEntry; ind
             {change >= 0 ? '+' : ''}{change.toFixed(2)}%
           </div>
         )}
+        <div className="mt-2">
+          <PortfolioBuySell ticker={id} variant="compact" />
+        </div>
       </CardContent>
     </Card>
     </div>

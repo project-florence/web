@@ -25,6 +25,7 @@ const IposPage = lazy(() => import('@/pages/IposPage'))
 const CurrencyPage = lazy(() => import('@/pages/CurrencyPage'))
 const MetalsPage = lazy(() => import('@/pages/MetalsPage'))
 const ProfilePage = lazy(() => import('@/pages/ProfilePage'))
+const PortfolioPage = lazy(() => import('@/pages/PortfolioPage'))
 const AboutPage = lazy(() => import('@/pages/AboutPage'))
 const ContactPage = lazy(() => import('@/pages/ContactPage'))
 const LegalPage = lazy(() => import('@/pages/LegalPage'))
@@ -100,6 +101,8 @@ export default function App() {
                 <Route path="currency" element={<CurrencyPage />} />
                 <Route path="metals" element={<MetalsPage />} />
                 <Route path="profile" element={<ProfilePage />} />
+                <Route path="portfolios" element={<PortfolioPage />} />
+                <Route path="portfolios/:portfolioId" element={<PortfolioPage />} />
               </Route>
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
