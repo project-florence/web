@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { createChart, CandlestickSeries, type IChartApi, type ISeriesApi, type CandlestickData, type Time } from 'lightweight-charts'
+import { init, dispose } from 'klinecharts'
+import type { KLineData, Styles, DeepPartial } from 'klinecharts'
 import type { PriceHistory } from '@/types/api'
 import { useThemeStore } from '@/stores/themeStore'
 import { themes } from '@/config/themes'
@@ -12,113 +13,159 @@ interface StockChartProps {
   visibleRange?: { from: number; to: number }
 }
 
+function toKLineData(d: PriceHistory): KLineData {
+  return {
+    timestamp: new Date(d.ts).getTime(),
+    open: d.open!,
+    high: d.high!,
+    low: d.low!,
+    close: d.close!,
+    volume: d.volume,
+  }
+}
+
+function buildStyles(charts: typeof themes.florence.charts): DeepPartial<Styles> {
+  return {
+    grid: {
+      show: true,
+      horizontal: { show: true, style: 'dashed', size: 1, color: charts.gridColor, dashedValue: [4, 4] },
+      vertical: { show: true, style: 'dashed', size: 1, color: charts.gridColor, dashedValue: [4, 4] },
+    },
+    candle: {
+      type: 'candle_solid',
+      bar: {
+        upColor: charts.upColor,
+        downColor: charts.downColor,
+        upBorderColor: charts.upColor,
+        downBorderColor: charts.downColor,
+        upWickColor: charts.upColor,
+        downWickColor: charts.downColor,
+        noChangeColor: charts.gridColor,
+        noChangeBorderColor: charts.gridColor,
+        noChangeWickColor: charts.gridColor,
+        compareRule: 'previous_close',
+      },
+      priceMark: {
+        show: true,
+        high: { show: true, color: charts.textColor, textOffset: 4, textSize: 10, textFamily: 'monospace', textWeight: 'normal' },
+        low: { show: true, color: charts.textColor, textOffset: 4, textSize: 10, textFamily: 'monospace', textWeight: 'normal' },
+        last: { show: true, upColor: charts.upColor, downColor: charts.downColor, noChangeColor: charts.gridColor, line: { show: true, style: 'dashed', size: 1, dashedValue: [2, 2] }, text: { show: true, color: charts.textColor, size: 10, family: 'monospace', weight: 'normal' } },
+      },
+    },
+    xAxis: {
+      show: true,
+      size: 'auto',
+      axisLine: { show: true, color: charts.gridColor, size: 1 },
+      tickLine: { show: true, color: charts.gridColor, size: 1, length: 4 },
+      tickText: { show: true, color: charts.textColor, size: 10, family: 'monospace', weight: 'normal', marginStart: 4, marginEnd: 4 },
+    },
+    yAxis: {
+      show: true,
+      size: 'auto',
+      axisLine: { show: true, color: charts.gridColor, size: 1 },
+      tickLine: { show: true, color: charts.gridColor, size: 1, length: 4 },
+      tickText: { show: true, color: charts.textColor, size: 10, family: 'monospace', weight: 'normal', marginStart: 4, marginEnd: 4 },
+    },
+    separator: {
+      size: 0,
+      color: 'transparent',
+      fill: false,
+      activeBackgroundColor: 'transparent',
+    },
+    crosshair: {
+      show: true,
+      horizontal: {
+        show: true,
+        line: { show: true, style: 'dashed', size: 1, color: charts.crosshairColor, dashedValue: [2, 2] },
+        text: { show: true, color: charts.textColor, size: 10, family: 'monospace', weight: 'normal' },
+      },
+      vertical: {
+        show: true,
+        line: { show: true, style: 'dashed', size: 1, color: charts.crosshairColor, dashedValue: [2, 2] },
+        text: { show: true, color: charts.textColor, size: 10, family: 'monospace', weight: 'normal' },
+      },
+    },
+  }
+}
+
 export function StockChart({ data, loading, visibleRange }: StockChartProps) {
   const { t } = useTranslation()
   const containerRef = useRef<HTMLDivElement>(null)
-  const chartRef = useRef<IChartApi | null>(null)
-  const seriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null)
+  const chartRef = useRef<ReturnType<typeof init> | null>(null)
   const hasDataRef = useRef(false)
-  const resizeHandlerRef = useRef<(() => void) | null>(null)
+  const dataRef = useRef(data)
+  const visibleRangeRef = useRef(visibleRange)
   const themeName = useThemeStore((s) => s.themeName)
+
+  dataRef.current = data
+  visibleRangeRef.current = visibleRange
 
   useEffect(() => {
     if (!containerRef.current) return
 
-    const chars = themes[themeName].charts
-    const chart = createChart(containerRef.current, {
-      layout: {
-        background: { color: 'transparent' },
-        textColor: chars.textColor,
-      },
-      grid: {
-        vertLines: { color: chars.gridColor },
-        horzLines: { color: chars.gridColor },
-      },
-      crosshair: {
-        mode: 0,
-        vertLine: { color: chars.crosshairColor, width: 1, style: 2 },
-        horzLine: { color: chars.crosshairColor, width: 1, style: 2 },
-      },
-      rightPriceScale: {
-        borderColor: chars.gridColor,
-      },
-      timeScale: {
-        borderColor: chars.gridColor,
-        timeVisible: false,
-        secondsVisible: false,
-      },
-      handleScroll: true,
-      handleScale: true,
-      width: containerRef.current.clientWidth,
-      height: 400,
+    const chart = init(containerRef.current, {
+      styles: buildStyles(themes[themeName].charts),
     })
+    if (!chart) return
 
-    const series = chart.addSeries(CandlestickSeries, {
-      upColor: chars.upColor,
-      downColor: chars.downColor,
-      borderUpColor: chars.upColor,
-      borderDownColor: chars.downColor,
-      wickUpColor: chars.upColor,
-      wickDownColor: chars.downColor,
+    chart.setSymbol?.({ ticker: '', pricePrecision: 2, volumePrecision: 0 })
+    chart.setPeriod?.({ type: 'day', span: 1 })
+
+    chart.setDataLoader({
+      getBars: (params) => {
+        const currentData = dataRef.current
+        const valid = currentData.filter((d) => {
+          const { open, high, low, close } = d
+          return (
+            open != null && high != null && low != null && close != null &&
+            isFinite(open) && isFinite(high) && isFinite(low) && isFinite(close)
+          )
+        })
+        if (valid.length > 0) {
+          hasDataRef.current = true
+          params.callback(valid.map(toKLineData), false)
+        } else {
+          params.callback([], false)
+        }
+      },
     })
 
     chartRef.current = chart
-    seriesRef.current = series
 
-    const handleResize = () => {
-      if (containerRef.current) {
-        chart.applyOptions({ width: containerRef.current.clientWidth })
-      }
-    }
-    resizeHandlerRef.current = handleResize
+    const handleResize = () => { chart.resize() }
     window.addEventListener('resize', handleResize)
 
     return () => {
       window.removeEventListener('resize', handleResize)
-      chart.remove()
+      dispose(chart)
       chartRef.current = null
-      seriesRef.current = null
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [themeName])
 
   useEffect(() => {
-    if (!seriesRef.current) return
+    if (!chartRef.current) return
+    chartRef.current.setStyles(buildStyles(themes[themeName].charts))
+  }, [themeName])
 
-    if (data.length > 0) {
-      const valid = data.filter((d) => {
-        const { open, high, low, close } = d
-        return (
-          open != null && high != null && low != null && close != null &&
-          isFinite(open) && isFinite(high) && isFinite(low) && isFinite(close)
-        )
-      })
+  useEffect(() => {
+    const chart = chartRef.current
+    if (!chart || data.length === 0) return
 
-      if (valid.length > 0) {
-        hasDataRef.current = true
-        const candleData: CandlestickData[] = valid.map((d) => ({
-          time: (new Date(d.ts).getTime() / 1000) as Time,
-          open: d.open!,
-          high: d.high!,
-          low: d.low!,
-          close: d.close!,
-        }))
-        try {
-          seriesRef.current.setData(candleData)
-          if (visibleRange) {
-            chartRef.current?.timeScale().setVisibleRange({
-              from: (visibleRange.from / 1000) as Time,
-              to: (visibleRange.to / 1000) as Time,
-            })
-          } else {
-            chartRef.current?.timeScale().fitContent()
-          }
-        } catch {
-          console.warn('StockChart: setData failed')
-        }
+    const vr = visibleRangeRef.current
+    if (vr) {
+      const minTs = new Date(data[0].ts).getTime()
+      const maxTs = new Date(data[data.length - 1].ts).getTime()
+      if (vr.from >= minTs && vr.from <= maxTs) {
+        chart.scrollToTimestamp?.(vr.from, 0)
+      } else {
+        chart.scrollToRealTime?.(0)
       }
+    } else {
+      chart.scrollToRealTime?.(0)
     }
-  }, [data, visibleRange])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data])
 
   const hasValidData = data.some((d) => {
     const { open, high, low, close } = d
@@ -158,3 +205,4 @@ export function StockChart({ data, loading, visibleRange }: StockChartProps) {
     </div>
   )
 }
+
