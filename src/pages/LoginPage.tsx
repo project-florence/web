@@ -29,6 +29,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
   const [hyperdriveTriggered, setHyperdriveTriggered] = useState(false)
   const authChecked = useRef(false)
+  const isPostLoginRef = useRef(false)
 
   useEffect(() => {
     if (!authChecked.current) {
@@ -41,7 +42,7 @@ export default function LoginPage() {
   const authLoading = useAuthStore((s) => s.loading)
 
   useEffect(() => {
-    if (!authLoading && isAuthenticated) {
+    if (!authLoading && isAuthenticated && !isPostLoginRef.current) {
       navigate('/dashboard', { replace: true })
     }
   }, [isAuthenticated, authLoading, navigate])
@@ -58,7 +59,7 @@ export default function LoginPage() {
   const formValues = watch()
   const formFilled = formValues.username?.trim() && formValues.password?.trim()
 
-  if (authLoading || isAuthenticated) return null
+  if ((authLoading || isAuthenticated) && !isPostLoginRef.current) return null
 
   const onSubmit = async (data: LoginForm) => {
     setLoading(true)
@@ -72,6 +73,7 @@ export default function LoginPage() {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       })
 
+      isPostLoginRef.current = true
       useAuthStore.getState().setAuthenticated(true)
       setHyperdriveTriggered(true)
     } catch (err) {

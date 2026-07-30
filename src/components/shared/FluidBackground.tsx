@@ -77,7 +77,10 @@ export function FluidBackground() {
     const canvasEl = canvasRef.current
     if (!canvasEl) return
 
-    const glCtx = canvasEl.getContext('webgl')
+    const quality = createQualityTier()
+    if (quality.getConfig().skipEffects) return
+
+    const glCtx = canvasEl.getContext('webgl', { powerPreference: 'high-performance', antialias: false })
     if (!glCtx) {
       console.warn('WebGL not supported')
       return
@@ -91,7 +94,6 @@ export function FluidBackground() {
     let targetMouseX = 0.5
     let targetMouseY = 0.5
     let animId = 0
-    const quality = createQualityTier()
 
     function createShader(gl: WebGLRenderingContext, type: number, source: string) {
       const shader = gl.createShader(type)
@@ -166,7 +168,7 @@ export function FluidBackground() {
 
     function render(time: number) {
       if (!hidden) quality.frame()
-      if (hidden) { animId = requestAnimationFrame(render); return }
+      if (hidden) return
       gl.useProgram(program)
       mouseX += (targetMouseX - mouseX) * 0.1
       mouseY += (targetMouseY - mouseY) * 0.1

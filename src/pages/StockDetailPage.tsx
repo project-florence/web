@@ -51,6 +51,7 @@ function clampPeriod(interval: string, period: string): string {
   const max = INTERVAL_MAX_PERIOD[interval]
   if (!max) return period
   const maxIdx = PERIOD_VALUES.indexOf(max as typeof PERIOD_VALUES[number])
+  if (maxIdx === -1) return period
   const curIdx = PERIOD_VALUES.indexOf(period as typeof PERIOD_VALUES[number])
   if (curIdx > maxIdx) return max
   return period

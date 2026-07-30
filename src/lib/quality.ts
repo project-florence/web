@@ -57,13 +57,13 @@ export function createQualityTier() {
 
       if (frames === SAMPLE_FRAMES) {
         const avg = totalTime / SAMPLE_FRAMES
-        if (avg < 8) setTier('high')
-        else if (avg > 20) setTier('low')
+        if (avg < 16) setTier('high')
+        else if (avg > 33) setTier('low')
         else setTier('medium')
       } else if (frames % RE_EVALUATE_INTERVAL === 0) {
         const avg = totalTime / RE_EVALUATE_INTERVAL
-        if (avg < 6) setTier('high')
-        else if (avg > 16) setTier('low')
+        if (avg < 16) setTier('high')
+        else if (avg > 33) setTier('low')
         totalTime = 0
       }
     }
