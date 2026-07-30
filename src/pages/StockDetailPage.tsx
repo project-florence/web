@@ -50,8 +50,8 @@ const PERIOD_VALUES = PERIODS.map((p) => p.value)
 function clampPeriod(interval: string, period: string): string {
   const max = INTERVAL_MAX_PERIOD[interval]
   if (!max) return period
-  const maxIdx = PERIOD_VALUES.indexOf(max)
-  const curIdx = PERIOD_VALUES.indexOf(period)
+  const maxIdx = PERIOD_VALUES.indexOf(max as typeof PERIOD_VALUES[number])
+  const curIdx = PERIOD_VALUES.indexOf(period as typeof PERIOD_VALUES[number])
   if (curIdx > maxIdx) return max
   return period
 }
@@ -93,13 +93,13 @@ export default function StockDetailPage() {
   const PERIODS_TR = PERIODS.map((p) => ({ ...p, label: t(`time.${p.value}`) }))
   const INTERVALS_TR = INTERVALS.map((i) => ({ ...i, label: t(`time.${i.value}`, i.label) }))
 
-  const [period, setPeriod] = useState<(typeof PERIODS)[number]>(PERIODS[PERIOD_VALUES.indexOf(clampPeriod('5m', PERIODS[0].value))])
+  const [period, setPeriod] = useState<(typeof PERIODS)[number]>(PERIODS[PERIOD_VALUES.indexOf(clampPeriod('5m', PERIODS[0].value) as typeof PERIOD_VALUES[number])])
   const [interval, setIntervalLocal] = useState<string>('5m')
 
   useEffect(() => {
     const clamped = clampPeriod(interval, period.value)
     if (clamped !== period.value) {
-      setPeriod(PERIODS[PERIOD_VALUES.indexOf(clamped)])
+      setPeriod(PERIODS[PERIOD_VALUES.indexOf(clamped as typeof PERIOD_VALUES[number])])
     }
   }, [interval])
 
@@ -211,7 +211,6 @@ export default function StockDetailPage() {
   const periodPrev = sliced[sliced.length - 2]?.close
   const periodChange = pctChange(periodLatest, periodPrev)
 
-  const isIntraday = ['5m', '30m', '1h'].includes(interval)
   const isDailyInterval = interval === '1d'
 
   return (
@@ -235,7 +234,7 @@ export default function StockDetailPage() {
             <h2 className="text-3xl font-bold tracking-tight">{ticker}</h2>
             {dailyChange !== null && (
               <Tooltip>
-                <TooltipTrigger asChild>
+                <TooltipTrigger>
                   <Badge
                     variant="outline"
                     className={cn(

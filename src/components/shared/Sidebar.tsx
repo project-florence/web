@@ -127,7 +127,7 @@ export function Sidebar() {
         </div>
         <NavLink
           to="/profile"
-          onClick={handleNavClick}
+          onClick={() => handleNavClick('profile')}
           className={linkClass(location.pathname === '/profile')}
         >
           <User className="h-4 w-4 transition-transform duration-200 group-hover:scale-110 shrink-0" />

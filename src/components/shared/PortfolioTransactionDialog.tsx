@@ -32,14 +32,6 @@ export function PortfolioTransactionDialog({ open, onOpenChange, portfolioId, ti
     ? (type === 'BUY' ? subtotal + commission : subtotal - commission)
     : null
 
-  const insufficientBalance = type === 'BUY' && total != null && availableBalance != null && total > availableBalance
-  const insufficientQuantity = type === 'SELL' && maxQuantity != null && qty > maxQuantity
-  const cannotSubmit = !quantity || qty <= 0 || mutation.isPending || insufficientBalance || insufficientQuantity
-
-  let disableReason = ''
-  if (insufficientBalance) disableReason = 'Yetersiz bakiye'
-  else if (insufficientQuantity) disableReason = `Maksimum ${Number.isInteger(maxQuantity) ? maxQuantity : maxQuantity?.toFixed(2)} adet`
-
   const mutation = useMutation({
     mutationFn: async () => {
       await api.post(`/api/v1/portfolios/${portfolioId}/transactions`, {
@@ -61,6 +53,14 @@ export function PortfolioTransactionDialog({ open, onOpenChange, portfolioId, ti
       toast.error(msg)
     },
   })
+
+  const insufficientBalance = type === 'BUY' && total != null && availableBalance != null && total > availableBalance
+  const insufficientQuantity = type === 'SELL' && maxQuantity != null && qty > maxQuantity
+  const cannotSubmit = !quantity || qty <= 0 || mutation.isPending || insufficientBalance || insufficientQuantity
+
+  let disableReason = ''
+  if (insufficientBalance) disableReason = 'Yetersiz bakiye'
+  else if (insufficientQuantity) disableReason = `Maksimum ${Number.isInteger(maxQuantity) ? maxQuantity : maxQuantity?.toFixed(2)} adet`
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

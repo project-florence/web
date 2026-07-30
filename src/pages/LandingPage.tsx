@@ -1,4 +1,4 @@
-import { useRef, useEffect, useCallback, useState } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -34,6 +34,21 @@ const footerLinks = [
   { to: '/legal/cookie_policy', key: 'footer.cookies' },
   { to: '/legal/disclaimer', key: 'footer.disclaimer' },
 ]
+
+function FadeInSection(props: { children: any }) {
+  const [ref, inView] = useInView()
+  return (
+    <div
+      ref={ref}
+      className={cn(
+        'transition-all duration-700 ease-out',
+        inView ? 'animate-fadeIn animate-slideUp' : 'opacity-0 translate-y-8',
+      )}
+    >
+      {props.children}
+    </div>
+  )
+}
 
 export default function LandingPage() {
   const { t, i18n } = useTranslation()
@@ -126,22 +141,6 @@ export default function LandingPage() {
           </section>
         </FadeInSection>
       ))}
-
-function FadeInSection({ children }: { children: React.ReactNode }) {
-  const [ref, inView] = useInView()
-  return (
-    <div
-      ref={ref}
-      className={cn(
-        'transition-all duration-700 ease-out',
-        inView ? 'animate-fadeIn animate-slideUp' : 'opacity-0 translate-y-8',
-      )}
-    >
-      {children}
-    </div>
-  )
-}
-
 
       {/* Footer */}
       <footer className="border-t border-border/40 py-6 px-4 md:px-8 relative z-10">

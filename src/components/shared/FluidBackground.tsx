@@ -74,14 +74,17 @@ export function FluidBackground() {
     if (mountedRef.current) return
     mountedRef.current = true
 
-    const canvas = canvasRef.current
-    if (!canvas) return
+    const canvasEl = canvasRef.current
+    if (!canvasEl) return
 
-    const gl = canvas.getContext('webgl')
-    if (!gl) {
+    const glCtx = canvasEl.getContext('webgl')
+    if (!glCtx) {
       console.warn('WebGL not supported')
       return
     }
+
+    const canvas: HTMLCanvasElement = canvasEl
+    const gl: WebGLRenderingContext = glCtx
 
     let mouseX = 0.5
     let mouseY = 0.5

@@ -34,21 +34,21 @@ const INTERVAL_MAX_PERIOD: Record<string, string> = {
 function clampPeriod(interval: string, period: string): string {
   const max = INTERVAL_MAX_PERIOD[interval]
   if (!max) return period
-  const maxIdx = PERIOD_VALUES.indexOf(max)
-  const curIdx = PERIOD_VALUES.indexOf(period)
+  const maxIdx = PERIOD_VALUES.indexOf(max as typeof PERIOD_VALUES[number])
+  const curIdx = PERIOD_VALUES.indexOf(period as typeof PERIOD_VALUES[number])
   if (curIdx > maxIdx) return max
   return period
 }
 
 export default function StockChartWidget({ config }: { config?: Record<string, unknown> }) {
   const ticker = (config?.ticker as string) || 'THYAO'
-  const [period, setPeriod] = useState<(typeof PERIODS)[number]>(PERIODS[PERIOD_VALUES.indexOf(clampPeriod('5m', PERIODS[0].value))])
+  const [period, setPeriod] = useState<(typeof PERIODS)[number]>(PERIODS[PERIOD_VALUES.indexOf(clampPeriod('5m', PERIODS[0].value) as typeof PERIOD_VALUES[number])])
   const [interval, setInterval] = useState<string>('5m')
 
   useEffect(() => {
     const clamped = clampPeriod(interval, period.value)
     if (clamped !== period.value) {
-      setPeriod(PERIODS[PERIOD_VALUES.indexOf(clamped)])
+      setPeriod(PERIODS[PERIOD_VALUES.indexOf(clamped as typeof PERIOD_VALUES[number])])
     }
   }, [interval])
 
