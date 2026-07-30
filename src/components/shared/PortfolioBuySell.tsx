@@ -20,6 +20,15 @@ export function PortfolioBuySell({ ticker, variant = 'default' }: Props) {
   const [selectedPortfolioId, setSelectedPortfolioId] = useState<string | null>(null)
   const [dialogType, setDialogType] = useState<'BUY' | 'SELL' | null>(null)
 
+  const { data: currentPrice } = useQuery({
+    queryKey: ['current-price', ticker],
+    queryFn: async () => {
+      const res = await api.get('/api/v1/price/current', { params: { ticker } })
+      return res.data.price as number
+    },
+    staleTime: 10_000,
+  })
+
   const { data: portfolios } = useQuery({
     queryKey: ['portfolios'],
     queryFn: async () => {
@@ -98,6 +107,7 @@ export function PortfolioBuySell({ ticker, variant = 'default' }: Props) {
           portfolioId={selectedPortfolioId}
           ticker={ticker}
           type={dialogType}
+          currentPrice={currentPrice}
         />
       )}
     </>

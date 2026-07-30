@@ -13,12 +13,16 @@ interface Props {
   portfolioId: string
   ticker: string
   type: 'BUY' | 'SELL'
+  currentPrice?: number
 }
 
-export function PortfolioTransactionDialog({ open, onOpenChange, portfolioId, ticker, type }: Props) {
+export function PortfolioTransactionDialog({ open, onOpenChange, portfolioId, ticker, type, currentPrice }: Props) {
   const { t } = useTranslation()
   const queryClient = useQueryClient()
   const [quantity, setQuantity] = useState('')
+
+  const qty = parseFloat(quantity) || 0
+  const totalCost = currentPrice != null ? qty * currentPrice : null
 
   const mutation = useMutation({
     mutationFn: async () => {
@@ -31,6 +35,8 @@ export function PortfolioTransactionDialog({ open, onOpenChange, portfolioId, ti
     onSuccess: () => {
       toast.success(type === 'BUY' ? t('portfolio.buySuccess') : t('portfolio.sellSuccess'))
       queryClient.invalidateQueries({ queryKey: ['portfolios'] })
+      queryClient.invalidateQueries({ queryKey: ['portfolio', portfolioId] })
+      queryClient.invalidateQueries({ queryKey: ['portfolio-valuation', portfolioId] })
       setQuantity('')
       onOpenChange(false)
     },
@@ -60,6 +66,12 @@ export function PortfolioTransactionDialog({ open, onOpenChange, portfolioId, ti
               onChange={(e) => setQuantity(e.target.value)}
             />
           </div>
+          {totalCost != null && totalCost > 0 && (
+            <div className="flex items-center justify-between rounded-lg bg-muted/50 px-3 py-2 text-sm">
+              <span className="text-muted-foreground">Tahmini tutar</span>
+              <span className="font-medium">{totalCost.toFixed(2)}</span>
+            </div>
+          )}
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>

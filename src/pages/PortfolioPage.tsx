@@ -303,7 +303,7 @@ function PortfolioDetail({ portfolioId }: { portfolioId: string }) {
         <Card>
           <CardContent className="p-4 text-center">
             <p className="text-xs text-muted-foreground">{t('portfolio.cashBalance')}</p>
-            <p className="text-xl font-bold">{v?.cash_balance.toFixed(2) ?? m.balance.toFixed(2)}</p>
+            <p className="text-xl font-bold">{v?.cash_balance != null ? v.cash_balance.toFixed(2) : m.balance.toFixed(2)}</p>
           </CardContent>
         </Card>
         <Card>
@@ -316,7 +316,7 @@ function PortfolioDetail({ portfolioId }: { portfolioId: string }) {
           <CardContent className="p-4 text-center">
             <p className="text-xs text-muted-foreground">{t('portfolio.totalPnl')}</p>
             <p className={cn('text-xl font-bold', (v?.total_pnl ?? 0) >= 0 ? 'text-success' : 'text-destructive')}>
-              {v ? `${v.total_pnl >= 0 ? '+' : ''}${v.total_pnl.toFixed(2)}` : '-'}
+              {v?.total_pnl != null ? `${v.total_pnl >= 0 ? '+' : ''}${v.total_pnl.toFixed(2)}` : '-'}
             </p>
           </CardContent>
         </Card>
@@ -548,7 +548,7 @@ function PortfolioAnalysis({ portfolioId }: { portfolioId: string }) {
         <Card>
           <CardHeader><CardTitle className="text-sm">Benchmark (XU100)</CardTitle></CardHeader>
           <CardContent className="space-y-2 text-sm">
-            {bm ? (
+            {bm?.portfolio_return_pct != null ? (
               <>
                 <div className="flex justify-between"><span className="text-muted-foreground">Portföy</span><span className={bm.portfolio_return_pct >= 0 ? 'text-success' : 'text-destructive'}>{bm.portfolio_return_pct >= 0 ? '+' : ''}{bm.portfolio_return_pct.toFixed(2)}%</span></div>
                 <div className="flex justify-between"><span className="text-muted-foreground">XU100</span><span>{bm.benchmark_return_pct >= 0 ? '+' : ''}{bm.benchmark_return_pct.toFixed(2)}%</span></div>
