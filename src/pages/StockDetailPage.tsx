@@ -39,6 +39,23 @@ const INTERVALS = [
   { label: '1a', value: '1mo' },
 ] as const
 
+const INTERVAL_MAX_PERIOD: Record<string, string> = {
+  '5m': '1d',
+  '30m': '5d',
+  '1h': '1mo',
+}
+
+const PERIOD_VALUES = PERIODS.map((p) => p.value)
+
+function clampPeriod(interval: string, period: string): string {
+  const max = INTERVAL_MAX_PERIOD[interval]
+  if (!max) return period
+  const maxIdx = PERIOD_VALUES.indexOf(max)
+  const curIdx = PERIOD_VALUES.indexOf(period)
+  if (curIdx > maxIdx) return max
+  return period
+}
+
 function safeFixed(n: number | null | undefined, digits: number, fallback = '—'): string {
   if (n === null || n === undefined) return fallback
   return n.toFixed(digits)
@@ -76,8 +93,15 @@ export default function StockDetailPage() {
   const PERIODS_TR = PERIODS.map((p) => ({ ...p, label: t(`time.${p.value}`) }))
   const INTERVALS_TR = INTERVALS.map((i) => ({ ...i, label: t(`time.${i.value}`, i.label) }))
 
-  const [period, setPeriod] = useState<(typeof PERIODS)[number]>(PERIODS[0])
+  const [period, setPeriod] = useState<(typeof PERIODS)[number]>(PERIODS[PERIOD_VALUES.indexOf(clampPeriod('5m', PERIODS[0].value))])
   const [interval, setIntervalLocal] = useState<string>('5m')
+
+  useEffect(() => {
+    const clamped = clampPeriod(interval, period.value)
+    if (clamped !== period.value) {
+      setPeriod(PERIODS[PERIOD_VALUES.indexOf(clamped)])
+    }
+  }, [interval])
 
   useEffect(() => {
     if (ticker) setLastStockTicker(ticker)

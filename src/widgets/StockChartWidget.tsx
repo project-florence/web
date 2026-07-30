@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -24,10 +24,33 @@ const INTERVALS = [
   { label: '1g', value: '1d' },
 ] as const
 
+const PERIOD_VALUES = PERIODS.map((p) => p.value)
+const INTERVAL_MAX_PERIOD: Record<string, string> = {
+  '5m': '1d',
+  '30m': '5d',
+  '1h': '1mo',
+}
+
+function clampPeriod(interval: string, period: string): string {
+  const max = INTERVAL_MAX_PERIOD[interval]
+  if (!max) return period
+  const maxIdx = PERIOD_VALUES.indexOf(max)
+  const curIdx = PERIOD_VALUES.indexOf(period)
+  if (curIdx > maxIdx) return max
+  return period
+}
+
 export default function StockChartWidget({ config }: { config?: Record<string, unknown> }) {
   const ticker = (config?.ticker as string) || 'THYAO'
-  const [period, setPeriod] = useState<(typeof PERIODS)[number]>(PERIODS[0])
+  const [period, setPeriod] = useState<(typeof PERIODS)[number]>(PERIODS[PERIOD_VALUES.indexOf(clampPeriod('5m', PERIODS[0].value))])
   const [interval, setInterval] = useState<string>('5m')
+
+  useEffect(() => {
+    const clamped = clampPeriod(interval, period.value)
+    if (clamped !== period.value) {
+      setPeriod(PERIODS[PERIOD_VALUES.indexOf(clamped)])
+    }
+  }, [interval])
 
   const { data, isLoading } = useQuery({
     queryKey: ['price-history', ticker, period.value, interval],
