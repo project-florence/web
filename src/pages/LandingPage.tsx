@@ -1,11 +1,30 @@
+import { useRef, useEffect, useCallback, useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
 import { ChevronDown } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
+import { cn } from '@/lib/utils'
 import florenceLogo from '@/assets/florence_logo.svg'
 import { FluidBackground } from '@/components/shared/FluidBackground'
+
+
+function useInView(): [React.RefObject<HTMLDivElement | null>, boolean] {
+  const ref = useRef<HTMLDivElement | null>(null)
+  const [inView, setInView] = useState(false)
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setInView(true); observer.disconnect() } },
+      { threshold: 0.15 },
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+  return [ref, inView]
+}
 
 const footerLinks = [
   { to: '/about', key: 'footer.about' },
@@ -95,16 +114,34 @@ export default function LandingPage() {
         { key: 'feature4', img: '/assets/report.png' },
         { key: 'feature5', img: '/assets/simulation.png' },
       ].map((f, fi) => (
-        <section key={f.key} id={fi === 0 ? 'features-start' : undefined} className="py-24 md:py-40 relative z-10">
-          <div className="max-w-6xl mx-auto px-4 md:px-8">
-            <img src={f.img} alt="" className="w-full rounded-2xl shadow-2xl border border-border/50 mb-10" loading="lazy" />
-            <div className="max-w-3xl mx-auto text-center">
-              <h2 className="text-3xl md:text-5xl font-bold mb-6">{t(`landing.${f.key}.heading`)}</h2>
-              <p className="text-muted-foreground text-lg md:text-xl leading-relaxed">{t(`landing.${f.key}.desc`)}</p>
+        <FadeInSection key={f.key}>
+          <section id={fi === 0 ? 'features-start' : undefined} className="py-24 md:py-40 relative z-10">
+            <div className="max-w-6xl mx-auto px-4 md:px-8">
+              <img src={f.img} alt="" className="w-full rounded-2xl shadow-2xl border border-border/50 mb-10" loading="lazy" />
+              <div className="max-w-3xl mx-auto text-center">
+                <h2 className="text-3xl md:text-5xl font-bold mb-6">{t(`landing.${f.key}.heading`)}</h2>
+                <p className="text-muted-foreground text-lg md:text-xl leading-relaxed">{t(`landing.${f.key}.desc`)}</p>
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
+        </FadeInSection>
       ))}
+
+function FadeInSection({ children }: { children: React.ReactNode }) {
+  const [ref, inView] = useInView()
+  return (
+    <div
+      ref={ref}
+      className={cn(
+        'transition-all duration-700 ease-out',
+        inView ? 'animate-fadeIn animate-slideUp' : 'opacity-0 translate-y-8',
+      )}
+    >
+      {children}
+    </div>
+  )
+}
+
 
       {/* Footer */}
       <footer className="border-t border-border/40 py-6 px-4 md:px-8 relative z-10">

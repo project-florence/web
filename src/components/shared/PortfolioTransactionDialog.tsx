@@ -21,8 +21,14 @@ export function PortfolioTransactionDialog({ open, onOpenChange, portfolioId, ti
   const queryClient = useQueryClient()
   const [quantity, setQuantity] = useState('')
 
+  const COMMISSION_RATE = parseFloat(import.meta.env.VITE_PORTFOLIO_COMMISSION_RATE || '0.001')
+
   const qty = parseFloat(quantity) || 0
-  const totalCost = currentPrice != null ? qty * currentPrice : null
+  const subtotal = currentPrice != null ? qty * currentPrice : null
+  const commission = subtotal != null ? subtotal * COMMISSION_RATE : null
+  const total = subtotal != null && commission != null
+    ? (type === 'BUY' ? subtotal + commission : subtotal - commission)
+    : null
 
   const mutation = useMutation({
     mutationFn: async () => {
@@ -66,10 +72,22 @@ export function PortfolioTransactionDialog({ open, onOpenChange, portfolioId, ti
               onChange={(e) => setQuantity(e.target.value)}
             />
           </div>
-          {totalCost != null && totalCost > 0 && (
-            <div className="flex items-center justify-between rounded-lg bg-muted/50 px-3 py-2 text-sm">
-              <span className="text-muted-foreground">Tahmini tutar</span>
-              <span className="font-medium">{totalCost.toFixed(2)}</span>
+          {subtotal != null && subtotal > 0 && (
+            <div className="space-y-1.5 rounded-lg bg-muted/50 px-3 py-2 text-sm">
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">Hisse tutarı</span>
+                <span className="font-medium">{subtotal.toFixed(2)} TL</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">Komisyon (%{(COMMISSION_RATE * 100).toFixed(1)})</span>
+                <span className="font-medium">{commission!.toFixed(2)} TL</span>
+              </div>
+              <div className="flex items-center justify-between border-t border-border/40 pt-1.5">
+                <span className="text-muted-foreground font-medium">
+                  {type === 'BUY' ? 'Toplam ödenecek' : 'Net alınacak'}
+                </span>
+                <span className="font-bold">{total!.toFixed(2)} TL</span>
+              </div>
             </div>
           )}
         </div>

@@ -5,6 +5,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, TrendingUp, TrendingDown, FlaskConical, FileText, Download } from 'lucide-react'
@@ -209,18 +210,34 @@ export default function StockDetailPage() {
           <div className="flex items-center gap-3">
             <h2 className="text-3xl font-bold tracking-tight">{ticker}</h2>
             {dailyChange !== null && (
-              <Badge
-                variant="outline"
-                className={cn(
-                  'text-sm px-3 py-1 font-semibold border-2',
-                  dailyChange >= 0
-                    ? 'text-success border-success bg-success/10'
-                    : 'text-destructive border-destructive bg-destructive/10',
-                )}
-              >
-                {dailyChange >= 0 ? <TrendingUp className="h-3.5 w-3.5 mr-1 inline" /> : <TrendingDown className="h-3.5 w-3.5 mr-1 inline" />}
-                {dailyChange >= 0 ? '+' : ''}{dailyChange.toFixed(2)}%
-              </Badge>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Badge
+                    variant="outline"
+                    className={cn(
+                      'text-sm px-3 py-1 font-semibold border-2 cursor-help',
+                      dailyChange >= 0
+                        ? 'text-success border-success bg-success/10'
+                        : 'text-destructive border-destructive bg-destructive/10',
+                    )}
+                  >
+                    {dailyChange >= 0 ? <TrendingUp className="h-3.5 w-3.5 mr-1 inline" /> : <TrendingDown className="h-3.5 w-3.5 mr-1 inline" />}
+                    {dailyChange >= 0 ? '+' : ''}{dailyChange.toFixed(2)}%
+                  </Badge>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" align="center">
+                  <div className="text-center text-xs leading-relaxed">
+                    <div>Son 1 gün bazında</div>
+                    <div className="text-background/70">
+                      {m?.regularMarketTime
+                        ? new Date(m.regularMarketTime * 1000).toLocaleString('tr-TR', {
+                            day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit',
+                          })
+                        : 'Son güncelleme: —'}
+                    </div>
+                  </div>
+                </TooltipContent>
+              </Tooltip>
             )}
           </div>
           <p className={cn(
