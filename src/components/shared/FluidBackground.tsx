@@ -78,7 +78,6 @@ export function FluidBackground() {
     if (!canvasEl) return
 
     const quality = createQualityTier()
-    if (quality.getConfig().skipEffects) return
 
     const glCtx = canvasEl.getContext('webgl', { powerPreference: 'high-performance', antialias: false })
     if (!glCtx) {
