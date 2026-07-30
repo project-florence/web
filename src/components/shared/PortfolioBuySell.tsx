@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useNavigate } from 'react-router-dom'
 import { PortfolioTransactionDialog } from './PortfolioTransactionDialog'
 import api from '@/lib/api'
-import type { Portfolio } from '@/types/api'
+import type { Portfolio, PortfolioValuation } from '@/types/api'
 
 interface Props {
   ticker: string
@@ -36,6 +36,19 @@ export function PortfolioBuySell({ ticker, variant = 'default' }: Props) {
       return res.data as Portfolio[]
     },
   })
+
+  const { data: valuation } = useQuery({
+    queryKey: ['portfolio-valuation', selectedPortfolioId],
+    queryFn: async () => {
+      const res = await api.get(`/api/v1/portfolios/${selectedPortfolioId}/valuation`)
+      return res.data as PortfolioValuation
+    },
+    enabled: !!selectedPortfolioId,
+  })
+
+  const selectedAsset = valuation?.assets?.find((a) => a.ticker === ticker)
+  const ownedQuantity = selectedAsset?.amount
+  const availableBalance = valuation?.cash_balance
 
   const count = portfolios?.length ?? 0
 
@@ -108,6 +121,8 @@ export function PortfolioBuySell({ ticker, variant = 'default' }: Props) {
           ticker={ticker}
           type={dialogType}
           currentPrice={currentPrice}
+          maxQuantity={dialogType === 'SELL' ? ownedQuantity : undefined}
+          availableBalance={availableBalance}
         />
       )}
     </>

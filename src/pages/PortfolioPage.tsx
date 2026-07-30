@@ -15,6 +15,10 @@ import { PortfolioTransactionDialog } from '@/components/shared/PortfolioTransac
 import api from '@/lib/api'
 import type { Portfolio, PortfolioValuation } from '@/types/api'
 
+function fmtAmount(n: number): string {
+  return Number.isInteger(n) ? n.toString() : n.toFixed(2)
+}
+
 export default function PortfolioPage() {
   const { portfolioId } = useParams()
 
@@ -343,15 +347,21 @@ function PortfolioDetail({ portfolioId }: { portfolioId: string }) {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
               <CardTitle className="text-sm">{t('portfolio.assets')}</CardTitle>
-              {txDialog && (
-                <PortfolioTransactionDialog
-                  open
-                  onOpenChange={() => setTxDialog(null)}
-                  portfolioId={portfolioId}
-                  ticker={txDialog.ticker}
-                  type={txDialog.type}
-                />
-              )}
+              {txDialog && (() => {
+                const a = valuation?.assets?.find((x) => x.ticker === txDialog.ticker)
+                return (
+                  <PortfolioTransactionDialog
+                    open
+                    onOpenChange={() => setTxDialog(null)}
+                    portfolioId={portfolioId}
+                    ticker={txDialog.ticker}
+                    type={txDialog.type}
+                    currentPrice={a?.current_price ?? undefined}
+                    maxQuantity={txDialog.type === 'SELL' ? a?.amount : undefined}
+                    availableBalance={valuation?.cash_balance}
+                  />
+                )
+              })()}
             </CardHeader>
             <CardContent>
               {!v?.assets?.length ? (
@@ -362,7 +372,7 @@ function PortfolioDetail({ portfolioId }: { portfolioId: string }) {
                     <div key={a.ticker} className="flex items-center justify-between rounded-lg border border-border/40 px-4 py-3">
                       <div className="min-w-0 flex-1">
                         <p className="text-sm font-medium">{a.ticker}</p>
-                        <p className="text-xs text-muted-foreground">{a.amount.toFixed(4)} adet &middot; ortalama {a.weighted_avg_cost.toFixed(4)}</p>
+                        <p className="text-xs text-muted-foreground">{fmtAmount(a.amount)} adet &middot; ortalama {a.weighted_avg_cost.toFixed(2)} TL</p>
                       </div>
                       <div className="text-right">
                         <p className="text-sm font-medium">{a.total_value?.toFixed(2) ?? '-'}</p>
@@ -407,8 +417,8 @@ function PortfolioDetail({ portfolioId }: { portfolioId: string }) {
                         <span className="text-sm font-medium">{tx.ticker}</span>
                       </div>
                       <div className="text-right text-sm">
-                        <span>{tx.quantity} × {tx.price.toFixed(4)}</span>
-                        <span className="text-muted-foreground ml-2">= {(tx.quantity * tx.price).toFixed(2)}</span>
+                        <span>{fmtAmount(tx.quantity)} × {tx.price.toFixed(2)}</span>
+                        <span className="text-muted-foreground ml-2">= {(tx.quantity * tx.price).toFixed(2)} TL</span>
                       </div>
                     </div>
                   ))}

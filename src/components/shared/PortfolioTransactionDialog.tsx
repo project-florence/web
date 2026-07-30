@@ -14,9 +14,11 @@ interface Props {
   ticker: string
   type: 'BUY' | 'SELL'
   currentPrice?: number
+  maxQuantity?: number
+  availableBalance?: number
 }
 
-export function PortfolioTransactionDialog({ open, onOpenChange, portfolioId, ticker, type, currentPrice }: Props) {
+export function PortfolioTransactionDialog({ open, onOpenChange, portfolioId, ticker, type, currentPrice, maxQuantity, availableBalance }: Props) {
   const { t } = useTranslation()
   const queryClient = useQueryClient()
   const [quantity, setQuantity] = useState('')
@@ -29,6 +31,14 @@ export function PortfolioTransactionDialog({ open, onOpenChange, portfolioId, ti
   const total = subtotal != null && commission != null
     ? (type === 'BUY' ? subtotal + commission : subtotal - commission)
     : null
+
+  const insufficientBalance = type === 'BUY' && total != null && availableBalance != null && total > availableBalance
+  const insufficientQuantity = type === 'SELL' && maxQuantity != null && qty > maxQuantity
+  const cannotSubmit = !quantity || qty <= 0 || mutation.isPending || insufficientBalance || insufficientQuantity
+
+  let disableReason = ''
+  if (insufficientBalance) disableReason = 'Yetersiz bakiye'
+  else if (insufficientQuantity) disableReason = `Maksimum ${Number.isInteger(maxQuantity) ? maxQuantity : maxQuantity?.toFixed(2)} adet`
 
   const mutation = useMutation({
     mutationFn: async () => {
@@ -97,7 +107,8 @@ export function PortfolioTransactionDialog({ open, onOpenChange, portfolioId, ti
           </Button>
           <Button
             variant={type === 'BUY' ? 'gradient' : 'destructive'}
-            disabled={!quantity || parseFloat(quantity) <= 0 || mutation.isPending}
+            disabled={cannotSubmit}
+            title={disableReason || undefined}
             onClick={() => mutation.mutate()}
           >
             {type === 'BUY' ? t('portfolio.buy') : t('portfolio.sell')}
