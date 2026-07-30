@@ -1,6 +1,10 @@
 import type { PriceHistory } from '@/types/api'
 
+const INTRADAY_INTERVALS = new Set(['1m', '5m', '15m', '30m', '1h'])
+
 const PERIOD_DAYS: Record<string, number> = {
+  '1d': 1,
+  '5d': 5,
   '1mo': 30,
   '3mo': 90,
   '6mo': 180,
@@ -33,10 +37,10 @@ export function aggregateToInterval(data: PriceHistory[], interval: string): Pri
     .map(([, candles]) => ({
       ts: candles[0].ts,
       open: candles[0].open,
-      high: Math.max(...candles.map((c) => c.high)),
-      low: Math.min(...candles.map((c) => c.low)),
+      high: Math.max(...candles.map((c) => c.high ?? 0)),
+      low: Math.min(...candles.map((c) => c.low ?? Infinity)),
       close: candles[candles.length - 1].close,
-      volume: candles.reduce((s, c) => s + c.volume, 0),
+      volume: candles.reduce((s, c) => s + (c.volume ?? 0), 0),
     }))
 }
 
@@ -45,7 +49,11 @@ export function processPriceData(
   period: string,
   interval: string,
 ): { data: PriceHistory[]; from: number; to: number } {
-  const result = aggregateToInterval(data, interval)
+  let result = data
+
+  if (!INTRADAY_INTERVALS.has(interval)) {
+    result = aggregateToInterval(data, interval)
+  }
 
   const days = PERIOD_DAYS[period] || 1825
   const now = Date.now()

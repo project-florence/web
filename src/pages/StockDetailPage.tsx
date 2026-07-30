@@ -29,6 +29,15 @@ const PERIODS = [
   { label: '5y', value: '5y' },
 ] as const
 
+const INTERVALS = [
+  { label: '5dk', value: '5m' },
+  { label: '30dk', value: '30m' },
+  { label: '1s', value: '1h' },
+  { label: '1g', value: '1d' },
+  { label: '1h', value: '1wk' },
+  { label: '1a', value: '1mo' },
+] as const
+
 function safeFixed(n: number | null | undefined, digits: number, fallback = '—'): string {
   if (n === null || n === undefined) return fallback
   return n.toFixed(digits)
@@ -64,14 +73,10 @@ export default function StockDetailPage() {
   const navigate = useNavigate()
   const setLastStockTicker = useNavStore((s) => s.setLastStockTicker)
   const PERIODS_TR = PERIODS.map((p) => ({ ...p, label: t(`time.${p.value}`) }))
-  const INTERVALS_TR = [
-    { label: t('time.1d'), value: '1d' },
-    { label: '1hafta', value: '1wk' },
-    { label: t('time.1mo'), value: '1mo' },
-  ] as const
+  const INTERVALS_TR = INTERVALS.map((i) => ({ ...i, label: t(`time.${i.value}`, i.label) }))
 
   const [period, setPeriod] = useState<(typeof PERIODS)[number]>(PERIODS[0])
-  const [interval, setInterval] = useState<string>('1d')
+  const [interval, setIntervalLocal] = useState<string>('5m')
 
   useEffect(() => {
     if (ticker) setLastStockTicker(ticker)
@@ -88,16 +93,27 @@ export default function StockDetailPage() {
     retry: 1,
   })
 
-  const { data: fullHistory, isLoading: historyLoading } = useQuery({
-    queryKey: ['price-history-full', ticker],
+  const { data: priceHistory, isLoading: historyLoading } = useQuery({
+    queryKey: ['price-history', ticker, period.value, interval],
     queryFn: async () => {
       const res = await api.get(`/api/v1/price/history/${ticker}`, {
-        params: { period: '5y', interval: '1d' },
+        params: { period: period.value, interval },
       })
       return res.data as PriceHistory[]
     },
     enabled: !!ticker,
-    staleTime: 5 * 60_000,
+    staleTime: interval === '5m' ? 30_000 : 5 * 60_000,
+  })
+
+  const { data: livePrice } = useQuery({
+    queryKey: ['current-price', ticker],
+    queryFn: async () => {
+      const res = await api.get('/api/v1/price/current', { params: { ticker, interval: '5m' } })
+      return res.data as { ticker: string; interval: string; price: number }
+    },
+    enabled: !!ticker,
+    staleTime: 10_000,
+    refetchInterval: 30_000,
   })
 
   const m = info?.market
@@ -108,14 +124,18 @@ export default function StockDetailPage() {
   const companyName = info?.name || ticker
 
   const processed = useMemo(() => {
-    if (!fullHistory) return { data: [] as PriceHistory[], from: 0, to: 0 }
-    return processPriceData(fullHistory, period.value, interval)
-  }, [fullHistory, period.value, interval])
+    if (!priceHistory) return { data: [] as PriceHistory[], from: 0, to: 0 }
+    return processPriceData(priceHistory, period.value, interval)
+  }, [priceHistory, period.value, interval])
 
-  const dailyChangeFromMarket = useMemo(() => {
-    if (!m?.currentPrice || !m?.previousClose) return null
-    return ((m.currentPrice - m.previousClose) / m.previousClose) * 100
-  }, [m?.currentPrice, m?.previousClose])
+  const currentPrice = livePrice?.price ?? m?.currentPrice
+
+  const dailyChange = useMemo(() => {
+    if (currentPrice && m?.previousClose) {
+      return ((currentPrice - m.previousClose) / m.previousClose) * 100
+    }
+    return null
+  }, [currentPrice, m?.previousClose])
 
   const { data: news, isLoading: newsLoading } = useQuery({
     queryKey: ['news', ticker],
@@ -161,17 +181,12 @@ export default function StockDetailPage() {
     )
   }
 
-  const dailyChange = dailyChangeFromMarket
-
-  const priceTime = m?.regularMarketTime
-    ? new Date(m.regularMarketTime * 1000).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })
-    : null
-
   const sliced = processed.data
   const periodLatest = sliced[sliced.length - 1]?.close
   const periodPrev = sliced[sliced.length - 2]?.close
   const periodChange = pctChange(periodLatest, periodPrev)
 
+  const isIntraday = ['5m', '30m', '1h'].includes(interval)
   const isDailyInterval = interval === '1d'
 
   return (
@@ -206,9 +221,6 @@ export default function StockDetailPage() {
                 {dailyChange >= 0 ? <TrendingUp className="h-3.5 w-3.5 mr-1 inline" /> : <TrendingDown className="h-3.5 w-3.5 mr-1 inline" />}
                 {dailyChange >= 0 ? '+' : ''}{dailyChange.toFixed(2)}%
               </Badge>
-            )}
-            {priceTime && (
-              <span className="text-xs text-muted-foreground">{priceTime}</span>
             )}
           </div>
           <p className={cn(
@@ -249,7 +261,7 @@ export default function StockDetailPage() {
 
       {m && (
         <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
-          <StatCard title={t('stockDetail.price')} value={fmtCurrency(m.currentPrice)} positive={dailyChange !== null ? dailyChange >= 0 : undefined} />
+          <StatCard title={t('stockDetail.price')} value={fmtCurrency(currentPrice)} positive={dailyChange !== null ? dailyChange >= 0 : undefined} />
           <StatCard title={t('stockDetail.marketCap')} value={fmt(m.marketCap)} />
           <StatCard title={t('stockDetail.dayRange')} value={fmtCurrency(m.dayLow)} sub={`— ${fmtCurrency(m.dayHigh)}`} />
           <StatCard title={t('stockDetail.volume')} value={fmt(m.regularMarketVolume)} />
@@ -302,7 +314,7 @@ export default function StockDetailPage() {
                   key={p.value}
                   variant={period.value === p.value ? 'gradient' : 'outline'}
                   size="sm"
-                  onClick={() => { setPeriod(PERIODS.find((x) => x.value === p.value)!); if (p.value === '1mo' && interval !== '1d') setInterval('1d') }}
+                  onClick={() => setPeriod(PERIODS.find((x) => x.value === p.value)!)}
                   className="text-xs"
                 >
                   {p.label}
@@ -317,7 +329,7 @@ export default function StockDetailPage() {
                   key={i.value}
                   variant={interval === i.value ? 'gradient' : 'outline'}
                   size="sm"
-                  onClick={() => setInterval(i.value)}
+                  onClick={() => setIntervalLocal(i.value)}
                   className="text-xs"
                 >
                   {i.label}

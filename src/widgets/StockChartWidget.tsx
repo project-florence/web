@@ -9,33 +9,36 @@ import api from '@/lib/api'
 import type { PriceHistory } from '@/types/api'
 
 const PERIODS = [
-  { label: '1mo', value: '1mo' },
-  { label: '3mo', value: '3mo' },
-  { label: '6mo', value: '6mo' },
+  { label: '1g', value: '1d' },
+  { label: '1h', value: '1wk' },
+  { label: '1a', value: '1mo' },
+  { label: '3a', value: '3mo' },
+  { label: '6a', value: '6mo' },
   { label: '1y', value: '1y' },
 ] as const
 
 const INTERVALS = [
+  { label: '5dk', value: '5m' },
+  { label: '30dk', value: '30m' },
+  { label: '1s', value: '1h' },
   { label: '1g', value: '1d' },
-  { label: '1h', value: '1wk' },
-  { label: '1a', value: '1mo' },
 ] as const
 
 export default function StockChartWidget({ config }: { config?: Record<string, unknown> }) {
   const ticker = (config?.ticker as string) || 'THYAO'
   const [period, setPeriod] = useState<(typeof PERIODS)[number]>(PERIODS[0])
-  const [interval, setInterval] = useState<string>('1d')
+  const [interval, setInterval] = useState<string>('5m')
 
   const { data, isLoading } = useQuery({
-    queryKey: ['price-history-full', ticker],
+    queryKey: ['price-history', ticker, period.value, interval],
     queryFn: async () => {
       const res = await api.get(`/api/v1/price/history/${ticker}`, {
-        params: { period: '5y', interval: '1d' },
+        params: { period: period.value, interval },
       })
       return res.data as PriceHistory[]
     },
     enabled: !!ticker,
-    staleTime: 5 * 60_000,
+    staleTime: interval === '5m' ? 30_000 : 5 * 60_000,
   })
 
   const processed = useMemo(() => {
@@ -81,7 +84,7 @@ export default function StockChartWidget({ config }: { config?: Record<string, u
         ) : data && data.length > 0 ? (
           <StockChart data={processed.data} loading={false} visibleRange={{ from: processed.from, to: processed.to }} />
         ) : (
-          <p className="text-xs text-muted-foreground">No data</p>
+          <p className="text-xs text-muted-textforeground">No data</p>
         )}
       </CardContent>
     </Card>

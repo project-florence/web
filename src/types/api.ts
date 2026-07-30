@@ -336,9 +336,9 @@ export interface PortfolioProfileResponse {
 }
 
 export interface MarketQuote {
+  ticker: string
+  interval: string
   price: number
-  change: number
-  changePercent: number
 }
 
 export interface Profile {

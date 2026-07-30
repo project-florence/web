@@ -23,8 +23,8 @@ export function PortfolioBuySell({ ticker, variant = 'default' }: Props) {
   const { data: currentPrice } = useQuery({
     queryKey: ['current-price', ticker],
     queryFn: async () => {
-      const res = await api.get('/api/v1/price/current', { params: { ticker } })
-      return res.data.price as number
+      const res = await api.get('/api/v1/price/current', { params: { ticker, interval: '5m' } })
+      return (res.data as { ticker: string; interval: string; price: number }).price
     },
     staleTime: 10_000,
   })
