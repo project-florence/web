@@ -1,4 +1,12 @@
-import api from './api'
+import axios from 'axios'
+import { apiConfig } from '@/config/api'
+
+const telemetryApi = axios.create({
+  baseURL: import.meta.env.DEV ? '' : apiConfig.baseURL,
+  timeout: apiConfig.timeout,
+  withCredentials: true,
+  headers: { 'Content-Type': 'application/json' },
+})
 
 const SESSION_KEY = 'florence_session_id'
 
@@ -17,7 +25,7 @@ let timer: ReturnType<typeof setTimeout> | null = null
 function flush() {
   if (queue.length === 0) return
   const batch = queue.splice(0, queue.length)
-  api.post('/api/v1/analytics/event', batch).catch(() => {})
+  telemetryApi.post('/api/v1/analytics/event', batch).catch(() => {})
 }
 
 function schedule() {
