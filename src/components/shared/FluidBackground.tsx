@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { createQualityTier } from '@/lib/quality'
 
 const vsSource = `
   attribute vec2 position;
@@ -87,6 +88,7 @@ export function FluidBackground() {
     let targetMouseX = 0.5
     let targetMouseY = 0.5
     let animId = 0
+    const quality = createQualityTier()
 
     function createShader(gl: WebGLRenderingContext, type: number, source: string) {
       const shader = gl.createShader(type)
@@ -143,14 +145,25 @@ export function FluidBackground() {
     window.addEventListener('touchmove', updateMouse)
 
     function resize() {
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
-      gl.viewport(0, 0, canvas.width, canvas.height)
+      const cfg = quality.getConfig()
+      const w = Math.round(window.innerWidth * cfg.scale)
+      const h = Math.round(window.innerHeight * cfg.scale)
+      canvas.width = w
+      canvas.height = h
+      canvas.style.width = window.innerWidth + 'px'
+      canvas.style.height = window.innerHeight + 'px'
+      gl.viewport(0, 0, w, h)
     }
     window.addEventListener('resize', resize)
     resize()
 
+    let hidden = false
+    function onVisibility() { hidden = document.hidden }
+    document.addEventListener('visibilitychange', onVisibility)
+
     function render(time: number) {
+      if (!hidden) quality.frame()
+      if (hidden) { animId = requestAnimationFrame(render); return }
       gl.useProgram(program)
       mouseX += (targetMouseX - mouseX) * 0.1
       mouseY += (targetMouseY - mouseY) * 0.1
@@ -164,6 +177,7 @@ export function FluidBackground() {
 
     return () => {
       cancelAnimationFrame(animId)
+      document.removeEventListener('visibilitychange', onVisibility)
       window.removeEventListener('mousemove', updateMouse)
       window.removeEventListener('touchmove', updateMouse)
       window.removeEventListener('resize', resize)

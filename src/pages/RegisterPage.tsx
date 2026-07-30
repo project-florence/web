@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/u
 import { Skeleton } from '@/components/ui/skeleton'
 import { Globe, ExternalLink } from 'lucide-react'
 import { HyperspaceBackground } from '@/components/shared/HyperspaceBackground'
+import { useAuthStore } from '@/stores/authStore'
 import api from '@/lib/api'
 import type { AxiosError } from 'axios'
 import florenceLogo from '@/assets/florence_logo.svg'
@@ -143,8 +144,8 @@ export default function RegisterPage() {
       await api.post('/api/v1/auth/login', formData, {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       })
+      useAuthStore.getState().setAuthenticated(true)
     } catch {
-      // fallback: login failed, redirect to login page
       navigate('/login', { replace: true })
       return
     }

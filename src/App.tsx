@@ -5,6 +5,7 @@ import { Toaster } from 'sonner'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { Layout } from '@/components/shared/Layout'
 import { ProtectedRoute } from '@/components/shared/ProtectedRoute'
+import { ErrorBoundary } from '@/components/shared/ErrorBoundary'
 import { useMaintenanceStore } from '@/stores/maintenanceStore'
 import { usePageTracking } from '@/hooks/usePageTracking'
 import { track } from '@/lib/telemetry'
@@ -74,6 +75,7 @@ export default function App() {
       <TooltipProvider>
         <BrowserRouter>
           <TelemetryProvider />
+          <ErrorBoundary>
           <Suspense fallback={<PageLoader />}>
             <Routes>
               <Route path="/" element={<LandingPage />} />
@@ -107,6 +109,7 @@ export default function App() {
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </Suspense>
+          </ErrorBoundary>
         </BrowserRouter>
         <Toaster
           position="top-right"

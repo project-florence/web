@@ -72,6 +72,7 @@ export default function LoginPage() {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       })
 
+      useAuthStore.getState().setAuthenticated(true)
       setHyperdriveTriggered(true)
     } catch (err) {
       const error = err as AxiosError<{ detail: string | { msg: string }[] }>
@@ -89,13 +90,8 @@ export default function LoginPage() {
     }
   }
 
-  const handleHyperdriveComplete = async () => {
-    try {
-      await api.get('/api/v1/profile')
-      navigate('/dashboard', { replace: true })
-    } catch {
-      navigate('/login', { replace: true })
-    }
+  const handleHyperdriveComplete = () => {
+    navigate('/dashboard', { replace: true })
   }
 
   return (

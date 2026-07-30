@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { createQualityTier } from '@/lib/quality'
 
 const COUNT = 7000
 
@@ -146,6 +147,8 @@ export function HyperspaceBackground({
 
     const projMatrix = new Float32Array(16)
     let animId = 0
+    let hidden = false
+    const quality = createQualityTier()
     let speed = 1.5
     let stretch = 0
     let whiteAlpha = 0
@@ -166,11 +169,17 @@ export function HyperspaceBackground({
       ])
     }
 
+    function onVisibility() { hidden = document.hidden }
+    document.addEventListener('visibilitychange', onVisibility)
+
     function resize() {
-      const w = window.innerWidth
-      const h = window.innerHeight
+      const cfg = quality.getConfig()
+      const w = Math.round(window.innerWidth * cfg.scale)
+      const h = Math.round(window.innerHeight * cfg.scale)
       canvas!.width = w
       canvas!.height = h
+      canvas!.style.width = window.innerWidth + 'px'
+      canvas!.style.height = window.innerHeight + 'px'
       gl!.viewport(0, 0, w, h)
       updateProjection()
     }
@@ -179,6 +188,8 @@ export function HyperspaceBackground({
     resize()
 
     function render() {
+      if (!hidden) quality.frame()
+      if (hidden) { animId = requestAnimationFrame(render); return }
       // hyperdrive state machine
       if (hyperdriveActiveRef.current) {
         const elapsed = (performance.now() - hyperdriveStartRef.current) / 1000
@@ -244,6 +255,7 @@ export function HyperspaceBackground({
 
     return () => {
       cancelAnimationFrame(animId)
+      document.removeEventListener('visibilitychange', onVisibility)
       window.removeEventListener('resize', resize)
       mountedRef.current = false
     }
