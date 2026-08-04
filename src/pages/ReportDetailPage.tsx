@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import ReactMarkdown from 'react-markdown'
 import { cn } from '@/lib/utils'
+import { toast } from 'sonner'
 import { ArrowLeft, TrendingUp, ExternalLink, Coins, Sparkles, Download, Clock, FileText } from 'lucide-react'
 import api from '@/lib/api'
 import { safeExternalUrl } from '@/lib/safeUrl'
@@ -51,7 +52,7 @@ export default function ReportDetailPage() {
       a.click()
       URL.revokeObjectURL(url)
     } catch {
-      // ignore download error
+      toast.error(t('common.error'))
     }
   }
 

@@ -10,6 +10,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft, TrendingUp, TrendingDown, FlaskConical, FileText, Download } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { toast } from 'sonner'
 import { StockSearch } from '@/components/shared/StockSearch'
 import { StockChart } from '@/components/shared/StockChart'
 import { StatCard } from '@/components/shared/StatCard'
@@ -292,7 +293,9 @@ export default function StockDetailPage() {
                   a.download = `${ticker}.md`
                   a.click()
                   URL.revokeObjectURL(url)
-                } catch { /* ignore */ }
+                 } catch {
+                   toast.error(t('common.error'))
+                 }
               }}>
                 <Download className="h-4 w-4 mr-1" />
                 Özet
