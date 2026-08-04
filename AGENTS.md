@@ -1,38 +1,28 @@
-# Florence — Smart Investment Assistant
+# Florence Frontend
 
 ## Commands
 
-| Command | What it does |
-|---------|-------------|
-| `npm run dev` | Vite dev server (proxies `/api` → `VITE_API_URL`) |
-| `npm run build` | `tsc -b` (typecheck both tsconfigs) → `vite build` |
-| `npm run lint` | `oxlint` (uses `.oxlintrc.json`; not type-aware) |
-| `npm run preview` | `vite preview` (serve built output) |
+- `npm ci` installs the locked dependencies.
+- `npm run dev` starts Vite; `/api/*` is proxied to `VITE_API_URL`, defaulting to `http://localhost:7055`.
+- `npm run lint` runs Oxlint using `.oxlintrc.json`.
+- `npm run build` must be used for verification: it runs `tsc -b` and then `vite build`.
+- `npm run preview` serves the built `dist/` output.
+- There is no test script or test suite in this repository.
 
-**No tests exist** — no test framework or test files in the repo.
+## Structure
 
-## Repo conventions
+- `src/main.tsx` is the browser entrypoint; `src/App.tsx` owns providers, lazy routes, and protected routing.
+- `src/pages/` contains route pages, `src/components/` contains shared and shadcn UI, and `src/widgets/` contains dashboard widgets.
+- Zustand stores client state; TanStack React Query handles server state; Axios setup is in `src/lib/api.ts`.
+- `@/*` resolves to `src/*` in TypeScript and Vite.
+- The backend is not in this repository. The frontend expects the FastAPI API under `/api/v1/*`.
 
-- **TypeScript strict**: `noUnusedLocals`, `noUnusedParameters`, `verbatimModuleSyntax`, `erasableSyntaxOnly` are errors
-- **Path alias**: `@/` → `./src/` (configured in both `tsconfig.app.json` and `vite.config.ts`)
-- **Tailwind v4**: no config file — uses `@tailwindcss/vite` plugin; CSS-first setup in `src/index.css`
-- **shadcn/ui**: style `base-nova`, base color `neutral`, icon lib `lucide`, aliases in `components.json`
-- **State split**: Zustand for client state (auth, nav, theme), TanStack React Query for server/API state
-- **i18n**: Turkish primary (`index.html` `lang="tr"`), English secondary. Strings in `src/i18n/locales/{tr,en}.json`
-- **Dark-first**: `index.html` has `class="dark"`; all styling is dark-mode-first
+## Conventions And Gotchas
 
-## Architecture notes
-
-- **Entrypoint**: `src/main.tsx` → `src/App.tsx` (query client, tooltip provider, router)
-- **Auth**: JWT stored in `localStorage` key `auth_token`; Zustand `authStore` manages state; `ProtectedRoute` wraps most pages
-- **API client**: Axios instance in `src/lib/api.ts` with JWT interceptor; config in `src/config/api.ts`
-- **Proxy**: Vite dev server proxies `/api/*` to `VITE_API_URL` (default `http://localhost:8000`)
-- **No formatter config** — only `oxlint` for linting; no Prettier/Biome/dprint
-- **No CI/CD** — no GitHub workflows
-- **No `.env.example`** — `.env` is gitignored. Create one if adding new env vars.
-
-## Key gotchas
-
-- **Build is two-step**: `tsc -b` then `vite build`. A pure `vite build` skips typechecking.
-- **Oxlint is NOT type-aware** — `tsc -b` catches type errors that `oxlint` won't.
-- **`.env` is in `.gitignore`** — never commit real `.env` values. The file currently has a live LAN IP.
+- TypeScript is strict about unused locals/parameters, `verbatimModuleSyntax`, `erasableSyntaxOnly`, and fallthrough cases; `tsc -b` catches issues Oxlint does not.
+- Tailwind CSS 4 is CSS-first in `src/index.css`; there is no Tailwind config. shadcn settings and aliases are in `components.json`.
+- Turkish is the default/fallback locale; translations live in `src/i18n/locales/tr.json` and `en.json`.
+- The app starts dark and supports theme overrides; preserve the theme variables in `index.html` and `src/index.css` when changing styling.
+- API requests use same-origin `/api` and `withCredentials`; do not introduce a separate token-storage model without coordinating with the backend.
+- Copy `.env.example` to `.env` for local configuration. Supported frontend variables are `VITE_API_URL` and `VITE_PORTFOLIO_COMMISSION_RATE`; never commit `.env`.
+- `dist/` is generated and ignored. The production `Dockerfile` builds the SPA, while `nginx.conf` serves it and proxies `/api/` to a Docker service named `api` on port `7055`.
