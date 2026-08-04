@@ -10,6 +10,7 @@ import { useMaintenanceStore } from '@/stores/maintenanceStore'
 import { usePageTracking } from '@/hooks/usePageTracking'
 import { track } from '@/lib/telemetry'
 import { useTranslation } from 'react-i18next'
+import { PwaInstallPrompt } from '@/components/shared/PwaInstallPrompt'
 
 const LandingPage = lazy(() => import('@/pages/LandingPage'))
 const LoginPage = lazy(() => import('@/pages/LoginPage'))
@@ -117,6 +118,7 @@ export default function App() {
           closeButton
           theme="dark"
         />
+        <PwaInstallPrompt />
       </TooltipProvider>
     </QueryClientProvider>
   )
