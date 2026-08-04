@@ -45,6 +45,7 @@ export function useFavorites() {
       toast.error(t('favorite.loginRequired'))
       return
     }
+    if (addMutation.isPending || removeMutation.isPending) return
     if (isFavorite(ticker)) {
       removeMutation.mutate(ticker)
     } else {

@@ -96,6 +96,7 @@ export function StockChart({ data, loading, visibleRange }: StockChartProps) {
   const dataRef = useRef(data)
   const visibleRangeRef = useRef(visibleRange)
   const themeName = useThemeStore((s) => s.themeName)
+  const activeTheme = themes[themeName] ?? themes.florence
 
   dataRef.current = data
   visibleRangeRef.current = visibleRange
@@ -104,7 +105,7 @@ export function StockChart({ data, loading, visibleRange }: StockChartProps) {
     if (!containerRef.current) return
 
     const chart = init(containerRef.current, {
-      styles: buildStyles(themes[themeName].charts),
+      styles: buildStyles(activeTheme.charts),
     })
     if (!chart) return
 
@@ -122,12 +123,12 @@ export function StockChart({ data, loading, visibleRange }: StockChartProps) {
       chartRef.current = null
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [themeName])
+  }, [themeName, activeTheme])
 
   useEffect(() => {
     if (!chartRef.current) return
-    chartRef.current.setStyles(buildStyles(themes[themeName].charts))
-  }, [themeName])
+    chartRef.current.setStyles(buildStyles(activeTheme.charts))
+  }, [themeName, activeTheme])
 
   const visibleFrom = visibleRange?.from
   const visibleTo = visibleRange?.to
@@ -204,4 +205,3 @@ export function StockChart({ data, loading, visibleRange }: StockChartProps) {
     </div>
   )
 }
-
