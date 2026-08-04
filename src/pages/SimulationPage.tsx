@@ -440,7 +440,6 @@ export default function SimulationPage() {
                               </div>
 
                               {(() => {
-                                const targetNum = historyDetail.target && historyDetail.target !== 'auto' ? Number(historyDetail.target) : null
                                  const isAbove = historyDetail.result.direction !== 'below'
                                 const dp = isAbove ? historyDetail.result.prob_above : historyDetail.result.prob_below
                                 const pct = dp * 100

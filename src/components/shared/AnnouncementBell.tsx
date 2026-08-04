@@ -15,7 +15,7 @@ export function AnnouncementBell() {
   const queryClient = useQueryClient()
   const [selected, setSelected] = useState<Announcement | null>(null)
 
-  const { data: announcements, isLoading } = useQuery({
+  const { data: announcements, isLoading, isError, refetch } = useQuery({
     queryKey: ['announcements'],
     queryFn: async () => {
       const res = await api.get('/api/v1/announcements')
@@ -74,6 +74,11 @@ export function AnnouncementBell() {
             <div className="space-y-2 p-4">
               <Skeleton className="h-12 w-full" />
               <Skeleton className="h-12 w-full" />
+            </div>
+          ) : isError ? (
+            <div className="space-y-2 p-6 text-center">
+              <p className="text-sm text-destructive">Duyurular yüklenemedi.</p>
+              <Button variant="outline" size="sm" onClick={() => refetch()}>Tekrar dene</Button>
             </div>
           ) : !announcements?.length ? (
             <p className="p-6 text-center text-sm text-muted-foreground">

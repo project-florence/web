@@ -13,7 +13,7 @@ export default function FavoritesBar() {
   const { t } = useTranslation()
   const navigate = useNavigate()
 
-  const { data: favorites } = useQuery({
+  const { data: favorites, isError: favoritesError, refetch: refetchFavorites } = useQuery({
     queryKey: ['favorites'],
     queryFn: async () => {
       const res = await api.get('/api/v1/favorites')
@@ -22,7 +22,7 @@ export default function FavoritesBar() {
     staleTime: 30_000,
   })
 
-  const { data: favoriteSummaries } = useQuery({
+  const { data: favoriteSummaries, isError: summariesError, refetch: refetchSummaries } = useQuery({
     queryKey: ['favorite-summaries-dash', favorites],
     queryFn: async () => {
       const res = await api.get('/api/v1/companies/summary', {
@@ -52,7 +52,14 @@ export default function FavoritesBar() {
         )}
       </CardHeader>
       <CardContent>
-        {displayFavorites.length > 0 ? (
+        {favoritesError || summariesError ? (
+          <div className="space-y-2">
+            <p className="text-sm text-destructive">Takip listesi yüklenemedi.</p>
+            <Button variant="outline" size="sm" onClick={() => { void refetchFavorites(); void refetchSummaries() }}>
+              Tekrar dene
+            </Button>
+          </div>
+        ) : displayFavorites.length > 0 ? (
           <div className="flex flex-wrap gap-2">
             {displayFavorites.map((company) => {
               const ch = company.change_pct

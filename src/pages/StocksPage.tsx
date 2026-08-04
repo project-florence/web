@@ -45,7 +45,7 @@ export default function StocksPage() {
 
   const offset = (page - 1) * PER_PAGE
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ['companies-summary', page, sort],
     queryFn: async () => {
       const res = await api.get('/api/v1/companies/summary', {
@@ -90,7 +90,7 @@ export default function StocksPage() {
         />
       </div>
 
-      {!isLoading && (
+      {!isLoading && !isError && (
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Button
@@ -116,7 +116,14 @@ export default function StocksPage() {
         </div>
       )}
 
-      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      {isError ? (
+        <Card>
+          <CardContent className="p-8 text-center space-y-3">
+            <p className="text-sm text-destructive">Hisse verileri yüklenemedi.</p>
+            <Button variant="outline" size="sm" onClick={() => refetch()}>Tekrar dene</Button>
+          </CardContent>
+        </Card>
+      ) : <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {isLoading
           ? Array.from({ length: PER_PAGE }).map((_, i) => (
               <Card key={i}>
@@ -136,7 +143,7 @@ export default function StocksPage() {
                 />
               </div>
             ))}
-      </div>
+      </div>}
     </div>
   )
 }

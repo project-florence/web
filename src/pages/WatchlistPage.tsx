@@ -13,7 +13,7 @@ export default function WatchlistPage() {
   const { t } = useTranslation()
   const queryClient = useQueryClient()
 
-  const { data: favorites, isLoading: favsLoading } = useQuery({
+  const { data: favorites, isLoading: favsLoading, isError: favsError, refetch: refetchFavorites } = useQuery({
     queryKey: ['favorites'],
     queryFn: async () => {
       const res = await api.get('/api/v1/favorites')
@@ -22,7 +22,7 @@ export default function WatchlistPage() {
     staleTime: 60_000,
   })
 
-  const { data: summaries, isLoading: summariesLoading } = useQuery({
+  const { data: summaries, isLoading: summariesLoading, isError: summariesError, refetch: refetchSummaries } = useQuery({
     queryKey: ['favorite-summaries', favorites],
     queryFn: async () => {
       const res = await api.get('/api/v1/companies/summary', {
@@ -45,6 +45,22 @@ export default function WatchlistPage() {
   })
 
   const isLoading = favsLoading || summariesLoading
+
+  if (favsError || summariesError) {
+    return (
+      <div className="space-y-6">
+        <h2 className="text-3xl font-bold tracking-tight">{t('watchlist.title')}</h2>
+        <Card>
+          <CardContent className="p-8 text-center space-y-3">
+            <p className="text-sm text-destructive">Takip listesi yüklenemedi.</p>
+            <Button variant="outline" size="sm" onClick={() => { void refetchFavorites(); void refetchSummaries() }}>
+              Tekrar dene
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
 
   if (isLoading) {
     return (

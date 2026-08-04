@@ -11,7 +11,7 @@ export default function NewsFeedWidget({ config }: { config?: Record<string, unk
   const { t } = useTranslation()
   const ticker = (config?.ticker as string) || 'THYAO'
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ['news-widget', ticker],
     queryFn: async () => {
       const res = await api.get(`/api/v1/news/${ticker}`)
@@ -35,6 +35,13 @@ export default function NewsFeedWidget({ config }: { config?: Record<string, unk
             <Skeleton className="h-4 w-full" />
             <Skeleton className="h-4 w-5/6" />
             <Skeleton className="h-4 w-4/6" />
+          </div>
+        ) : isError ? (
+          <div className="space-y-2">
+            <p className="text-xs text-destructive">Haberler yüklenemedi.</p>
+            <button type="button" className="text-xs text-primary hover:underline" onClick={() => refetch()}>
+              Tekrar dene
+            </button>
           </div>
         ) : !data || data.length === 0 ? (
           <p className="text-xs text-muted-foreground">{t('common.noData')}</p>
