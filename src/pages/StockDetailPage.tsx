@@ -19,6 +19,7 @@ import { PortfolioBuySell } from '@/components/shared/PortfolioBuySell'
 import { useNavStore } from '@/stores/navStore'
 import { processPriceData } from '@/lib/price'
 import api from '@/lib/api'
+import { safeExternalUrl } from '@/lib/safeUrl'
 import { trackWithTicker } from '@/lib/telemetry'
 import type { CompanyInfo, PriceHistory, NewsItem } from '@/types/api'
 
@@ -409,7 +410,7 @@ export default function StockDetailPage() {
                   </Card>
                 ))
               : news?.map((item, i) => (
-                  <a key={i} href={item.url} target="_blank" rel="noopener noreferrer">
+                  <a key={i} href={safeExternalUrl(item.url) ?? '#'} target="_blank" rel="noopener noreferrer">
                     <Card className="hover:bg-muted/50 hover:-translate-y-0.5 transition-all duration-200 cursor-pointer">
                       <CardContent className="p-4">
                         <h4 className="font-medium text-sm">{item.title}</h4>

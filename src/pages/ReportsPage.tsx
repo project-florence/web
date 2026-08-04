@@ -14,6 +14,7 @@ import { FileText, Search, Sparkles, TrendingUp, ExternalLink, ChevronRight, Coi
 import { StockSearch } from '@/components/shared/StockSearch'
 import { CreditCostTooltip } from '@/components/shared/CreditCostTooltip'
 import api from '@/lib/api'
+import { safeExternalUrl } from '@/lib/safeUrl'
 import type { ReportInfo, ReportHistoryItem, ReportDetail, ReportSentiment, ReportTypeInfo } from '@/types/api'
 
 type Tab = 'new' | 'history'
@@ -75,7 +76,8 @@ export default function ReportsPage() {
 
   const generateMutation = useMutation({
     mutationFn: async () => {
-      const res = await api.post(`/api/v1/reports/generate?ticker=${ticker}&type=${reportType}`, undefined, {
+      const res = await api.post('/api/v1/reports/generate', undefined, {
+        params: { ticker, type: reportType },
         timeout: 600_000,
       })
       return res.data as ReportDetail
@@ -348,7 +350,7 @@ export default function ReportsPage() {
                                 : t('reports.sentimentNeutral')}
                           </Badge>
                           <a
-                            href={s.url}
+                            href={safeExternalUrl(s.url) ?? '#'}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-muted-foreground hover:text-foreground ml-auto"

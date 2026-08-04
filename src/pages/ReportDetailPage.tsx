@@ -9,16 +9,8 @@ import ReactMarkdown from 'react-markdown'
 import { cn } from '@/lib/utils'
 import { ArrowLeft, TrendingUp, ExternalLink, Coins, Sparkles, Download, Clock, FileText } from 'lucide-react'
 import api from '@/lib/api'
+import { safeExternalUrl } from '@/lib/safeUrl'
 import type { ReportDetail } from '@/types/api'
-
-function safeUrl(url: string): string | null {
-  try {
-    const u = new URL(url)
-    return u.protocol === 'http:' || u.protocol === 'https:' ? url : null
-  } catch {
-    return null
-  }
-}
 
 const sentimentColors: Record<string, string> = {
   positive: 'border-success/40 bg-success/5',
@@ -204,8 +196,8 @@ export default function ReportDetailPage() {
                             ? t('reports.sentimentNegative')
                             : t('reports.sentimentNeutral')}
                       </Badge>
-                      {safeUrl(s.url) ? (
-                        <a href={s.url} target="_blank" rel="noopener noreferrer" className="ml-auto">
+                      {safeExternalUrl(s.url) ? (
+                        <a href={safeExternalUrl(s.url) ?? '#'} target="_blank" rel="noopener noreferrer" className="ml-auto">
                           <ExternalLink className="h-3 w-3 text-muted-foreground hover:text-foreground" />
                         </a>
                       ) : (

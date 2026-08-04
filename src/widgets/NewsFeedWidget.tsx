@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Newspaper, ExternalLink } from 'lucide-react'
 import api from '@/lib/api'
+import { safeExternalUrl } from '@/lib/safeUrl'
 import type { NewsItem } from '@/types/api'
 
 export default function NewsFeedWidget({ config }: { config?: Record<string, unknown> }) {
@@ -42,7 +43,7 @@ export default function NewsFeedWidget({ config }: { config?: Record<string, unk
             {data.slice(0, 5).map((item, i) => (
               <a
                 key={i}
-                href={item.url}
+                href={safeExternalUrl(item.url) ?? '#'}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block text-xs hover:text-primary transition-colors group"
