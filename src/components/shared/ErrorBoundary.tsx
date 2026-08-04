@@ -29,7 +29,7 @@ export class ErrorBoundary extends Component<Props, State> {
             <AlertTriangle className="h-12 w-12 mx-auto text-destructive" />
             <h2 className="text-lg font-semibold">Bir hata oluştu</h2>
             <p className="text-sm text-muted-foreground max-w-md">
-              {this.state.error?.message || 'Beklenmeyen bir hata meydana geldi.'}
+              Beklenmeyen bir hata meydana geldi. Lütfen sayfayı yenileyin.
             </p>
             <button
               type="button"
