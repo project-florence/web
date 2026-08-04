@@ -1,5 +1,6 @@
 export const apiConfig = {
-  baseURL: import.meta.env.VITE_API_URL || '',
+  // Production traffic is served through nginx's same-origin /api proxy.
+  baseURL: '',
   timeout: 30000,
   tokenKey: 'florence_token',
 } as const
