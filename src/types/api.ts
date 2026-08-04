@@ -273,6 +273,7 @@ export interface SimulationHistoryDetail {
   result: {
     prob_above: number
     prob_below: number
+    direction?: 'above' | 'below'
     confidence: {
       min: number
       max: number
@@ -288,6 +289,7 @@ export interface SimulationHistoryDetail {
 export interface SimulationResponse {
   prob_above: number
   prob_below: number
+  direction?: 'above' | 'below'
   confidence: {
     min: number
     max: number
