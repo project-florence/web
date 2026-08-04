@@ -3,12 +3,11 @@ import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { cn } from '@/lib/utils'
 import { Star, ChevronRight } from 'lucide-react'
 import api from '@/lib/api'
 import type { CompanySummary, FavoritesResponse } from '@/types/api'
 import { companySummaryResponseSchema, favoritesResponseSchema, parseApi } from '@/lib/apiSchemas'
+import { QuoteChange } from '@/components/shared/QuoteChange'
 
 export default function FavoritesBar() {
   const { t } = useTranslation()
@@ -73,14 +72,14 @@ export default function FavoritesBar() {
                   <CardContent className="p-3">
                     <div className="flex items-center justify-between gap-1">
                       <span className="font-mono font-bold text-sm text-primary">{company.ticker}</span>
-                      {ch !== null && ch !== undefined && (
-                        <Badge variant="outline" className={cn(
-                          'text-[10px] px-1 py-0',
-                          ch >= 0 ? 'text-success border-success/30' : 'text-destructive border-destructive/30',
-                        )}>
-                          {ch >= 0 ? '+' : ''}{ch.toFixed(2)}%
-                        </Badge>
-                      )}
+                        <QuoteChange
+                          change={ch}
+                          changeWindow={company.change_window}
+                          marketStatus={company.market_status}
+                          isStale={company.is_stale}
+                          asOf={company.as_of ?? company.price_updated_at}
+                          compact
+                        />
                     </div>
                     <p className="text-[10px] text-muted-foreground mt-0.5 line-clamp-1">{company.name}</p>
                     {company.last_price !== null && (

@@ -4,11 +4,9 @@ import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
-import { ArrowLeft, TrendingUp, TrendingDown, FlaskConical, FileText, Download } from 'lucide-react'
+import { ArrowLeft, FlaskConical, FileText, Download } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
 import { StockSearch } from '@/components/shared/StockSearch'
@@ -17,12 +15,15 @@ import { StatCard } from '@/components/shared/StatCard'
 import { RecommendationsGauge } from '@/components/shared/RecommendationsGauge'
 import { FavoriteButton } from '@/components/shared/FavoriteButton'
 import { PortfolioBuySell } from '@/components/shared/PortfolioBuySell'
+import { QuoteChange } from '@/components/shared/QuoteChange'
 import { useNavStore } from '@/stores/navStore'
 import { processPriceData } from '@/lib/price'
 import api from '@/lib/api'
 import { safeExternalUrl } from '@/lib/safeUrl'
 import { trackWithTicker } from '@/lib/telemetry'
 import type { CompanyInfo, PriceHistory, NewsItem } from '@/types/api'
+import { stockQuoteResponseSchema, parseApi } from '@/lib/apiSchemas'
+import type { StockQuote } from '@/types/api'
 
 const PERIODS = [
   { label: '1ay', value: '1mo' },
@@ -137,11 +138,11 @@ export default function StockDetailPage() {
     queryKey: ['current-price', ticker],
     queryFn: async () => {
       const res = await api.get('/api/v1/price/current', { params: { ticker, interval: '5m' } })
-      return res.data as { ticker: string; interval: string; price: number }
+      return parseApi(stockQuoteResponseSchema, res.data) as StockQuote
     },
     enabled: !!ticker,
     staleTime: 10_000,
-    refetchInterval: 30_000,
+    refetchInterval: (query) => query.state.data?.market_status === 'closed' ? false : 30_000,
   })
 
   const m = info?.market
@@ -158,12 +159,7 @@ export default function StockDetailPage() {
 
   const currentPrice = livePrice?.price ?? m?.currentPrice
 
-  const dailyChange = useMemo(() => {
-    if (currentPrice && m?.previousClose) {
-      return ((currentPrice - m.previousClose) / m.previousClose) * 100
-    }
-    return null
-  }, [currentPrice, m?.previousClose])
+  const dailyChange = livePrice?.change_pct ?? null
 
   const { data: news, isLoading: newsLoading } = useQuery({
     queryKey: ['news', ticker],
@@ -211,8 +207,8 @@ export default function StockDetailPage() {
 
   const sliced = processed.data
   const periodLatest = sliced[sliced.length - 1]?.close
-  const periodPrev = sliced[sliced.length - 2]?.close
-  const periodChange = pctChange(periodLatest, periodPrev)
+  const periodStart = sliced[0]?.close
+  const periodChange = pctChange(periodLatest, periodStart)
 
   const isDailyInterval = interval === '1d'
 
@@ -235,36 +231,13 @@ export default function StockDetailPage() {
         <div>
           <div className="flex items-center gap-3">
             <h2 className="text-3xl font-bold tracking-tight">{ticker}</h2>
-            {dailyChange !== null && (
-              <Tooltip>
-                <TooltipTrigger>
-                  <Badge
-                    variant="outline"
-                    className={cn(
-                      'text-sm px-3 py-1 font-semibold border-2 cursor-help',
-                      dailyChange >= 0
-                        ? 'text-success border-success bg-success/10'
-                        : 'text-destructive border-destructive bg-destructive/10',
-                    )}
-                  >
-                    {dailyChange >= 0 ? <TrendingUp className="h-3.5 w-3.5 mr-1 inline" /> : <TrendingDown className="h-3.5 w-3.5 mr-1 inline" />}
-                    {dailyChange >= 0 ? '+' : ''}{dailyChange.toFixed(2)}%
-                  </Badge>
-                </TooltipTrigger>
-                <TooltipContent side="bottom" align="center">
-                  <div className="text-center text-xs leading-relaxed">
-                    <div>Son 1 gün bazında</div>
-                    <div className="text-background/70">
-                      {m?.regularMarketTime
-                        ? new Date(m.regularMarketTime * 1000).toLocaleString('tr-TR', {
-                            day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit',
-                          })
-                        : 'Son güncelleme: —'}
-                    </div>
-                  </div>
-                </TooltipContent>
-              </Tooltip>
-            )}
+            <QuoteChange
+              change={dailyChange}
+              changeWindow={livePrice?.change_window ?? 'previous_session_close'}
+              marketStatus={livePrice?.market_status}
+              isStale={livePrice?.is_stale}
+              asOf={livePrice?.as_of}
+            />
           </div>
           <p className={cn(
             'mt-1 font-medium',
@@ -382,11 +355,16 @@ export default function StockDetailPage() {
               ))}
             </div>
             {!isDailyInterval && periodChange !== undefined && (
-              <span className={cn(
-                'text-xs font-medium ml-2',
-                periodChange >= 0 ? 'text-success' : 'text-destructive',
-              )}>
-                {period.label} değişim: {periodChange >= 0 ? '+' : ''}{periodChange.toFixed(2)}%
+              <span className="ml-2 inline-flex items-center gap-1 text-xs font-medium">
+                <span>{period.label} değişim:</span>
+                <QuoteChange
+                  change={periodChange}
+                  changeWindow="selected_period"
+                  marketStatus={livePrice?.market_status}
+                  isStale={false}
+                  asOf={sliced[sliced.length - 1]?.ts}
+                  compact
+                />
               </span>
             )}
           </div>

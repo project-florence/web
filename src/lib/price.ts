@@ -23,7 +23,7 @@ export function aggregateToInterval(data: PriceHistory[], interval: string): Pri
   if (interval === '1d') return data
 
   const buckets = new Map<string, PriceHistory[]>()
-  for (const d of data) {
+  for (const d of [...data].sort((a, b) => new Date(a.ts).getTime() - new Date(b.ts).getTime())) {
     const date = new Date(d.ts)
     const key = interval === '1wk'
       ? getWeekStart(date)
@@ -49,7 +49,8 @@ export function processPriceData(
   period: string,
   interval: string,
 ): { data: PriceHistory[]; from: number; to: number } {
-  let result = data
+  const filtered = filterByPeriod(data, period)
+  let result = filtered
 
   if (!INTRADAY_INTERVALS.has(interval)) {
     result = aggregateToInterval(data, interval)
@@ -72,8 +73,8 @@ export function computeDailyChange(data: PriceHistory[]): { close: number; prevC
 
 function getWeekStart(date: Date): string {
   const d = new Date(date)
-  const day = d.getDay()
-  const diff = d.getDate() - day + (day === 0 ? -6 : 1)
-  d.setDate(diff)
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+  const day = d.getUTCDay()
+  const diff = d.getUTCDate() - day + (day === 0 ? -6 : 1)
+  d.setUTCDate(diff)
+  return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`
 }

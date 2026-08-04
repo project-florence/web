@@ -48,6 +48,13 @@ export interface CompanySummary {
   market_cap: number | null
   currency: string | null
   price_updated_at: string | null
+  previous_close?: number | null
+  absolute_change?: number | null
+  change_window?: string | null
+  market_status?: 'open' | 'closed' | 'unknown' | string | null
+  is_stale?: boolean
+  as_of?: string | null
+  previous_close_as_of?: string | null
 }
 
 export interface SearchResult {
@@ -159,6 +166,20 @@ export interface NewsItem {
   title: string
   lang: string
   date: string
+}
+
+export interface StockQuote {
+  ticker: string
+  price: number
+  previous_close: number | null
+  absolute_change: number | null
+  change_pct: number | null
+  as_of: string | null
+  previous_close_as_of: string | null
+  market_status: 'open' | 'closed' | 'unknown' | string
+  is_stale: boolean
+  change_window: string
+  interval: string
 }
 
 export type ReportResult = string

@@ -2,9 +2,9 @@ import type { ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { TrendingUp, TrendingDown, Building2 } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { Building2 } from 'lucide-react'
 import type { CompanySummary } from '@/types/api'
+import { QuoteChange } from '@/components/shared/QuoteChange'
 
 function fmtVolume(n: number | null): string {
   if (n === null || n === undefined) return '—'
@@ -49,18 +49,13 @@ export function CompanyCard({ company, action }: CompanyCardProps) {
 
         <div className="flex items-baseline gap-2 mb-2">
           <span className="text-xl font-bold">{fmtPrice(company.last_price)}</span>
-          {company.change_pct !== null && (
-            <span className={cn(
-              'text-sm font-semibold flex items-center gap-0.5',
-              company.change_pct >= 0 ? 'text-success' : 'text-destructive',
-            )}>
-              {company.change_pct >= 0
-                ? <TrendingUp className="h-3 w-3" />
-                : <TrendingDown className="h-3 w-3" />
-              }
-              {company.change_pct >= 0 ? '+' : ''}{company.change_pct.toFixed(2)}%
-            </span>
-          )}
+          <QuoteChange
+            change={company.change_pct}
+            changeWindow={company.change_window}
+            marketStatus={company.market_status}
+            isStale={company.is_stale}
+            asOf={company.as_of ?? company.price_updated_at}
+          />
         </div>
 
         <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">

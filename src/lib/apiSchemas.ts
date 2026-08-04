@@ -12,11 +12,32 @@ const companySummarySchema = z.object({
   market_cap: z.number().nullable(),
   currency: z.string().nullable(),
   price_updated_at: z.string().nullable(),
+  previous_close: z.number().nullable().optional(),
+  absolute_change: z.number().nullable().optional(),
+  change_window: z.string().nullable().optional(),
+  market_status: z.string().nullable().optional(),
+  is_stale: z.boolean().optional(),
+  as_of: z.string().nullable().optional(),
+  previous_close_as_of: z.string().nullable().optional(),
 })
 
 export const companySummaryResponseSchema = z.object({
   data: z.array(companySummarySchema),
   total: z.number().int().nonnegative(),
+})
+
+export const stockQuoteResponseSchema = z.object({
+  ticker: z.string(),
+  price: z.number(),
+  previous_close: z.number().nullable(),
+  absolute_change: z.number().nullable(),
+  change_pct: z.number().nullable(),
+  as_of: z.string().nullable(),
+  previous_close_as_of: z.string().nullable(),
+  market_status: z.string(),
+  is_stale: z.boolean(),
+  change_window: z.string(),
+  interval: z.string(),
 })
 
 export const favoritesResponseSchema = z.object({
