@@ -1,6 +1,13 @@
 import { useEffect, useState } from 'react'
-import { Download } from 'lucide-react'
+import { Download, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+
+const DISMISSED_KEY = 'florence-pwa-install-dismissed'
+
+function isStandalone() {
+  return window.matchMedia('(display-mode: standalone)').matches
+    || (window.navigator as Navigator & { standalone?: boolean }).standalone === true
+}
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>
@@ -9,22 +16,54 @@ interface BeforeInstallPromptEvent extends Event {
 
 export function PwaInstallPrompt() {
   const [installEvent, setInstallEvent] = useState<BeforeInstallPromptEvent | null>(null)
+  const [dismissed, setDismissed] = useState(() => {
+    try {
+      return localStorage.getItem(DISMISSED_KEY) === 'true'
+    } catch {
+      return false
+    }
+  })
 
   useEffect(() => {
     const handleInstallPrompt = (event: Event) => {
+      if (dismissed || isStandalone()) return
       event.preventDefault()
       setInstallEvent(event as BeforeInstallPromptEvent)
     }
 
-    window.addEventListener('beforeinstallprompt', handleInstallPrompt)
-    return () => window.removeEventListener('beforeinstallprompt', handleInstallPrompt)
-  }, [])
+    const handleInstalled = () => setInstallEvent(null)
 
-  if (!installEvent) return null
+    window.addEventListener('beforeinstallprompt', handleInstallPrompt)
+    window.addEventListener('appinstalled', handleInstalled)
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleInstallPrompt)
+      window.removeEventListener('appinstalled', handleInstalled)
+    }
+  }, [dismissed])
+
+  if (!installEvent || dismissed || isStandalone()) return null
+
+  const dismiss = () => {
+    try {
+      localStorage.setItem(DISMISSED_KEY, 'true')
+    } catch {
+      // Ignore storage restrictions; the in-memory state still hides the prompt.
+    }
+    setDismissed(true)
+    setInstallEvent(null)
+  }
 
   const install = async () => {
     await installEvent.prompt()
-    await installEvent.userChoice
+    const choice = await installEvent.userChoice
+    if (choice.outcome === 'accepted') {
+      try {
+        localStorage.setItem(DISMISSED_KEY, 'true')
+      } catch {
+        // Ignore storage restrictions; the in-memory state still hides the prompt.
+      }
+      setDismissed(true)
+    }
     setInstallEvent(null)
   }
 
@@ -34,10 +73,15 @@ export function PwaInstallPrompt() {
         <p className="text-sm font-medium">Florence’i yükle</p>
         <p className="text-xs text-muted-foreground">Daha hızlı erişim için ana ekrana ekle.</p>
       </div>
-      <Button size="sm" onClick={() => void install()}>
-        <Download className="mr-1.5 h-4 w-4" />
-        Yükle
-      </Button>
+      <div className="flex shrink-0 items-center gap-1">
+        <Button size="sm" onClick={() => void install()}>
+          <Download className="mr-1.5 h-4 w-4" />
+          Yükle
+        </Button>
+        <Button variant="ghost" size="icon" aria-label="Kapat" onClick={dismiss}>
+          <X className="h-4 w-4" />
+        </Button>
+      </div>
     </div>
   )
 }
