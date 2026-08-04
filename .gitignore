@@ -25,3 +25,4 @@ dist-ssr
 
 .env
 db_backup.sql
+REVIEW_REPORT.md
