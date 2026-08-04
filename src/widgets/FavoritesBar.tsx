@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils'
 import { Star, ChevronRight } from 'lucide-react'
 import api from '@/lib/api'
 import type { CompanySummary, FavoritesResponse } from '@/types/api'
+import { companySummaryResponseSchema, favoritesResponseSchema, parseApi } from '@/lib/apiSchemas'
 
 export default function FavoritesBar() {
   const { t } = useTranslation()
@@ -17,7 +18,7 @@ export default function FavoritesBar() {
     queryKey: ['favorites'],
     queryFn: async () => {
       const res = await api.get('/api/v1/favorites')
-      return (res.data as FavoritesResponse).favorites
+      return parseApi(favoritesResponseSchema, res.data).favorites as FavoritesResponse['favorites']
     },
     staleTime: 30_000,
   })
@@ -28,7 +29,7 @@ export default function FavoritesBar() {
       const res = await api.get('/api/v1/companies/summary', {
         params: { limit: 10, tickers: favorites!.slice(0, 10).join(',') },
       })
-      return (res.data as { data: CompanySummary[] }).data
+      return parseApi(companySummaryResponseSchema, res.data).data as CompanySummary[]
     },
     enabled: !!favorites?.length,
     staleTime: 30_000,

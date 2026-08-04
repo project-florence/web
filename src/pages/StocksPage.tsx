@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/u
 import { useNavStore } from '@/stores/navStore'
 import api from '@/lib/api'
 import type { CompanySummaryResponse } from '@/types/api'
+import { companySummaryResponseSchema, parseApi } from '@/lib/apiSchemas'
 
 const PER_PAGE = 50
 
@@ -51,7 +52,7 @@ export default function StocksPage() {
       const res = await api.get('/api/v1/companies/summary', {
         params: { limit: PER_PAGE, offset, sort },
       })
-      return res.data as CompanySummaryResponse
+       return parseApi(companySummaryResponseSchema, res.data) as CompanySummaryResponse
     },
     staleTime: 5 * 60_000,
     gcTime: 10 * 60_000,

@@ -8,6 +8,7 @@ import { Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 import api from '@/lib/api'
 import type { FavoritesResponse, CompanySummaryResponse } from '@/types/api'
+import { companySummaryResponseSchema, favoritesResponseSchema, parseApi } from '@/lib/apiSchemas'
 
 export default function WatchlistPage() {
   const { t } = useTranslation()
@@ -17,7 +18,7 @@ export default function WatchlistPage() {
     queryKey: ['favorites'],
     queryFn: async () => {
       const res = await api.get('/api/v1/favorites')
-      return (res.data as FavoritesResponse).favorites
+      return parseApi(favoritesResponseSchema, res.data).favorites as FavoritesResponse['favorites']
     },
     staleTime: 60_000,
   })
@@ -28,7 +29,7 @@ export default function WatchlistPage() {
       const res = await api.get('/api/v1/companies/summary', {
         params: { limit: 500, tickers: favorites!.join(',') },
       })
-      return (res.data as CompanySummaryResponse).data
+      return (parseApi(companySummaryResponseSchema, res.data) as CompanySummaryResponse).data
     },
     enabled: !!favorites?.length,
     staleTime: 60_000,

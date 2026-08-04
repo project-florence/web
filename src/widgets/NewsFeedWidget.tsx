@@ -6,6 +6,7 @@ import { Newspaper, ExternalLink } from 'lucide-react'
 import api from '@/lib/api'
 import { safeExternalUrl } from '@/lib/safeUrl'
 import type { NewsItem } from '@/types/api'
+import { newsItemsSchema, parseApi } from '@/lib/apiSchemas'
 
 export default function NewsFeedWidget({ config }: { config?: Record<string, unknown> }) {
   const { t } = useTranslation()
@@ -15,7 +16,7 @@ export default function NewsFeedWidget({ config }: { config?: Record<string, unk
     queryKey: ['news-widget', ticker],
     queryFn: async () => {
       const res = await api.get(`/api/v1/news/${ticker}`)
-      return res.data as NewsItem[]
+       return parseApi(newsItemsSchema, res.data) as NewsItem[]
     },
     enabled: !!ticker,
     staleTime: 5 * 60_000,

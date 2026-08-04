@@ -9,6 +9,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
 import api from '@/lib/api'
 import type { Announcement } from '@/types/api'
+import { announcementsResponseSchema, parseApi } from '@/lib/apiSchemas'
 
 export function AnnouncementBell() {
   const { t } = useTranslation()
@@ -19,7 +20,7 @@ export function AnnouncementBell() {
     queryKey: ['announcements'],
     queryFn: async () => {
       const res = await api.get('/api/v1/announcements')
-      return (res.data as { announcements: Announcement[] }).announcements
+       return parseApi(announcementsResponseSchema, res.data).announcements as Announcement[]
     },
     refetchInterval: 60_000,
   })

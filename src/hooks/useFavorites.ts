@@ -4,6 +4,7 @@ import { toast } from 'sonner'
 import api from '@/lib/api'
 import { useAuthStore } from '@/stores/authStore'
 import type { FavoritesResponse } from '@/types/api'
+import { favoritesResponseSchema, parseApi } from '@/lib/apiSchemas'
 
 export function useFavorites() {
   const { t } = useTranslation()
@@ -14,7 +15,7 @@ export function useFavorites() {
     queryKey: ['favorites'],
     queryFn: async () => {
       const res = await api.get('/api/v1/favorites')
-      return (res.data as FavoritesResponse).favorites
+      return parseApi(favoritesResponseSchema, res.data).favorites as FavoritesResponse['favorites']
     },
     enabled: isAuthenticated,
     staleTime: 60_000,
