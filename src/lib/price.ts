@@ -61,6 +61,24 @@ export function processPriceData(
   return { data: result, from: now - days * 86_400_000, to: now }
 }
 
+export function marketRefetchInterval(query: { state: { data: unknown } }): number | false {
+  const data = query.state.data as
+    | { market_status?: string }
+    | Array<{ market_status?: string }>
+    | { data?: Array<{ market_status?: string }> }
+    | undefined
+  if (!data) return 30_000
+  let status: string | undefined
+  if (Array.isArray(data)) {
+    status = data[0]?.market_status
+  } else if ('data' in data && Array.isArray(data.data)) {
+    status = data.data[0]?.market_status
+  } else {
+    status = (data as { market_status?: string }).market_status
+  }
+  return status === 'closed' ? false : 30_000
+}
+
 export function computeDailyChange(data: PriceHistory[]): { close: number; prevClose: number; change: number } | null {
   const valid = data.filter((d) => isFinite(d.close)).slice(-2)
   if (valid.length < 2) return null

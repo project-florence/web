@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Card, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import api from '@/lib/api'
+import { marketRefetchInterval } from '@/lib/price'
 import type { CompanySummary } from '@/types/api'
 import { companySummaryResponseSchema, parseApi } from '@/lib/apiSchemas'
 import { QuoteChange } from '@/components/shared/QuoteChange'
@@ -21,6 +22,8 @@ export default function StockCardWidget({ config }: { config?: Record<string, un
     },
     enabled: !!ticker,
     staleTime: 30_000,
+    refetchOnWindowFocus: true,
+    refetchInterval: marketRefetchInterval,
   })
 
   if (isLoading) {

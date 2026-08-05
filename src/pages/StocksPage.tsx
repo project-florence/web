@@ -12,6 +12,7 @@ import { ChevronLeft, ChevronRight, ArrowUpDown } from 'lucide-react'
 import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select'
 import { useNavStore } from '@/stores/navStore'
 import api from '@/lib/api'
+import { marketRefetchInterval } from '@/lib/price'
 import type { CompanySummaryResponse } from '@/types/api'
 import { companySummaryResponseSchema, parseApi } from '@/lib/apiSchemas'
 
@@ -57,6 +58,8 @@ export default function StocksPage() {
     staleTime: 5 * 60_000,
     gcTime: 10 * 60_000,
     placeholderData: (prev) => prev,
+    refetchOnWindowFocus: true,
+    refetchInterval: marketRefetchInterval,
   })
 
   const companies = data?.data ?? []

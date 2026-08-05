@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Star, ChevronRight } from 'lucide-react'
 import api from '@/lib/api'
+import { marketRefetchInterval } from '@/lib/price'
 import type { CompanySummary, FavoritesResponse } from '@/types/api'
 import { companySummaryResponseSchema, favoritesResponseSchema, parseApi } from '@/lib/apiSchemas'
 import { QuoteChange } from '@/components/shared/QuoteChange'
@@ -32,6 +33,8 @@ export default function FavoritesBar() {
     },
     enabled: !!favorites?.length,
     staleTime: 30_000,
+    refetchOnWindowFocus: true,
+    refetchInterval: marketRefetchInterval,
   })
 
   const displayFavorites = favoriteSummaries ?? []
