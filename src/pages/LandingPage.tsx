@@ -53,9 +53,10 @@ function FadeInSection(props: { children: any }) {
 export default function LandingPage() {
   const { t, i18n } = useTranslation()
   const navigate = useNavigate()
+  const scopeRef = useRef<HTMLDivElement>(null)
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div ref={scopeRef} className="min-h-screen flex flex-col bg-background">
       <FluidBackground />
 
       {/* Top navbar */}
@@ -69,7 +70,7 @@ export default function LandingPage() {
             <SelectTrigger className="w-[105px] h-9">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent container={scopeRef}>
               <SelectItem value="tr">Türkçe</SelectItem>
               <SelectItem value="en">English</SelectItem>
             </SelectContent>

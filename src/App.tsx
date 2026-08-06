@@ -11,6 +11,7 @@ import { usePageTracking } from '@/hooks/usePageTracking'
 import { track } from '@/lib/telemetry'
 import { useTranslation } from 'react-i18next'
 import { PwaInstallPrompt } from '@/components/shared/PwaInstallPrompt'
+import { ThemeScope } from '@/components/shared/ThemeScope'
 import { useThemeStore } from '@/stores/themeStore'
 import { themes } from '@/config/themes'
 
@@ -84,12 +85,15 @@ export default function App() {
           <ErrorBoundary>
           <Suspense fallback={<PageLoader />}>
             <Routes>
-              <Route path="/" element={<LandingPage />} />
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/register" element={<RegisterPage />} />
-              <Route path="/about" element={<AboutPage />} />
-              <Route path="/contact" element={<ContactPage />} />
-              <Route path="/legal/:policy" element={<LegalPage />} />
+              <Route element={<ThemeScope />}>
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="/contact" element={<ContactPage />} />
+                <Route path="/legal/:policy" element={<LegalPage />} />
+                <Route path="*" element={<NotFoundPage />} />
+              </Route>
               <Route
                 element={
                   <ProtectedRoute>
@@ -112,7 +116,6 @@ export default function App() {
                 <Route path="portfolios" element={<PortfolioPage />} />
                 <Route path="portfolios/:portfolioId" element={<PortfolioPage />} />
               </Route>
-              <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </Suspense>
           </ErrorBoundary>
