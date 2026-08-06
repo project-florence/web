@@ -1,73 +1,16 @@
 <!doctype html>
-<html lang="tr" class="dark">
+<html lang="tr" data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#0a0a0f" />
+    <meta name="theme-color" content="#f8fafc" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="Florence" />
     <link rel="apple-touch-icon" href="/pwa-192.png" />
     <title>Florence</title>
-    <script>
-      (function() {
-        try {
-          var raw = JSON.parse(localStorage.getItem('florence-theme') || '{}');
-          var name = raw && raw.state && raw.state.themeName;
-          if (!name) return;
-          var colors = {
-            florence: { bg:'#0a0a0f',fg:'#f8fafc',card:'#1a1a2e',popover:'#1a1a2e',primary:'#2563eb',primaryFg:'#ffffff',secondary:'#334155',muted:'#1e293b',mutedFg:'#94a3b8',accent:'#f59e0b',success:'#22c55e',destructive:'#ef4444',border:'#2d2d4a',ring:'#2563eb',sidebar:'#0f0f1a' },
-            ocean: { bg:'#0a0f1a',fg:'#ecfeff',card:'#0f1a2e',popover:'#0f1a2e',primary:'#06b6d4',primaryFg:'#0a0f1a',secondary:'#1e293b',muted:'#164e63',mutedFg:'#7dd3fc',accent:'#2dd4bf',success:'#22c55e',destructive:'#ef4444',border:'#1e3a5f',ring:'#06b6d4',sidebar:'#080d1a' },
-            emerald: { bg:'#0a0f0f',fg:'#ecfdf5',card:'#0f1a1a',popover:'#0f1a1a',primary:'#10b981',primaryFg:'#0a0f0f',secondary:'#1e293b',muted:'#14532d',mutedFg:'#6ee7b7',accent:'#34d399',success:'#22c55e',destructive:'#ef4444',border:'#14532d',ring:'#10b981',sidebar:'#080d0d' },
-            midnight: { bg:'#0a0a0f',fg:'#f5f3ff',card:'#0f0a1a',popover:'#0f0a1a',primary:'#8b5cf6',primaryFg:'#f5f3ff',secondary:'#1e1b4b',muted:'#1e1b4b',mutedFg:'#a78bfa',accent:'#a78bfa',success:'#22c55e',destructive:'#ef4444',border:'#2e1065',ring:'#8b5cf6',sidebar:'#08050f' },
-            sunset: { bg:'#0f0f0a',fg:'#fffbeb',card:'#1a1a0f',popover:'#1a1a0f',primary:'#f59e0b',primaryFg:'#0f0f0a',secondary:'#422006',muted:'#422006',mutedFg:'#fbbf24',accent:'#fb923c',success:'#22c55e',destructive:'#ef4444',border:'#78350f',ring:'#f59e0b',sidebar:'#0a0a05' },
-            sepia: { bg:'#120e0a',fg:'#f5e6d3',card:'#1f1710',popover:'#1f1710',primary:'#a87c4f',primaryFg:'#120e0a',secondary:'#3d2f1f',muted:'#2a2015',mutedFg:'#c9a877',accent:'#c9a227',success:'#6b8e4e',destructive:'#b5533c',border:'#3d2f1f',ring:'#a87c4f',sidebar:'#0d0a07' },
-            rose: { bg:'#12090d',fg:'#fff1f2',card:'#211017',popover:'#211017',primary:'#e11d48',primaryFg:'#fff1f2',secondary:'#4c1d2a',muted:'#35121e',mutedFg:'#fda4af',accent:'#fb7185',success:'#84a653',destructive:'#be123c',border:'#542033',ring:'#e11d48',sidebar:'#0d0609' },
-            graphite: { bg:'#0b0d0f',fg:'#e5e7eb',card:'#15181c',popover:'#15181c',primary:'#9ca3af',primaryFg:'#111827',secondary:'#272b31',muted:'#1d2126',mutedFg:'#9ca3af',accent:'#cbd5e1',success:'#a3a3a3',destructive:'#737373',border:'#363b43',ring:'#9ca3af',sidebar:'#080a0c' },
-            orchid: { bg:'#120d18',fg:'#fae8ff',card:'#21152a',popover:'#21152a',primary:'#c084fc',primaryFg:'#1e1030',secondary:'#3b2450',muted:'#2d1d3b',mutedFg:'#d8b4fe',accent:'#f0abfc',success:'#86a95b',destructive:'#e879a5',border:'#51366a',ring:'#c084fc',sidebar:'#0b0710' },
-            amber: { bg:'#0d0b05',fg:'#fffbeb',card:'#1d1708',popover:'#1d1708',primary:'#f59e0b',primaryFg:'#1c1200',secondary:'#3f2b08',muted:'#2b210b',mutedFg:'#fcd34d',accent:'#fbbf24',success:'#84a653',destructive:'#c2410c',border:'#5b410c',ring:'#f59e0b',sidebar:'#080603' },
-            arctic: { bg:'#f1f7fb',fg:'#102a43',card:'#ffffff',popover:'#ffffff',primary:'#0284c7',primaryFg:'#ffffff',secondary:'#dbeafe',muted:'#e6f0f7',mutedFg:'#52718b',accent:'#14b8a6',success:'#15803d',destructive:'#dc2626',border:'#c8dce9',ring:'#0284c7',sidebar:'#e7f1f8' },
-            light: { bg:'#f8fafc',fg:'#0f172a',card:'#ffffff',popover:'#ffffff',primary:'#2563eb',primaryFg:'#ffffff',secondary:'#e2e8f0',muted:'#f1f5f9',mutedFg:'#64748b',accent:'#f59e0b',success:'#16a34a',destructive:'#dc2626',border:'#e2e8f0',ring:'#2563eb',sidebar:'#ffffff' },
-          }[name];
-          if (!colors) return;
-          var r = document.documentElement;
-          if (name === 'light') { r.classList.remove('dark') } else { r.classList.add('dark') }
-          r.style.setProperty('--background', colors.bg);
-          r.style.setProperty('--foreground', colors.fg);
-          r.style.setProperty('--card', colors.card);
-          r.style.setProperty('--card-foreground', colors.fg);
-          r.style.setProperty('--popover', colors.popover);
-          r.style.setProperty('--popover-foreground', colors.fg);
-          r.style.setProperty('--primary', colors.primary);
-          r.style.setProperty('--primary-foreground', colors.primaryFg);
-          r.style.setProperty('--secondary', colors.secondary);
-          r.style.setProperty('--secondary-foreground', colors.fg);
-          r.style.setProperty('--muted', colors.muted);
-          r.style.setProperty('--muted-foreground', colors.mutedFg);
-          r.style.setProperty('--accent', colors.accent);
-          r.style.setProperty('--accent-foreground', colors.fg);
-          r.style.setProperty('--success', colors.success);
-          r.style.setProperty('--success-foreground', colors.fg);
-          r.style.setProperty('--warning', '#f59e0b');
-          r.style.setProperty('--warning-foreground', colors.fg);
-          r.style.setProperty('--destructive', colors.destructive);
-          r.style.setProperty('--destructive-foreground', colors.fg);
-          r.style.setProperty('--border', colors.border);
-          r.style.setProperty('--input', colors.border);
-          r.style.setProperty('--ring', colors.ring);
-          r.style.setProperty('--sidebar', colors.sidebar);
-          r.style.setProperty('--sidebar-foreground', colors.fg);
-          r.style.setProperty('--sidebar-primary', colors.primary);
-          r.style.setProperty('--sidebar-primary-foreground', colors.primaryFg);
-          r.style.setProperty('--sidebar-accent', colors.muted);
-          r.style.setProperty('--sidebar-accent-foreground', colors.fg);
-          r.style.setProperty('--sidebar-border', colors.border);
-          r.style.setProperty('--sidebar-ring', colors.ring);
-        } catch(e) {}
-      })();
-    </script>
   </head>
   <body>
     <div id="root"></div>

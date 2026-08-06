@@ -5,6 +5,7 @@ import { Separator } from '@/components/ui/separator'
 import { WidgetPalette } from './WidgetPalette'
 import { usePreferences } from '@/hooks/usePreferences'
 import { useThemeStore } from '@/stores/themeStore'
+import { themes } from '@/config/themes'
 import { toast } from 'sonner'
 import type { UserPreferences } from '@/types/api'
 
@@ -56,12 +57,11 @@ export function CustomizationPanel({ onAddWidget, onSave, onReset, isSaving }: C
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="florence">Florence</SelectItem>
-              <SelectItem value="ocean">Ocean</SelectItem>
-              <SelectItem value="emerald">Emerald</SelectItem>
-              <SelectItem value="midnight">Midnight</SelectItem>
-              <SelectItem value="sunset">Sunset</SelectItem>
-              <SelectItem value="light">Light</SelectItem>
+              {Object.entries(themes).map(([key, theme]) => (
+                <SelectItem key={key} value={key}>
+                  {theme.name}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>

@@ -368,6 +368,15 @@
     "widgetCurrency": "Döviz Kuru",
     "widgetMetal": "Metal Fiyatı"
   },
+  "onboarding": {
+    "title": "Temanı seç",
+    "description": "Hangi tema sana daha yakın? İstersen hepsine göz at, sonra da değiştirebilirsin.",
+    "expand": "Tümünü göster",
+    "collapse": "Daralt",
+    "active": "Aktif",
+    "dark": "Koyu",
+    "light": "Açık"
+  },
   "time": {
     "today": "Bugün",
     "thisWeek": "Bu Hafta",

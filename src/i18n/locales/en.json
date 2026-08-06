@@ -368,6 +368,15 @@
     "widgetCurrency": "Currency Pair",
     "widgetMetal": "Metal Price"
   },
+  "onboarding": {
+    "title": "Choose your theme",
+    "description": "Which theme feels right to you? Browse all of them if you like — you can change it later.",
+    "expand": "Show all themes",
+    "collapse": "Collapse",
+    "active": "Active",
+    "dark": "Dark",
+    "light": "Light"
+  },
   "time": {
     "today": "Today",
     "thisWeek": "This Week",

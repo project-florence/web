@@ -11,6 +11,8 @@ import { usePageTracking } from '@/hooks/usePageTracking'
 import { track } from '@/lib/telemetry'
 import { useTranslation } from 'react-i18next'
 import { PwaInstallPrompt } from '@/components/shared/PwaInstallPrompt'
+import { useThemeStore } from '@/stores/themeStore'
+import { themes } from '@/config/themes'
 
 const LandingPage = lazy(() => import('@/pages/LandingPage'))
 const LoginPage = lazy(() => import('@/pages/LoginPage'))
@@ -71,6 +73,9 @@ export default function App() {
     useMaintenanceStore.getState().fetchDisabled()
   }, [])
 
+  const themeName = useThemeStore((s) => s.themeName)
+  const toasterTheme = themes[themeName]?.mode ?? 'light'
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
@@ -116,7 +121,7 @@ export default function App() {
           position="top-right"
           richColors
           closeButton
-          theme="dark"
+          theme={toasterTheme}
         />
         <PwaInstallPrompt />
       </TooltipProvider>

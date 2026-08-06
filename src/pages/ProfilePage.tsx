@@ -377,18 +377,23 @@ export default function ProfilePage() {
                         applyTheme(key as ThemeName)
                         savePrefs({ theme: key } as Record<string, unknown>)
                       }}
-                      className={`cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg ${
+                      className={`cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:bg-surface-2 hover:shadow-(--shadow-pop) ${
                         isActive ? 'ring-2 ring-primary' : ''
                       }`}
                     >
                       <CardContent className="p-4">
                         <div className="flex gap-1.5 mb-2">
-                          <div className="h-5 w-5 rounded-full" style={{ backgroundColor: theme.colors.primary }} />
-                          <div className="h-5 w-5 rounded-full" style={{ backgroundColor: theme.colors.accent }} />
-                          <div className="h-5 w-5 rounded-full" style={{ backgroundColor: theme.colors.success }} />
-                          <div className="h-5 w-5 rounded-full" style={{ backgroundColor: theme.colors.background, border: '1px solid ' + theme.colors.border }} />
+                          <div className="h-5 w-5 rounded-full" style={{ backgroundColor: theme.preview.primary }} />
+                          <div className="h-5 w-5 rounded-full" style={{ backgroundColor: theme.preview.accent }} />
+                          <div className="h-5 w-5 rounded-full" style={{ backgroundColor: theme.preview.success }} />
+                          <div className="h-5 w-5 rounded-full" style={{ backgroundColor: theme.preview.background, border: '1px solid ' + theme.preview.border }} />
                         </div>
-                        <p className="text-sm font-medium">{theme.name}</p>
+                        <div className="flex items-center gap-1.5">
+                          <p className="text-sm font-medium">{theme.name}</p>
+                          <span className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                            {theme.mode === 'dark' ? 'Koyu' : 'Açık'}
+                          </span>
+                        </div>
                         {isActive && (
                           <p className="text-xs text-primary mt-1">Aktif</p>
                         )}

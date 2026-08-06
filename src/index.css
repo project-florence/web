@@ -4,6 +4,28 @@
 @import "react-grid-layout/css/styles.css";
 @import "react-resizable/css/styles.css";
 @import "@fontsource-variable/geist";
+@import "./themes/base.css";
+@import "./themes/florence.css";
+@import "./themes/ocean.css";
+@import "./themes/emerald.css";
+@import "./themes/midnight.css";
+@import "./themes/sunset.css";
+@import "./themes/sepia.css";
+@import "./themes/rose.css";
+@import "./themes/graphite.css";
+@import "./themes/orchid.css";
+@import "./themes/amber.css";
+@import "./themes/arctic.css";
+@import "./themes/light.css";
+@import "./themes/florence-light.css";
+@import "./themes/ocean-light.css";
+@import "./themes/emerald-light.css";
+@import "./themes/midnight-light.css";
+@import "./themes/sunset-light.css";
+@import "./themes/rose-light.css";
+@import "./themes/graphite-light.css";
+@import "./themes/orchid-light.css";
+@import "./themes/amber-light.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -31,8 +53,11 @@
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
@@ -55,45 +80,6 @@
 
 :root {
   --radius: 0.5rem;
-
-  --background: #0a0a0f;
-  --foreground: #f8fafc;
-  --card: #1a1a2e;
-  --card-foreground: #f8fafc;
-  --popover: #1a1a2e;
-  --popover-foreground: #f8fafc;
-  --primary: #2563eb;
-  --primary-foreground: #ffffff;
-  --secondary: #334155;
-  --secondary-foreground: #f8fafc;
-  --muted: #1e293b;
-  --muted-foreground: #94a3b8;
-  --accent: #f59e0b;
-  --accent-foreground: #0f172a;
-  --success: #22c55e;
-  --success-foreground: #0f172a;
-  --warning: #f59e0b;
-  --warning-foreground: #0f172a;
-  --destructive: #ef4444;
-  --destructive-foreground: #f8fafc;
-  --border: #2d2d4a;
-  --input: #2d2d4a;
-  --ring: #2563eb;
-
-  --chart-1: #3b82f6;
-  --chart-2: #22c55e;
-  --chart-3: #f59e0b;
-  --chart-4: #ef4444;
-  --chart-5: #8b5cf6;
-
-  --sidebar: #0f0f1a;
-  --sidebar-foreground: #f8fafc;
-  --sidebar-primary: #2563eb;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #1e293b;
-  --sidebar-accent-foreground: #f8fafc;
-  --sidebar-border: #2d2d4a;
-  --sidebar-ring: #2563eb;
 }
 
 @layer base {
