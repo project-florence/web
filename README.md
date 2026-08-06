@@ -7,127 +7,36 @@
 <h1 align="center">Florence</h1>
 
 <p align="center">
-  <strong>Next-Gen Agentic Finance</strong> — AI-powered portfolio analysis, simulations, and autonomous financial workflows.
+  <strong>Akıllı Yatırım Asistanı</strong> — Gerçek zamanlı piyasa verileri, yapay zekâ destekli analizler ve sanal portföy yönetimi.
 </p>
 
 <p align="center">
-  <img src="./public/assets/stocks.png" width="700" alt="Florence Screenshot">
+  <img src="./public/assets/stocks.png" width="700" alt="Florence ekran görüntüsü">
 </p>
 
 ---
 
-## Overview
+Florence; hisse senetleri, döviz kurları, kıymetli metaller ve makroekonomik göstergeleri tek bir ekranda takip edebileceğiniz akıllı bir yatırım asistanıdır. Gerçek zamanlı piyasa verilerini yapay zekâ destekli analizlerle birleştirir; simülasyonlar yapmanıza, otomatik raporlar üretmenize ve sanal portföylerinizi yönetmenize olanak tanır.
 
-Florence is a smart investment assistant that combines real-time market data, AI-driven analysis, and virtual portfolio management. Track stocks, precious metals, and currencies; run simulations; generate AI reports; and manage virtual portfolios — all in one place.
+## Özellikler
 
-### Features
+- **📊 Pazar Panosu** — Hisse senetleri, döviz kurları, kıymetli metaller ve makroekonomik göstergeler anlık olarak
+- **🤖 Yapay Zekâ Danışmanı** — Portföyünüze ve risk profilinize göre akıllı öneriler
+- **📈 Etkileşimli Grafikler** — Çoklu zaman dilimi ve aralık desteğiyle mum grafikleri
+- **📄 Otomatik Raporlar** — Temel analiz, haber duyarlılığı ve strateji değerlendirme raporları
+- **🎮 Pazar Simülasyonları** — Stratejilerinizi gelişmiş simülasyon modelleriyle test edin
+- **💰 Sanal Portföyler** — Portföy oluşturun, performansınızı XU100 ile karşılaştırın
+- **📋 Takip Listesi** — İzlediğiniz hisseleri gerçek zamanlı fiyatlarla tek ekranda
+- **📢 Duyurular** — Yönetici duyuruları ve anlık bildirimler
+- **🌐 Çok Dilli Arayüz** — Türkçe ve İngilizce destek
+- **🎨 Temalar** — El yapımı 6 farklı tema (Florence, Ocean, Emerald, Midnight, Sunset, Light)
 
-- **📊 Market Dashboard** — Real-time stock prices, currency rates, precious metals, and macroeconomic indicators
-- **🤖 AI Advisor** — AI-powered stock recommendations based on your portfolio and risk profile
-- **📈 Interactive Charts** — Candlestick charts with multiple timeframes and intervals (KLineChart)
-- **📄 Automated Reports** — Generate fundamental analysis, news sentiment reports, and strategy evaluations
-- **🎮 Market Simulations** — Stress-test strategies with advanced simulation models
-- **💰 Virtual Portfolios** — Create and manage portfolios, track performance, benchmark against XU100
-- **📋 Watchlist** — Custom watchlists with real-time price updates
-- **📢 Announcements** — Admin announcement system with real-time notifications
-- **🌐 i18n** — Turkish and English interface support
-- **🎨 Themes** — 6 handcrafted themes (Florence, Ocean, Emerald, Midnight, Sunset, Light)
+---
 
-## Tech Stack
+Bu depo, Florence'ın web arayüzünü içerir. API sunucusu için [project-florence/backend](https://github.com/project-florence/backend) deposuna, platformun tamamı için [project-florence organizasyon sayfasına](https://github.com/project-florence) göz atın.
 
-### Frontend
+İngilizce sürüm: [English](docs/README.en.md)
 
-| Technology | Purpose |
-|---|---|
-| **React 19** | UI framework |
-| **TypeScript 6** | Type safety |
-| **Vite 8** | Build tool & dev server |
-| **Tailwind CSS 4** | Styling |
-| **shadcn/ui** (base-ui) | Component primitives |
-| **TanStack React Query** | Server state management |
-| **Zustand** | Client state management |
-| **React Router 7** | Routing |
-| **i18next** | Internationalization |
-| **KLineChart** | Financial candlestick charts |
-| **Apache ECharts / Recharts** | Data visualization |
-
-### Backend
-
-| Technology | Purpose |
-|---|---|
-| **Python 3.12** | Runtime |
-| **FastAPI** | REST API framework |
-| **PostgreSQL** | Primary database |
-| **Redis** | Caching |
-| **psycopg2** | PostgreSQL adapter |
-| **PyKAP** | BIST (Borsa Istanbul) data integration |
-| **yfinance** | Yahoo Finance data |
-| **Google BigQuery (GDELT)** | News aggregation & sentiment |
-| **SearXNG** | Private news search |
-| **Argon2** | Password hashing |
-| **PyJWT** | Token-based authentication |
-
-## Architecture
-
-```
-┌─────────────┐     ┌──────────────┐     ┌────────────┐
-│  React SPA  │────▶│  FastAPI     │────▶│ PostgreSQL │
-│  (Vite)     │     │  (Uvicorn)   │     │  + Redis   │
-│  florencex  │     │  /api/v1/*   │     │  + SearXNG │
-└─────────────┘     └──────────────┘     └────────────┘
-```
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js 22+
-- Python 3.12+
-- Docker & Docker Compose
-
-### Quick Start
-
-```bash
-# Frontend
-npm install
-npm run dev       # → http://localhost:5173
-
-# Backend (Docker)
-docker compose up -d   # Starts PostgreSQL, Redis, SearXNG, API
-```
-
-The frontend dev server proxies `/api/*` requests to the backend (default `http://localhost:8000`).
-
-### Environment
-
-```bash
-# Frontend: .env
-VITE_API_URL=http://localhost:8000
-
-# Backend: .env (see .env.example)
-POSTGRES_PASSWORD=...
-SECRET_KEY=...
-REDIS_PASSWORD=...
-```
-
-## Project Structure
-
-```
-src/
-├── components/     # Reusable UI components
-│   ├── shared/     # App-specific components
-│   └── ui/         # shadcn/ui primitives
-├── pages/          # Route pages
-├── widgets/        # Dashboard widgets
-├── stores/         # Zustand stores
-├── hooks/          # Custom React hooks
-├── lib/            # Utility functions
-├── config/         # App configuration & themes
-├── i18n/           # Internationalization
-├── types/          # TypeScript type definitions
-└── assets/         # Static assets
-```
-
-## License
+## Lisans
 
 Apache License 2.0
