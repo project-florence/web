@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { Bell, CheckCheck, Loader2 } from 'lucide-react'
@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
 import api from '@/lib/api'
+import { isTauri, desktopNotify } from '@/lib/desktop'
 import type { Announcement } from '@/types/api'
 import { announcementsResponseSchema, parseApi } from '@/lib/apiSchemas'
 
@@ -15,6 +16,7 @@ export function AnnouncementBell() {
   const { t } = useTranslation()
   const queryClient = useQueryClient()
   const [selected, setSelected] = useState<Announcement | null>(null)
+  const notifiedIds = useRef<Set<number>>(new Set())
 
   const { data: announcements, isLoading, isError, refetch } = useQuery({
     queryKey: ['announcements'],
@@ -26,6 +28,15 @@ export function AnnouncementBell() {
   })
 
   const unreadCount = announcements?.filter((a) => a.is_unread).length ?? 0
+
+  useEffect(() => {
+    if (!isTauri() || !announcements) return
+    const fresh = announcements.filter((a) => a.is_unread && !notifiedIds.current.has(a.id))
+    for (const a of fresh.slice(0, 3)) {
+      notifiedIds.current.add(a.id)
+      void desktopNotify(t('announcement.title'), a.title)
+    }
+  }, [announcements, t])
 
   const markAllRead = useMutation({
     mutationFn: async () => {

@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import axios from 'axios'
 import api from '@/lib/api'
+import { isTauri, getRefreshToken, clearTokens } from '@/lib/desktop'
 
 interface AuthState {
   isAuthenticated: boolean
@@ -42,7 +43,15 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
   setAuthenticated: (value) => set({ isAuthenticated: value, loading: false, authError: false }),
   logout: () => {
-    void api.post('/api/v1/auth/logout').catch(() => undefined)
+    if (isTauri()) {
+      void (async () => {
+        const refreshToken = await getRefreshToken()
+        await clearTokens()
+        void api.post('/api/v1/auth/logout', { refresh_token: refreshToken }).catch(() => undefined)
+      })()
+    } else {
+      void api.post('/api/v1/auth/logout').catch(() => undefined)
+    }
     set({ isAuthenticated: false, loading: false, authError: false })
   },
 }))

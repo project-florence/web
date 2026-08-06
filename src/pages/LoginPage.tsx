@@ -13,6 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { HyperspaceBackground } from '@/components/shared/HyperspaceBackground'
 import { useAuthStore } from '@/stores/authStore'
 import api from '@/lib/api'
+import { isTauri, setTokens } from '@/lib/desktop'
 import type { AxiosError } from 'axios'
 import florenceLogo from '@/assets/florence_logo.svg'
 
@@ -69,9 +70,13 @@ export default function LoginPage() {
       formData.append('username', data.username)
       formData.append('password', data.password)
 
-      await api.post('/api/v1/auth/login', formData, {
+      const res = await api.post('/api/v1/auth/login', formData, {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       })
+
+      if (isTauri()) {
+        await setTokens(res.data.access_token, res.data.refresh_token)
+      }
 
       isPostLoginRef.current = true
       useAuthStore.getState().setAuthenticated(true)
