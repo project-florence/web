@@ -8,7 +8,7 @@ export interface RateEntry {
   Buying: string
   Selling: string
   Type: string
-  Change: string
+  Change: string | null
 }
 
 export interface UserRegister {

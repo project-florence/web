@@ -15,7 +15,7 @@ export function parsePrice(s: string | undefined): number | null {
   return isNaN(n) ? null : n
 }
 
-export function parseChange(s: string | undefined): number | null {
+export function parseChange(s: string | null | undefined): number | null {
   if (!s) return null
   const cleaned = s.replace('%', '').replace(',', '.')
   const n = parseFloat(cleaned)
