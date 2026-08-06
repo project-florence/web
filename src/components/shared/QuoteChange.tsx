@@ -13,6 +13,7 @@ interface QuoteChangeProps {
 
 function getBasisLabel(changeWindow?: string | null) {
   if (changeWindow === 'previous_session_close') return 'Önceki seans kapanışına göre değişim'
+  if (changeWindow === 'last_session_change') return 'Son tamamlanan seansın kapanış değişimi'
   if (changeWindow === 'selected_period') return 'Seçilen dönemin başlangıcına göre değişim'
   return 'Önceki geçerli fiyata göre değişim'
 }
