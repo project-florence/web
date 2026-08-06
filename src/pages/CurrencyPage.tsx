@@ -6,6 +6,9 @@ import { cn } from '@/lib/utils'
 import { TrendingUp, TrendingDown } from 'lucide-react'
 import { parsePrice, parseChange } from '@/lib/parse'
 import { PortfolioBuySell } from '@/components/shared/PortfolioBuySell'
+import { isEconomyEmpty } from '@/lib/economy'
+import { Button } from '@/components/ui/button'
+import { usePageTitle } from '@/hooks/usePageTitle'
 import api from '@/lib/api'
 import type { RateEntry } from '@/types/api'
 
@@ -60,8 +63,9 @@ function CurrencyCard({ code, entry, index = 0 }: { code: string; entry: RateEnt
 
 export default function CurrencyPage() {
   const { t } = useTranslation()
+  usePageTitle(t('nav.currency'))
 
-  const { data: rates, isLoading } = useQuery({
+  const { data: rates, isLoading, isError, refetch } = useQuery({
     queryKey: ['currency-all'],
     queryFn: async () => {
       const res = await api.get('/api/v1/economy/currency')
@@ -78,14 +82,19 @@ export default function CurrencyPage() {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-3xl font-bold tracking-tight">{t('nav.currency')}</h2>
-
       {isLoading ? (
         <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
           {Array.from({ length: 10 }).map((_, i) => (
             <Card key={i}><CardContent className="p-4"><Skeleton className="h-24 w-full" /></CardContent></Card>
           ))}
         </div>
+      ) : isError || isEconomyEmpty(rates as Record<string, unknown>) ? (
+        <Card>
+          <CardContent className="p-8 text-center space-y-3">
+            <p className="text-sm text-destructive">Döviz verisi alınamadı. Veri sağlayıcıya ulaşılamıyor olabilir.</p>
+            <Button variant="outline" size="sm" onClick={() => refetch()}>Tekrar dene</Button>
+          </CardContent>
+        </Card>
       ) : (
         <>
           <div>

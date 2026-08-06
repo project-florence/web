@@ -6,6 +6,9 @@ import { cn } from '@/lib/utils'
 import { TrendingUp, TrendingDown, Gem } from 'lucide-react'
 import { parseChange } from '@/lib/parse'
 import { PortfolioBuySell } from '@/components/shared/PortfolioBuySell'
+import { isEconomyEmpty } from '@/lib/economy'
+import { Button } from '@/components/ui/button'
+import { usePageTitle } from '@/hooks/usePageTitle'
 import api from '@/lib/api'
 import type { RateEntry } from '@/types/api'
 
@@ -73,8 +76,9 @@ function MetalCard({ id, entry, index = 0 }: { id: string; entry: RateEntry; ind
 
 export default function MetalsPage() {
   const { t } = useTranslation()
+  usePageTitle(t('nav.metals'))
 
-  const { data: gold, isLoading: goldLoading } = useQuery({
+  const { data: gold, isLoading: goldLoading, isError: goldError, refetch: refetchGold } = useQuery({
     queryKey: ['gold-all'],
     queryFn: async () => {
       const res = await api.get('/api/v1/economy/gold-prices')
@@ -118,14 +122,19 @@ export default function MetalsPage() {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-3xl font-bold tracking-tight">{t('nav.metals')}</h2>
-
       {goldLoading ? (
         <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
           {Array.from({ length: 8 }).map((_, i) => (
             <Card key={i}><CardContent className="p-4"><Skeleton className="h-24 w-full" /></CardContent></Card>
           ))}
         </div>
+      ) : goldError || isEconomyEmpty(gold as Record<string, unknown>) ? (
+        <Card>
+          <CardContent className="p-8 text-center space-y-3">
+            <p className="text-sm text-destructive">Kıymetli maden verisi alınamadı. Veri sağlayıcıya ulaşılamıyor olabilir.</p>
+            <Button variant="outline" size="sm" onClick={() => refetchGold()}>Tekrar dene</Button>
+          </CardContent>
+        </Card>
       ) : (
         <>
           {gold && (
