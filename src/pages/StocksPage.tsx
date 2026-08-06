@@ -11,6 +11,7 @@ import { CompanyCard } from '@/components/shared/CompanyCard'
 import { ChevronLeft, ChevronRight, ArrowUpDown } from 'lucide-react'
 import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select'
 import { useNavStore } from '@/stores/navStore'
+import { usePageTitle } from '@/hooks/usePageTitle'
 import api from '@/lib/api'
 import { marketRefetchInterval } from '@/lib/price'
 import type { CompanySummaryResponse } from '@/types/api'
@@ -31,6 +32,7 @@ const SORT_OPTIONS = [
 
 export default function StocksPage() {
   const { t } = useTranslation()
+  usePageTitle(t('stocks.title'))
   const navigate = useNavigate()
   const savedPage = useNavStore((s) => s.stocksPage)
   const setStocksPage = useNavStore((s) => s.setStocksPage)
@@ -68,8 +70,7 @@ export default function StocksPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between flex-wrap gap-4">
-        <h2 className="text-3xl font-bold tracking-tight">{t('stocks.title')}</h2>
+      <div className="flex items-center justify-end flex-wrap gap-4">
         <div className="flex items-center gap-2">
           <ArrowUpDown className="h-4 w-4 text-muted-foreground" />
           <Select value={sort} onValueChange={(v) => v && setSort(v)}>

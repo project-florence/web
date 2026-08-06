@@ -14,6 +14,7 @@ import { FileText, Search, Sparkles, TrendingUp, ExternalLink, ChevronRight, Coi
 import { StockSearch } from '@/components/shared/StockSearch'
 import { CreditCostTooltip } from '@/components/shared/CreditCostTooltip'
 import api from '@/lib/api'
+import { usePageTitle } from '@/hooks/usePageTitle'
 import { safeExternalUrl } from '@/lib/safeUrl'
 import type { ReportInfo, ReportHistoryItem, ReportDetail, ReportSentiment, ReportTypeInfo } from '@/types/api'
 
@@ -33,6 +34,7 @@ const sentimentBadge: Record<string, string> = {
 
 export default function ReportsPage() {
   const { t, i18n } = useTranslation()
+  usePageTitle(t('reports.title'))
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const [searchParams] = useSearchParams()
@@ -176,8 +178,6 @@ export default function ReportsPage() {
 
   return (
     <div className="max-w-full md:max-w-lg mx-auto space-y-6">
-      <h2 className="text-3xl font-bold tracking-tight">{t('reports.title')}</h2>
-
       <div className="flex gap-2">
         {tabs.map((tabItem) => (
           <Button

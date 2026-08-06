@@ -12,10 +12,12 @@ import { cn } from '@/lib/utils'
 import { Target, FlaskConical, BarChart3, Coins, TrendingUp, Wrench } from 'lucide-react'
 import api from '@/lib/api'
 import { useMaintenanceStore } from '@/stores/maintenanceStore'
+import { usePageTitle } from '@/hooks/usePageTitle'
 import type { CompanyInfo, SimulationResponse, PerDayCostResponse, Credits, SimulationHistoryItem, SimulationHistoryDetail } from '@/types/api'
 
 export default function SimulationPage() {
   const { t } = useTranslation()
+  usePageTitle(t('simulation.title'))
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const [searchParams] = useSearchParams()
@@ -109,8 +111,6 @@ export default function SimulationPage() {
 
   return (
     <div className="max-w-full md:max-w-lg mx-auto space-y-6">
-      <h2 className="text-3xl font-bold tracking-tight">{t('simulation.title')}</h2>
-
       {simulationDisabled && (
         <div className="flex items-center gap-2 p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-600 text-sm">
           <Wrench className="h-4 w-4 shrink-0" />

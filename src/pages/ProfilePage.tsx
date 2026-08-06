@@ -17,6 +17,7 @@ import { useThemeStore } from '@/stores/themeStore'
 import { themes } from '@/config/themes'
 import type { ThemeName } from '@/config/themes'
 import { usePreferences } from '@/hooks/usePreferences'
+import { usePageTitle } from '@/hooks/usePageTitle'
 import api from '@/lib/api'
 import { cn } from '@/lib/utils'
 import type { Profile, Announcement } from '@/types/api'
@@ -24,6 +25,7 @@ import { CreditDisplay } from '@/components/shared/CreditDisplay'
 
 export default function ProfilePage() {
   const { t, i18n } = useTranslation()
+  usePageTitle(t('profile.title'))
   const navigate = useNavigate()
   const logout = useAuthStore((s) => s.logout)
   const themeName = useThemeStore((s) => s.themeName)
@@ -127,7 +129,6 @@ export default function ProfilePage() {
           <ArrowLeft className="h-4 w-4 mr-1" />
           Geri
         </Button>
-        <h2 className="text-3xl font-bold tracking-tight">{t('profile.title')}</h2>
       </div>
 
       <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">

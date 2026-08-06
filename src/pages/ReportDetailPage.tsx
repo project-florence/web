@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
 import { ArrowLeft, TrendingUp, ExternalLink, Coins, Sparkles, Download, Clock, FileText } from 'lucide-react'
 import api from '@/lib/api'
+import { usePageTitle } from '@/hooks/usePageTitle'
 import { safeExternalUrl } from '@/lib/safeUrl'
 import type { ReportDetail } from '@/types/api'
 
@@ -39,6 +40,8 @@ export default function ReportDetailPage() {
     enabled: !!id,
     staleTime: 5 * 60_000,
   })
+
+  usePageTitle(detail?.title ?? t('reports.title'))
 
   const download = async (ftype: 'md' | 'pdf' | 'docx') => {
     try {

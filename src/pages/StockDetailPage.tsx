@@ -17,6 +17,7 @@ import { FavoriteButton } from '@/components/shared/FavoriteButton'
 import { PortfolioBuySell } from '@/components/shared/PortfolioBuySell'
 import { QuoteChange } from '@/components/shared/QuoteChange'
 import { useNavStore } from '@/stores/navStore'
+import { usePageTitle } from '@/hooks/usePageTitle'
 import { processPriceData } from '@/lib/price'
 import api from '@/lib/api'
 import { safeExternalUrl } from '@/lib/safeUrl'
@@ -92,6 +93,7 @@ function pctChange(a: number | undefined, b: number | undefined): number | undef
 export default function StockDetailPage() {
   const { ticker } = useParams<{ ticker: string }>()
   const { t } = useTranslation()
+  usePageTitle(ticker ?? t('stocks.title'))
   const navigate = useNavigate()
   const setLastStockTicker = useNavStore((s) => s.setLastStockTicker)
   const PERIODS_TR = PERIODS.map((p) => ({ ...p, label: t(`time.${p.value}`) }))
@@ -230,7 +232,6 @@ export default function StockDetailPage() {
       <div className="flex items-start justify-between flex-wrap gap-4">
         <div>
           <div className="flex items-center gap-3">
-            <h2 className="text-3xl font-bold tracking-tight">{ticker}</h2>
             <QuoteChange
               change={dailyChange}
               changeWindow={livePrice?.change_window ?? 'previous_session_close'}

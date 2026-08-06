@@ -12,6 +12,7 @@ import { toast } from 'sonner'
 import { Plus, ArrowLeft, Pencil, Trash2, Copy, Download, Undo2, Wallet, BarChart3, FileText } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { PortfolioTransactionDialog } from '@/components/shared/PortfolioTransactionDialog'
+import { usePageTitle } from '@/hooks/usePageTitle'
 import api from '@/lib/api'
 import type { Portfolio, PortfolioValuation } from '@/types/api'
 
@@ -31,6 +32,7 @@ export default function PortfolioPage() {
 
 function PortfolioList() {
   const { t } = useTranslation()
+  usePageTitle(t('portfolio.title'))
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const [createOpen, setCreateOpen] = useState(false)
@@ -64,8 +66,7 @@ function PortfolioList() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-bold tracking-tight">{t('portfolio.title')}</h2>
+      <div className="flex items-center justify-end">
         <Button variant="gradient" onClick={() => setCreateOpen(true)}>
           <Plus className="h-4 w-4 mr-1" />
           {t('portfolio.new')}
@@ -173,6 +174,8 @@ function PortfolioDetail({ portfolioId }: { portfolioId: string }) {
     enabled: !!portfolio,
   })
 
+  usePageTitle(portfolio?.metadata?.name ?? t('portfolio.title'))
+
   const renameMutation = useMutation({
     mutationFn: async () => {
       await api.put(`/api/v1/portfolios/${portfolioId}`, { name: renameValue })
@@ -226,7 +229,6 @@ function PortfolioDetail({ portfolioId }: { portfolioId: string }) {
   if (isLoading) {
     return (
       <div className="space-y-6">
-        <Skeleton className="h-8 w-48" />
         <Skeleton className="h-40 w-full" />
       </div>
     )
@@ -255,7 +257,6 @@ function PortfolioDetail({ portfolioId }: { portfolioId: string }) {
             <Button variant="ghost" size="sm" onClick={() => navigate('/portfolios')}>
               <ArrowLeft className="h-4 w-4 mr-1" />
             </Button>
-            <h2 className="text-2xl font-bold tracking-tight">{m.name}</h2>
           </div>
           <p className="text-sm text-muted-foreground mt-1">
             {new Date(m.created_at).toLocaleDateString()}

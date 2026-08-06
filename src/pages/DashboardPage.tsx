@@ -6,6 +6,7 @@ import { Settings2 } from 'lucide-react'
 import { DashboardGrid } from '@/components/shared/DashboardGrid'
 import { CustomizationPanel } from '@/components/shared/CustomizationPanel'
 import { usePreferences } from '@/hooks/usePreferences'
+import { usePageTitle } from '@/hooks/usePageTitle'
 import { DEFAULT_LAYOUT, PALETTE_ITEMS } from '@/types/widget'
 import type { WidgetLayout } from '@/types/widget'
 import type { UserPreferences } from '@/types/api'
@@ -14,6 +15,7 @@ let nextWidgetId = 100
 
 export default function DashboardPage() {
   const { t } = useTranslation()
+  usePageTitle(t('dashboard.title'))
   const { preferences, isLoading, save, isSaving } = usePreferences()
   const [editing, setEditing] = useState(false)
   const [workingLayout, setWorkingLayout] = useState<WidgetLayout[]>([])
@@ -73,8 +75,7 @@ export default function DashboardPage() {
   if (isLoading) {
     return (
       <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <Skeleton className="h-9 w-40" />
+        <div className="flex items-center justify-end">
           <Skeleton className="h-9 w-24" />
         </div>
         <div className="space-y-4">
@@ -88,8 +89,7 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-3xl font-bold tracking-tight">{t('dashboard.title')}</h2>
+      <div className="flex items-center justify-end">
         {!editing && (
           <Button variant="outline" size="sm" onClick={() => setEditing(true)}>
             <Settings2 className="h-4 w-4 mr-1" />

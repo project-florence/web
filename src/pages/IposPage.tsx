@@ -8,6 +8,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 import { ChevronDown, ChevronUp, TrendingUp, ExternalLink, Building2, Calendar, MapPin } from 'lucide-react'
+import { usePageTitle } from '@/hooks/usePageTitle'
 import api from '@/lib/api'
 import type { IpoListItem, IpoDetail } from '@/types/api'
 
@@ -15,6 +16,7 @@ type Tab = 'active' | 'draft'
 
 export default function IposPage() {
   const { t } = useTranslation()
+  usePageTitle(t('ipos.title'))
   const navigate = useNavigate()
   const [tab, setTab] = useState<Tab>('active')
   const [expandedSlug, setExpandedSlug] = useState<string | null>(null)
@@ -94,8 +96,6 @@ export default function IposPage() {
 
   return (
     <div className="max-w-lg mx-auto space-y-6">
-      <h2 className="text-3xl font-bold tracking-tight">{t('ipos.title')}</h2>
-
       <div className="flex gap-2">
         {tabs.map((tabItem) => (
           <Button

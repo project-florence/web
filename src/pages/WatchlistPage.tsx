@@ -6,12 +6,14 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { CompanyCard } from '@/components/shared/CompanyCard'
 import { Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
+import { usePageTitle } from '@/hooks/usePageTitle'
 import api from '@/lib/api'
 import type { FavoritesResponse, CompanySummaryResponse } from '@/types/api'
 import { companySummaryResponseSchema, favoritesResponseSchema, parseApi } from '@/lib/apiSchemas'
 
 export default function WatchlistPage() {
   const { t } = useTranslation()
+  usePageTitle(t('watchlist.title'))
   const queryClient = useQueryClient()
 
   const { data: favorites, isLoading: favsLoading, isError: favsError, refetch: refetchFavorites } = useQuery({
@@ -50,7 +52,6 @@ export default function WatchlistPage() {
   if (favsError || summariesError) {
     return (
       <div className="space-y-6">
-        <h2 className="text-3xl font-bold tracking-tight">{t('watchlist.title')}</h2>
         <Card>
           <CardContent className="p-8 text-center space-y-3">
             <p className="text-sm text-destructive">Takip listesi yüklenemedi.</p>
@@ -66,7 +67,6 @@ export default function WatchlistPage() {
   if (isLoading) {
     return (
       <div className="space-y-6">
-        <Skeleton className="h-8 w-48" />
         <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {Array.from({ length: 4 }).map((_, i) => (
             <Card key={i}>
@@ -86,7 +86,6 @@ export default function WatchlistPage() {
   if (!favorites?.length) {
     return (
       <div className="space-y-6">
-        <h2 className="text-3xl font-bold tracking-tight">{t('watchlist.title')}</h2>
         <Card>
           <CardContent className="p-12 text-center text-muted-foreground">
             {t('watchlist.empty')}
@@ -98,7 +97,6 @@ export default function WatchlistPage() {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-3xl font-bold tracking-tight">{t('watchlist.title')}</h2>
       <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {summaries?.map((company) => (
           <CompanyCard
