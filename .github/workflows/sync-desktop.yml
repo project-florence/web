@@ -1,0 +1,58 @@
+name: sync-desktop
+
+# Web'de v* tag atildiginda (yani yeni web surumu yayinlandiginda):
+#   1. web subtree'sini desktop'a otomatik senkronlar (desktop her zaman guncel web ile build edilir)
+#   2. desktop versiyonunu web tag'iyle esitler
+#   3. ayni tag'i desktop'a da atar -> desktop build.yml tag'de tetiklenir
+#      -> Windows/Linux/macOS binary'leri otomatik draft release olarak yayinlanir
+#
+# Boylece tek aksiyon: web'de tag atmak. Web deploy + desktop sync + desktop build hepsi otomatik.
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Sync web subtree into desktop
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          set -e
+          git clone https://github.com/project-florence/desktop.git /tmp/desktop
+          cd /tmp/desktop
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git remote add web https://github.com/project-florence/web.git
+          git fetch web main
+
+          # Subtree'yi web main'e senkronla
+          git subtree pull --prefix web web main --squash \
+            --message "chore: sync web subtree (${TAG:-main})"
+
+          # Desktop versiyonunu web tag'iyle esitle (release isimleri tutarli olsun)
+          if [ -n "${TAG}" ] && [ "${TAG}" != "main" ]; then
+            VER="${TAG#v}"
+            sed -i "s/\"version\": \"[^\"]*\"/\"version\": \"${VER}\"/" package.json src-tauri/tauri.conf.json
+            git add package.json src-tauri/tauri.conf.json
+            git commit -m "chore: bump version to ${VER}" || true
+            git push origin main
+          fi
+
+          git push origin main
+
+          # Ayni tag'i desktop'a da at (zaten varsa atlama) -> desktop build + release
+          if ! git ls-remote --tags origin "refs/tags/${TAG}" | grep -q "${TAG}"; then
+            git tag -a "${TAG}" -m "chore: web ${TAG} senkronu"
+            git push origin "${TAG}"
+            echo "Desktop tag ${TAG} atildi -> binary build otomatik tetiklendi"
+          else
+            echo "Desktop tag ${TAG} zaten var, atlaniyor"
+          fi
