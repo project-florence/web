@@ -28,6 +28,7 @@ jobs:
       - name: Sync web subtree into desktop
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DESKTOP_SYNC_TOKEN: ${{ secrets.DESKTOP_SYNC_TOKEN }}
           TAG: ${{ github.event_name == 'push' && github.ref_name || inputs.tag }}
         run: |
           set -e
@@ -36,8 +37,9 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # Push auth: GITHUB_TOKEN ile (git, GH_TOKEN'i otomatik kullanmaz)
-          git remote set-url origin "https://x-access-token:${GH_TOKEN}@github.com/project-florence/desktop.git"
+          # Push auth: web repo'sunun GITHUB_TOKEN'i desktop'a yazamaz,
+          # bu yuzden kullanici token'i secret olarak kullanilir (repo scope).
+          git remote set-url origin "https://x-access-token:${DESKTOP_SYNC_TOKEN}@github.com/project-florence/desktop.git"
 
           git remote add web https://github.com/project-florence/web.git
           git fetch web main
