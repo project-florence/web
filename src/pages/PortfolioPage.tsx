@@ -12,6 +12,7 @@ import { toast } from 'sonner'
 import { Plus, ArrowLeft, Pencil, Trash2, Copy, Download, Undo2, Wallet, BarChart3, FileText } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { PortfolioTransactionDialog } from '@/components/shared/PortfolioTransactionDialog'
+import { NumberInput } from '@/components/ui/NumberInput'
 import { usePageTitle } from '@/hooks/usePageTitle'
 import api from '@/lib/api'
 import type { Portfolio, PortfolioValuation } from '@/types/api'
@@ -106,7 +107,7 @@ function PortfolioList() {
           </DialogHeader>
           <div className="space-y-4">
             <Input placeholder={t('portfolio.name')} value={newName} onChange={(e) => setNewName(e.target.value)} />
-            <Input type="number" min="0" step="0.01" placeholder={t('portfolio.initialBalance')} value={newBalance} onChange={(e) => setNewBalance(e.target.value)} />
+            <NumberInput placeholder={t('portfolio.initialBalance')} value={newBalance} onChange={setNewBalance} />
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setCreateOpen(false)}>{t('common.cancel')}</Button>
@@ -133,11 +134,11 @@ function PortfolioCard({ portfolio, onClick }: { portfolio: Portfolio; onClick: 
         <div className="space-y-1 text-sm">
           <div className="flex justify-between">
             <span className="text-muted-foreground">{t('portfolio.cashBalance')}</span>
-            <span className="font-medium">{m.balance.toFixed(2)}</span>
+            <span className="font-medium">{m.balance.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
           </div>
           <div className="flex justify-between text-xs text-muted-foreground/60">
             <span>{t('portfolio.initialBalance')}</span>
-            <span>{m.initial_balance.toFixed(2)}</span>
+            <span>{m.initial_balance.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
           </div>
         </div>
       </CardContent>
@@ -452,7 +453,7 @@ function PortfolioDetail({ portfolioId }: { portfolioId: string }) {
         </TabsContent>
 
         <TabsContent value="analysis" className="mt-4">
-          <PortfolioAnalysis portfolioId={portfolioId} />
+          <PortfolioAnalysis portfolioId={portfolioId} initialBalance={m.initial_balance} />
         </TabsContent>
       </Tabs>
 
@@ -501,7 +502,7 @@ function PortfolioDetail({ portfolioId }: { portfolioId: string }) {
   )
 }
 
-function PortfolioAnalysis({ portfolioId }: { portfolioId: string }) {
+function PortfolioAnalysis({ portfolioId, initialBalance }: { portfolioId: string; initialBalance: number }) {
   const { t } = useTranslation()
 
   const { data: returns } = useQuery({
@@ -554,7 +555,7 @@ function PortfolioAnalysis({ portfolioId }: { portfolioId: string }) {
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
-            <p className="text-xs text-muted-foreground">CAGR</p>
+            <p className="text-xs text-muted-foreground">{t('portfolio.cagr')}</p>
             <p className={cn('text-lg font-bold', (r?.cagr_percentage ?? 0) >= 0 ? 'text-success' : 'text-destructive')}>
               {r?.cagr_percentage != null ? `${r.cagr_percentage >= 0 ? '+' : ''}${r.cagr_percentage.toFixed(2)}%` : '-'}
             </p>
@@ -563,35 +564,41 @@ function PortfolioAnalysis({ portfolioId }: { portfolioId: string }) {
         <Card>
           <CardContent className="p-4 text-center">
             <p className="text-xs text-muted-foreground">{t('portfolio.totalValue')}</p>
-            <p className="text-lg font-bold">{r?.absolute_return != null ? (r.absolute_return + (r?.cagr_percentage ?? 0)).toFixed(2) : '-'}</p>
+            <p className="text-lg font-bold">{r?.absolute_return != null ? (r.absolute_return + initialBalance).toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '-'}</p>
           </CardContent>
         </Card>
       </div>
 
       <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
         <Card>
-          <CardHeader><CardTitle className="text-sm">Risk Metrikleri</CardTitle></CardHeader>
+          <CardHeader><CardTitle className="text-sm">{t('portfolio.risk.title')}</CardTitle></CardHeader>
           <CardContent className="space-y-2 text-sm">
-            <div className="flex justify-between"><span className="text-muted-foreground">Volatilite</span><span>{k?.volatility != null ? `${k.volatility.toFixed(2)}%` : '-'}</span></div>
-            <div className="flex justify-between"><span className="text-muted-foreground">Max Drawdown</span><span className="text-destructive">{k?.max_drawdown != null ? `-${k.max_drawdown.toFixed(2)}%` : '-'}</span></div>
-            <div className="flex justify-between"><span className="text-muted-foreground">Sharpe Ratio</span><span>{k?.sharpe_ratio != null ? k.sharpe_ratio.toFixed(2) : '-'}</span></div>
+            {k?.volatility == null && k?.max_drawdown == null && k?.sharpe_ratio == null ? (
+              <p className="text-xs text-muted-foreground">{t('portfolio.risk.empty')}</p>
+            ) : (
+              <>
+                <div className="flex justify-between"><span className="text-muted-foreground">{t('portfolio.risk.volatility')}</span><span>{k?.volatility != null ? `${k.volatility.toFixed(2)}%` : '-'}</span></div>
+                <div className="flex justify-between"><span className="text-muted-foreground">{t('portfolio.risk.maxDrawdown')}</span><span className="text-destructive">{k?.max_drawdown != null ? `-${k.max_drawdown.toFixed(2)}%` : '-'}</span></div>
+                <div className="flex justify-between"><span className="text-muted-foreground">{t('portfolio.risk.sharpe')}</span><span>{k?.sharpe_ratio != null ? k.sharpe_ratio.toFixed(2) : '-'}</span></div>
+              </>
+            )}
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader><CardTitle className="text-sm">Benchmark (XU100)</CardTitle></CardHeader>
+          <CardHeader><CardTitle className="text-sm">{t('portfolio.benchmark')}</CardTitle></CardHeader>
           <CardContent className="space-y-2 text-sm">
             {bm?.portfolio_return_pct != null ? (
               <>
-                <div className="flex justify-between"><span className="text-muted-foreground">Portföy</span><span className={bm.portfolio_return_pct >= 0 ? 'text-success' : 'text-destructive'}>{bm.portfolio_return_pct >= 0 ? '+' : ''}{bm.portfolio_return_pct.toFixed(2)}%</span></div>
+                <div className="flex justify-between"><span className="text-muted-foreground">{t('portfolio.title')}</span><span className={bm.portfolio_return_pct >= 0 ? 'text-success' : 'text-destructive'}>{bm.portfolio_return_pct >= 0 ? '+' : ''}{bm.portfolio_return_pct.toFixed(2)}%</span></div>
                 <div className="flex justify-between"><span className="text-muted-foreground">XU100</span><span>{bm.benchmark_return_pct >= 0 ? '+' : ''}{bm.benchmark_return_pct.toFixed(2)}%</span></div>
                 <div className="flex justify-between pt-2 border-t border-border/40">
-                  <span className="text-muted-foreground">Fark</span>
+                  <span className="text-muted-foreground">{t('portfolio.difference')}</span>
                   <span className={bm.outperformed ? 'text-success' : 'text-destructive'}>{bm.difference_pct >= 0 ? '+' : ''}{bm.difference_pct.toFixed(2)}%</span>
                 </div>
               </>
             ) : (
-              <p className="text-xs text-muted-foreground">Veri yok</p>
+              <p className="text-xs text-muted-foreground">{t('common.noData')}</p>
             )}
           </CardContent>
         </Card>
@@ -603,7 +610,7 @@ function PortfolioAnalysis({ portfolioId }: { portfolioId: string }) {
           {div ? (
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Nakit</span>
+                <span className="text-muted-foreground">{t('portfolio.cashBalance')}</span>
                 <span>{div.cash_allocation_pct != null ? `${div.cash_allocation_pct.toFixed(1)}%` : '-'}</span>
               </div>
               {div.assets?.map((a) => (
