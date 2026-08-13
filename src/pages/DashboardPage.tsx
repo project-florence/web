@@ -12,8 +12,6 @@ import { DEFAULT_LAYOUT, PALETTE_ITEMS } from '@/types/widget'
 import type { WidgetLayout } from '@/types/widget'
 import type { UserPreferences } from '@/types/api'
 
-let nextWidgetId = 100
-
 export default function DashboardPage() {
   const { t } = useTranslation()
   usePageTitle(t('dashboard.title'))
@@ -42,7 +40,7 @@ export default function DashboardPage() {
   const handleAddWidget = (type: string, config?: Record<string, unknown>) => {
     const paletteItem = PALETTE_ITEMS.find((p) => p.type === type)
     const newWidget: WidgetLayout = {
-      id: `${type}-${nextWidgetId++}`,
+      id: `${type}-${crypto.randomUUID()}`,
       type,
       x: 0,
       y: workingLayout.length > 0 ? Math.max(...workingLayout.map((l) => l.y + l.h)) : 0,

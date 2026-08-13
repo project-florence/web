@@ -167,7 +167,7 @@ export function FluidBackground() {
 
     function render(time: number) {
       if (!hidden) quality.frame()
-      if (hidden) return
+      if (hidden) { animId = requestAnimationFrame(render); return }
       gl.useProgram(program)
       mouseX += (targetMouseX - mouseX) * 0.1
       mouseY += (targetMouseY - mouseY) * 0.1

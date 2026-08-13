@@ -165,7 +165,7 @@ function PortfolioDetail({ portfolioId }: { portfolioId: string }) {
     },
   })
 
-  const { data: valuation } = useQuery({
+  const { data: valuation, isLoading: valuationLoading } = useQuery({
     queryKey: ['portfolio-valuation', portfolioId],
     queryFn: async () => {
       const res = await api.get(`/api/v1/portfolios/${portfolioId}/valuation`)
@@ -279,7 +279,7 @@ function PortfolioDetail({ portfolioId }: { portfolioId: string }) {
           )}
           <Button variant="outline" size="sm" onClick={async () => {
             try {
-              const res = await api.get(`/api/v1/portfolios/${portfolioId}/export/csv`)
+              const res = await api.get(`/api/v1/portfolios/${encodeURIComponent(portfolioId)}/export/csv`)
               const blob = new Blob([res.data as string], { type: 'text/csv' })
               const url = URL.createObjectURL(blob)
               const a = document.createElement('a')
@@ -302,27 +302,43 @@ function PortfolioDetail({ portfolioId }: { portfolioId: string }) {
         <Card>
           <CardContent className="p-4 text-center">
             <p className="text-xs text-muted-foreground">{t('portfolio.totalValue')}</p>
-            <p className="text-xl font-bold">{v?.total_value.toFixed(2) ?? '-'}</p>
+            {valuationLoading ? (
+              <Skeleton className="h-7 w-20 mx-auto mt-1" />
+            ) : (
+              <p className="text-xl font-bold">{v?.total_value.toFixed(2) ?? '-'}</p>
+            )}
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
             <p className="text-xs text-muted-foreground">{t('portfolio.cashBalance')}</p>
-            <p className="text-xl font-bold">{v?.cash_balance != null ? v.cash_balance.toFixed(2) : m.balance.toFixed(2)}</p>
+            {valuationLoading ? (
+              <Skeleton className="h-7 w-20 mx-auto mt-1" />
+            ) : (
+              <p className="text-xl font-bold">{v?.cash_balance != null ? v.cash_balance.toFixed(2) : m.balance.toFixed(2)}</p>
+            )}
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
             <p className="text-xs text-muted-foreground">{t('portfolio.holdingsValue')}</p>
-            <p className="text-xl font-bold">{v?.holdings_value.toFixed(2) ?? '-'}</p>
+            {valuationLoading ? (
+              <Skeleton className="h-7 w-20 mx-auto mt-1" />
+            ) : (
+              <p className="text-xl font-bold">{v?.holdings_value.toFixed(2) ?? '-'}</p>
+            )}
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4 text-center">
             <p className="text-xs text-muted-foreground">{t('portfolio.totalPnl')}</p>
-            <p className={cn('text-xl font-bold', (v?.total_pnl ?? 0) >= 0 ? 'text-success' : 'text-destructive')}>
-              {v?.total_pnl != null ? `${v.total_pnl >= 0 ? '+' : ''}${v.total_pnl.toFixed(2)}` : '-'}
-            </p>
+            {valuationLoading ? (
+              <Skeleton className="h-7 w-20 mx-auto mt-1" />
+            ) : (
+              <p className={cn('text-xl font-bold', (v?.total_pnl ?? 0) >= 0 ? 'text-success' : 'text-destructive')}>
+                {v?.total_pnl != null ? `${v.total_pnl >= 0 ? '+' : ''}${v.total_pnl.toFixed(2)}` : '-'}
+              </p>
+            )}
           </CardContent>
         </Card>
       </div>
@@ -365,7 +381,13 @@ function PortfolioDetail({ portfolioId }: { portfolioId: string }) {
               })()}
             </CardHeader>
             <CardContent>
-              {!v?.assets?.length ? (
+              {valuationLoading ? (
+                <div className="space-y-2">
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <Skeleton key={i} className="h-14 w-full rounded-lg" />
+                  ))}
+                </div>
+              ) : !v?.assets?.length ? (
                 <p className="text-sm text-muted-foreground text-center py-6">{t('portfolio.noTransactions')}</p>
               ) : (
                 <div className="space-y-2">

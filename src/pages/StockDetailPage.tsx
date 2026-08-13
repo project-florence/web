@@ -260,7 +260,7 @@ export default function StockDetailPage() {
               </Button>
               <Button variant="outline" size="sm" onClick={async () => {
                 try {
-                  const res = await api.get(`/api/v1/companies/info/${ticker}/md`, { responseType: 'blob' })
+                  const res = await api.get(`/api/v1/companies/info/${encodeURIComponent(ticker)}/md`, { responseType: 'blob' })
                   const url = URL.createObjectURL(res.data as Blob)
                   const a = document.createElement('a')
                   a.href = url
