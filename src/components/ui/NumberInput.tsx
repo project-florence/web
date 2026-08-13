@@ -22,11 +22,13 @@ function parseDisplayToRaw(display: string): string {
   }
   const parts = s.split('.')
   if (parts.length === 1) return s
-  if (parts.length === 2) return s
-  // Birden fazla nokta: hepsi 3 haneli grupsa binlik ayracı, değilse sonuncusu ondalık.
-  const lastLen = parts[parts.length - 1].length
-  const allGrouped = parts.every((p) => p.length === 3)
-  if (lastLen === 3 && allGrouped) return parts.join('')
+  // Nokta-binlik deseni: ilk grup 1-3 hane, sonraki gruplar 3'er hane
+  // (örn. "100.000" -> "100000", "1.234.567" -> "1234567").
+  // Desene uymayan 2 parçalı değerler ondalık kabul edilir ("12.34" -> "12.34").
+  const isDotThousands =
+    /^\d{1,3}$/.test(parts[0]) && parts.slice(1).every((p) => /^\d{3}$/.test(p))
+  if (isDotThousands) return parts.join('')
+  // Değilse son nokta ondalık ayracı: "1234.56" -> "1234.56".
   return `${parts.slice(0, -1).join('')}.${parts[parts.length - 1]}`
 }
 
