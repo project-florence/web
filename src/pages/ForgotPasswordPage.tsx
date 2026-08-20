@@ -45,6 +45,7 @@ export default function ForgotPasswordPage() {
     setLoading(true)
     try {
       await api.post('/api/v1/auth/forgot-password', { email: data.email })
+      toast.success(t('auth.forgotSent'))
       setSent(true)
     } catch (err) {
       const error = err as AxiosError
