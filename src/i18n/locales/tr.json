@@ -99,7 +99,17 @@
     "resetSubmit": "Şifreyi Sıfırla",
     "resetSuccess": "Şifreniz başarıyla güncellendi. Giriş yapabilirsiniz.",
     "resetInvalidToken": "Bu şifre sıfırlama bağlantısı geçersiz veya süresi dolmuş. Lütfen tekrar deneyin.",
-    "loginLink": "Girişe dön"
+    "loginLink": "Girişe dön",
+    "verifying": "E-postanız doğrulanıyor...",
+    "verifiedTitle": "E-posta Doğrulandı",
+    "verifiedSuccess": "E-posta adresiniz başarıyla doğrulandı.",
+    "verifiedContinue": "Devam Et",
+    "verifiedClose": "Bu sayfayı artık kapatabilirsiniz.",
+    "verifyInvalidTitle": "Geçersiz veya Süresi Dolmuş Bağlantı",
+    "verifyInvalidMsg": "Bu doğrulama bağlantısı geçersiz veya süresi dolmuş. Aşağıdan yeni bir bağlantı isteyebilirsiniz.",
+    "verifyResend": "Doğrulama E-postasını Yeniden Gönder",
+    "verifyResendEmail": "E-posta adresinizi girin",
+    "verifyResendSent": "Yeni bir doğrulama e-postası gönderildi. Lütfen gelen kutunuzu kontrol edin."
   },
   "dashboard": {
     "title": "Genel Bakış",

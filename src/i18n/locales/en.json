@@ -99,7 +99,17 @@
     "resetSubmit": "Reset Password",
     "resetSuccess": "Your password has been updated. You can now log in.",
     "resetInvalidToken": "This password reset link is invalid or has expired. Please request a new one.",
-    "loginLink": "Back to login"
+    "loginLink": "Back to login",
+    "verifying": "Verifying your email...",
+    "verifiedTitle": "Email Verified",
+    "verifiedSuccess": "Your email address has been successfully verified.",
+    "verifiedContinue": "Continue",
+    "verifiedClose": "You can close this page now.",
+    "verifyInvalidTitle": "Invalid or Expired Link",
+    "verifyInvalidMsg": "This verification link is invalid or has expired. You can request a new one below.",
+    "verifyResend": "Resend Verification Email",
+    "verifyResendEmail": "Enter your email address",
+    "verifyResendSent": "A new verification email has been sent. Please check your inbox."
   },
   "dashboard": {
     "title": "Dashboard",
