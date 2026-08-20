@@ -149,6 +149,11 @@ export default function LoginPage() {
                   <p className="text-sm text-destructive mt-1">{errors.password.message}</p>
                 )}
               </div>
+              <div className="flex justify-end">
+                <Link to="/forgot-password" className="text-xs text-muted-foreground hover:text-primary transition-colors">
+                  {t('auth.forgotLink')}
+                </Link>
+              </div>
               <Button type="submit" variant="gradient" className="w-full" disabled={loading || hyperdriveTriggered || !formFilled}>
                 {loading ? t('common.loading') : t('auth.login')}
               </Button>

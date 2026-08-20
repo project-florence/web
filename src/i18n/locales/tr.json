@@ -86,7 +86,20 @@
     "errorUsernameTaken": "Bu kullanıcı adı zaten alınmış",
     "errorLoginFailed": "Kullanıcı adı veya şifre hatalı",
     "errorEmailNotVerified": "E-postanız doğrulanmadı. Lütfen e-posta adresinizi doğrulayın.",
-    "acceptPolicies": "Devam etmek için tüm politikaları kabul etmelisiniz"
+    "acceptPolicies": "Devam etmek için tüm politikaları kabul etmelisiniz",
+    "forgotLink": "Şifremi unuttum",
+    "forgotTitle": "Şifrenizi Sıfırlayın",
+    "forgotEmail": "E-posta adresinizi girin",
+    "forgotSubmit": "Sıfırlama Bağlantısı Gönder",
+    "forgotSent": "Bu e-posta adresiyle ilişkili bir hesap varsa, şifre sıfırlama bağlantısı gönderilmiştir. Lütfen gelen kutunuzu kontrol edin.",
+    "resetTitle": "Yeni Şifre Belirleyin",
+    "resetNewPassword": "Yeni Şifre",
+    "resetConfirm": "Yeni Şifreyi Onayla",
+    "resetMismatch": "Şifreler eşleşmiyor",
+    "resetSubmit": "Şifreyi Sıfırla",
+    "resetSuccess": "Şifreniz başarıyla güncellendi. Giriş yapabilirsiniz.",
+    "resetInvalidToken": "Bu şifre sıfırlama bağlantısı geçersiz veya süresi dolmuş. Lütfen tekrar deneyin.",
+    "loginLink": "Girişe dön"
   },
   "dashboard": {
     "title": "Genel Bakış",

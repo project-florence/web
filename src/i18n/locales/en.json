@@ -86,7 +86,20 @@
     "errorUsernameTaken": "This username is already taken",
     "errorLoginFailed": "Invalid username or password",
     "errorEmailNotVerified": "Your email is not verified. Please verify your email address.",
-    "acceptPolicies": "You must accept all policies to continue"
+    "acceptPolicies": "You must accept all policies to continue",
+    "forgotLink": "Forgot password?",
+    "forgotTitle": "Reset Your Password",
+    "forgotEmail": "Enter your email address",
+    "forgotSubmit": "Send Reset Link",
+    "forgotSent": "If an account exists for this email address, a password reset link has been sent. Please check your inbox.",
+    "resetTitle": "Set a New Password",
+    "resetNewPassword": "New Password",
+    "resetConfirm": "Confirm New Password",
+    "resetMismatch": "Passwords do not match",
+    "resetSubmit": "Reset Password",
+    "resetSuccess": "Your password has been updated. You can now log in.",
+    "resetInvalidToken": "This password reset link is invalid or has expired. Please request a new one.",
+    "loginLink": "Back to login"
   },
   "dashboard": {
     "title": "Dashboard",

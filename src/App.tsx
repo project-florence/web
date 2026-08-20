@@ -18,6 +18,8 @@ const Layout = lazy(() => import('@/components/shared/Layout').then((m) => ({ de
 const ProtectedRoute = lazy(() => import('@/components/shared/ProtectedRoute').then((m) => ({ default: m.ProtectedRoute })))
 const LoginPage = lazy(() => import('@/pages/LoginPage'))
 const RegisterPage = lazy(() => import('@/pages/RegisterPage'))
+const ForgotPasswordPage = lazy(() => import('@/pages/ForgotPasswordPage'))
+const ResetPasswordPage = lazy(() => import('@/pages/ResetPasswordPage'))
 const DashboardPage = lazy(() => import('@/pages/DashboardPage'))
 const StocksPage = lazy(() => import('@/pages/StocksPage'))
 const StockDetailPage = lazy(() => import('@/pages/StockDetailPage'))
@@ -112,6 +114,8 @@ export default function App() {
                 <Route path="/" element={<LandingPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
+                <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                <Route path="/reset-password" element={<ResetPasswordPage />} />
                 <Route path="/downloads" element={<DownloadsPage />} />
                 <Route path="/about" element={<AboutPage />} />
                 <Route path="/contact" element={<ContactPage />} />
